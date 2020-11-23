@@ -1,42 +1,23 @@
-import React, { Component } from 'react';
+import React, { useContext } from "react";
+import UserContext from '../contexts/UserContext'
+import SignIn from "./SignInComponent";
+import Parent from "./ParentComponent";
+import Doctor from "./DoctorComponent";
+import PZH from "./PZHComponent";
 
-class Main extends Component{
-    constructor(props){
-        super(props);
-
-        this.state = {
-            isInfoLoading: true
-        }
+function Main(){
+    const {user, setUser} = useContext(UserContext);
+    if(user === undefined){
+        return <SignIn/>
     }
-
-    async componentDidMount(){
-        const bearer = 'Bearer ' + this.props.user.jwtIdToken;
-        fetch('http//:localhost:44319/weatherforecast', {
-            headers : {'Authorization': bearer},
-            credentials: 'same-origin'
-        })
-        .then(response => response.json())
-        .then(data => {this.setState({isInfoLoading: false, userInfo: data});})
-        .catch(error => {});
+    if(user.rola === 0){
+        return <Parent/>;
     }
-
-    render(){
-        console.log(this.props.user);
-        if(this.state.isInfoLoading){
-            return(
-                <div>
-                    Loading...
-                </div>
-            )
-        }
-        return(
-            <div>
-                <div>
-                    {this.state.userInfo}
-                </div>
-                <button onClick={this.props.logout}>Logout</button>
-            </div>
-        );
+    if(user.rola === 1){
+        return <Doctor/>;
+    }
+    if(user.rola === 2){
+        return <PZH/>;
     }
 }
 
