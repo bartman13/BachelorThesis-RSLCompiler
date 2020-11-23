@@ -21,10 +21,6 @@ const authorize = (values) => {
         .catch(err => console.error(err));
 }
 
-const handleSubmit = (values, setUser) => {
-    setUser(authorize(values));
-}
-
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -63,6 +59,21 @@ export default function SignIn() {
   const {setUser} = useContext(UserContext);
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [emailValid, setEmailValid] = useState(true);
+
+  const handleSubmit = (values) => {
+    console.log(values);
+    setUser(authorize(values));
+  }
+
+  const emailChanged = (event) => {
+    setEmail(event.target.value);
+    if(/.+@.+\.[A-Za-z]+$/.test(event.target.value)){
+        setEmailValid(true);
+    }else{
+        setEmailValid(false);
+    }
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -74,7 +85,7 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Zaloguj się
         </Typography>
-        <form className={classes.form} noValidate onSubmit={(event) => {event.preventDefault(); handleSubmit({email, password}, setUser);}}>
+        <form className={classes.form} noValidate onSubmit={(event) => {event.preventDefault(); handleSubmit({email, password});}}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -85,7 +96,9 @@ export default function SignIn() {
             name="email"
             autoComplete="email"
             autoFocus
-            onChange={(event)=>{setEmail(event.target.value)}}
+            onChange={(event)=>{emailChanged(event)}}
+            error={!emailValid}
+            helperText={!emailValid && "Niepoprawny adres email"}
           />
           <TextField
             variant="outlined"
