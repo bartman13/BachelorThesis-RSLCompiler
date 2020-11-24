@@ -31,8 +31,14 @@ namespace BackEnd
         {
             var connection = Configuration["DatabaseConnectionString"];
             services.AddDbContext<NopContext>(options => options.UseSqlServer(connection));
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
 
-            
+
             services.AddControllers();
            
 
@@ -50,7 +56,8 @@ namespace BackEnd
 
             app.UseRouting();
 
-            
+            app.UseCors("MyPolicy");
+
 
             app.UseEndpoints(endpoints =>
             {

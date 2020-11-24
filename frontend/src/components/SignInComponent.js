@@ -15,12 +15,13 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
-const authorize = (values) => {
-    return axios.post('https://localhost:44319/authorize', values)
-        .then(res => res.json())
+
+const authorize =  async (values) => {
+    return axios.post('https://localhost:44304/Login', 
+    { email : values.email, haslo: values.password })
+     .then(res => res.data)
         .catch(err => console.error(err));
 }
-
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -61,9 +62,9 @@ export default function SignIn() {
   const [email, setEmail] = useState('');
   const [emailValid, setEmailValid] = useState(true);
 
-  const handleSubmit = (values) => {
-    console.log(values);
-    setUser(authorize(values));
+  const handleSubmit = async  (values) => {
+    
+    setUser(await authorize(values));
   }
 
   const emailChanged = (event) => {
