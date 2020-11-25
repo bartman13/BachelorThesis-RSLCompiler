@@ -1,11 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import UserContext from '../contexts/UserContext'
 import { makeStyles } from '@material-ui/core/styles';
-<<<<<<< HEAD
-import { Button, List, ListItem, Box } from '@material-ui/core';
-=======
 import { Button, List, ListItem, Box, Paper } from '@material-ui/core';
->>>>>>> develop
 import { useHistory, Link } from 'react-router-dom';
 import axios from 'axios';
 
@@ -13,8 +9,6 @@ const useStyles = makeStyles((theme) => ({
     root: {
       width: '100%'
     },
-<<<<<<< HEAD
-=======
     listItem : {
         "&:hover": {
             backgroundColor: 'inherit'
@@ -26,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
         width: '100%',
         padding: '14px'
     }
->>>>>>> develop
 }));
 
 function ParentVaccinationsList(){
@@ -35,8 +28,6 @@ function ParentVaccinationsList(){
     const classes = useStyles();
     const [apps, setApps] = useState([]);
     const {user} = useContext(UserContext);
-<<<<<<< HEAD
-=======
     const [appHovered, setAppHovered] = useState(-1);
 
     const makePaper = (a, i) => {
@@ -51,7 +42,6 @@ function ParentVaccinationsList(){
         );
     }
 
->>>>>>> develop
     useEffect(() => {
         axios.get('https://localhost:44304/Rodzic/' + user.id,
             {
@@ -67,12 +57,7 @@ function ParentVaccinationsList(){
                     <Button variant="contained" color="primary" onClick={createNewApplicationClick}> Utwórz nowe </Button>
                 </Box>
                 <List component="nav">
-<<<<<<< HEAD
-                    {apps.map((a, i) => (<ListItem button component={Link} to={"/apphistory/" + a.id} key={i}> 
-                        {a.pacjent.imie + " " +a.pacjent.nazwisko + ", " + a.data + ", " + a.szczepionka} </ListItem>))}
-=======
                     {apps.map((a, i) => makePaper(a, i))}
->>>>>>> develop
                 </List>
             </div>
         </div>
