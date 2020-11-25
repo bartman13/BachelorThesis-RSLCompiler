@@ -7,6 +7,11 @@ import ParentChildrenList from './ParentChildrenComponent';
 import ParentProfile from './ParentProfileComponent';
 import ParentNewApp from './ParentNewAppComponent';
 import AppHistory from './AppHistoryComponent';
+<<<<<<< HEAD
+=======
+import ParentWiki from './ParentWikiComponent';
+import About from './AboutComponent';
+>>>>>>> develop
 
 const AppHistoryWithId = ({match}) => {
     return(
@@ -24,6 +29,11 @@ function Parent(){
                 <Route path='/parentprofile' component={ParentProfile}/>
                 <Route path='/parentnewapp' component={ParentNewApp}/>
                 <Route path='/apphistory/:id' component={AppHistoryWithId}/>
+<<<<<<< HEAD
+=======
+                <Route path='/parentwiki' component={ParentWiki}/>
+                <Route path='/parentabout' component={About}/>
+>>>>>>> develop
                 <Redirect to='/parenthome' />
             </Switch>
         </BrowserRouter>

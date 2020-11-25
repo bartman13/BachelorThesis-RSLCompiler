@@ -1,11 +1,12 @@
 .navbar-dark {
+<<<<<<< HEAD
   background-color: #0000ff;
+=======
+  background-color: #49495c;
+>>>>>>> develop
 }
 
 .navbar {
   margin: 0;
 }
 
-.navbar-dark {
-  background-color: #3d5de9;
-}
