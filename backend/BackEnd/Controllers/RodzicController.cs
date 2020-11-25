@@ -24,7 +24,7 @@ namespace BackEnd.Controllers
         }
 
         [HttpGet]
-        [Route("[Controller]/{id}")]
+        [Route("[Controller]/{id?}")]
         public IEnumerable<Zgloszenia> GetList( int id)
         {
             return from Zgloszenia in _context.Zgloszenia
