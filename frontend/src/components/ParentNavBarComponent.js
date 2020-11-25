@@ -1,6 +1,6 @@
 import React, { useContext, useState} from "react";
 import UserContext from '../contexts/UserContext'
-import { Nav, Navbar, NavItem, Button, NavbarToggler, Collapse} from 'reactstrap';
+import { Nav, Navbar, NavItem, Button, NavbarToggler, Collapse, NavbarBrand} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 
 function ParentNavBar(){
@@ -14,6 +14,7 @@ function ParentNavBar(){
             <Navbar dark expand="md">
                 <div className="container">
                     <NavbarToggler onClick={toggleNav} />
+                    <NavbarBrand className="mr-auto"><img src='logo.png' height="40" width="40" alt='MiniNOP' /></NavbarBrand>
                     <Collapse isOpen={isNavOpen} navbar>
                         <Nav navbar>
                             <NavItem>
@@ -21,6 +22,12 @@ function ParentNavBar(){
                             </NavItem>
                             <NavItem>
                                 <NavLink className="nav-link" to="/parentchildren"> Dzieci </NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink className="nav-link" to="/parentwiki"> O szczepieniach </NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink className="nav-link" to="/parentabout"> Jak korzystać? </NavLink>
                             </NavItem>
                         </Nav>
                         <Nav className="ml-auto" navbar>
