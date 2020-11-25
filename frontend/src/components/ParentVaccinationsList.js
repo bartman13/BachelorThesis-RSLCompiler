@@ -24,7 +24,7 @@ function ParentVaccinationsList(){
                     id: user.id
                 }
             }
-        ).then(data => setApps(data));
+        ).then(data => setApps(data.data));
     });
     return(
         <div className="container">
