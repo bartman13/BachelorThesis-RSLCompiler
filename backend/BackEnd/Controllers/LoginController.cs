@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.IdentityModel.Tokens;
+using WebApi.Services;
 
 namespace BackEnd.Controllers
 {
@@ -19,14 +20,15 @@ namespace BackEnd.Controllers
     public class LoginController : ControllerBase
     {
 
-        private readonly NopContext _context;
+        private IUserService _userService;
 
 
-        public LoginController(NopContext context)
+
+        public LoginController(IUserService userService)
         {
 
 
-            _context = context;
+            _userService = userService;
         }
 
 
@@ -48,43 +50,9 @@ namespace BackEnd.Controllers
         [HttpPost]
         public IActionResult SignIn([FromBody] AuthenticateRequest value)
         {
-            try
-            {
-                if (value == null)
-                {
-                    return BadRequest("SingInObject was null");
-                }
-                if(!ModelState.IsValid)
-                {
-                    return BadRequest("Invalid SignInObject");
-                }
-
-                var user = _context.Uzytkownicy.FirstOrDefault((user) => (user.Email == value.Email && user.Haslo == value.Haslo));
-                if(user == null)
-                {
-
-                    return NotFound(value.Email);
-                }
-
-                AuthenticateResponse response = new AuthenticateResponse(user);
-                
-                response.Token = Token.generateJwtToken(user);
-
-                return Ok(response);
-                
-               
-
-
-                
-
-            }
-            catch(Exception)
-            {
-                return StatusCode(500, "Internal server error");
-            }
-            
-            
-            
+            var user = _userService.Authenticate(value);
+            if (user == null) return BadRequest(new { message = "Username or password is incorrect" });
+            return Ok(user);
         }
         
     }
