@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BackEnd.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace BackEnd.Controllers
@@ -24,12 +25,15 @@ namespace BackEnd.Controllers
         }
 
         [HttpGet]
-        [Route("[Controller]/{id?}")]
-        public IEnumerable<Zgloszenia> GetList( int id)
+        [Route("[controller]/{id:int}")]
+        public IActionResult GetList(int id)
         {
-            return from Zgloszenia in _context.Zgloszenia
-                   where _context.Zgloszenia.All(x => x.UzytId == id)
-                   select Zgloszenia;
+
+            var zgl = (from Zgloszenia in _context.Zgloszenia.Include("Pacjent")
+                       where Zgloszenia.UzytId == id
+                       select Zgloszenia).ToList();
+            if (zgl == null || zgl.Count == 0) return BadRequest(new { message = "Lista uzytkownikow jest nullem" });
+            return Ok(zgl);
         }
     }
 }

@@ -18,17 +18,13 @@ function ParentVaccinationsList(){
     const [apps, setApps] = useState([]);
     const {user} = useContext(UserContext);
     useEffect(() => {
-        axios.get('https://localhost:44304/Rodzic',
+        axios.get('https://localhost:44304/Rodzic/' + user.id,
             {
-                params: {
-                    id: user.id
-                }
-            },
-            {
-                headers: { Authorization: `Bearer ${user.token}` }
+                headers: { Authorization: 'Bearer ' + user.token }
             }
         ).then(data => setApps(data.data));
-    });
+
+    },[setApps,user.id,user.token]);
     return(
         <div className="container">
             <div className={classes.root}>
