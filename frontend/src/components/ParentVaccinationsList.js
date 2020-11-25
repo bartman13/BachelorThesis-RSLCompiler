@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
+import UserContext from '../contexts/UserContext'
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, List, ListItem, Box } from '@material-ui/core';
 import { useHistory, Link } from 'react-router-dom';
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -13,11 +15,17 @@ function ParentVaccinationsList(){
     const history = useHistory();
     const createNewApplicationClick = () => {history.push("/parentnewapp")};
     const classes = useStyles();
-    const apps = [
-        {id: 0, pacjent: {imie : "Janek", nazwisko : "Kowalski"}, data : "2020-11-24T20:35:45.699Z", szczepionka: "Szczepionka 1"},
-        {id: 1, pacjent: {imie : "Piotrek", nazwisko : "Kowalski"}, data : "2020-11-24T20:35:45.699Z", szczepionka: "Szczepionka 2"},
-        {id: 2, pacjent: {imie : "Janek", nazwisko : "Kowalski"}, data : "2020-11-24T20:35:45.699Z", szczepionka: "Szczepionka 3"}
-    ];
+    const [apps, setApps] = useState([]);
+    const {user} = useContext(UserContext);
+    useEffect(() => {
+        axios.get('https://localhost:44304/Rodzic',
+            {
+                params: {
+                    id: user.id
+                }
+            }
+        ).then(data => setApps(data));
+    });
     return(
         <div className="container">
             <div className={classes.root}>
