@@ -23,6 +23,9 @@ function ParentVaccinationsList(){
                 params: {
                     id: user.id
                 }
+            },
+            {
+                headers: { Authorization: `Bearer ${user.token}` }
             }
         ).then(data => setApps(data.data));
     });
