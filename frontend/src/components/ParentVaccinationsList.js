@@ -4,6 +4,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Button, List, ListItem, Box, Paper } from '@material-ui/core';
 import { useHistory, Link } from 'react-router-dom';
 import axios from 'axios';
+//import CustomizedTables from './CustomizedTable'
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -19,7 +21,13 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: '#dbf0ff',
         width: '100%',
         padding: '14px'
+        
+    },
+    button:
+    {
+        backgroundColor: '#4caf50'
     }
+    
 }));
 
 function ParentVaccinationsList(){
@@ -33,10 +41,16 @@ function ParentVaccinationsList(){
     const makePaper = (a, i) => {
         return(
             <ListItem className={classes.listItem} button component={Link} to={"/apphistory/" + a.id} key={i}> 
-                <Paper elevation={appHovered===i?24:6} className={classes.paper} 
+                <Paper  alignItems="center" elevation={appHovered===i?24:6} className={classes.paper} 
                     onMouseEnter={() => {setAppHovered(i)}}
                     onMouseLeave={() => {setAppHovered(-1)}}> 
-                    {a.pacjent.imie + " " +a.pacjent.nazwisko + ", " + a.data + ", " + a.szczepionka} 
+                    {a.pacjent.imie + ' | '} 
+                   
+                    {a.pacjent.nazwisko + ' | '} 
+                    
+                    {a.data + ' |' } 
+                   
+                    {a.szczepionka}
                 </Paper> 
             </ListItem>
         );
@@ -54,11 +68,14 @@ function ParentVaccinationsList(){
         <div className="container">
             <div className={classes.root}>
                 <Box p={3}>
-                    <Button variant="contained" color="primary" onClick={createNewApplicationClick}> Utwórz nowe </Button>
+                    <Button variant="contained" className={classes.button} onClick={createNewApplicationClick}> Utwórz nowe </Button>
+                    
                 </Box>
                 <List component="nav">
                     {apps.map((a, i) => makePaper(a, i))}
                 </List>
+              
+
             </div>
         </div>
     );
