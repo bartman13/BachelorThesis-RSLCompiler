@@ -11,5 +11,6 @@ namespace BackEnd.Controllers
     [ApiController]
     public class PracownikPzhController : ControllerBase
     {
+    
     }
 }

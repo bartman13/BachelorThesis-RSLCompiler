@@ -32,12 +32,17 @@ namespace BackEnd
         public void ConfigureServices(IServiceCollection services)
         {
             var connection = Configuration["DatabaseConnectionString"];
-            services.AddDbContext<NopContext>(options => options.UseSqlServer(connection));
-            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
-            services.AddScoped<IUserService, UserService>();
+            services.AddDbContext<NopContext>(options => options.UseSqlServer(connection)); // database
+           
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings")); // seccret key key of token
+            
+            services.AddScoped<IUserService, UserService>(); // inject UserService
+            
             services.AddControllersWithViews().AddNewtonsoftJson(options =>
-            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore); // Jwt serialization
+            
             services.AddRouting();
+            
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
                 builder.AllowAnyOrigin()

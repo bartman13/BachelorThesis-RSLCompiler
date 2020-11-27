@@ -18,16 +18,16 @@ function ParentNavBar(){
                     <Collapse isOpen={isNavOpen} navbar>
                         <Nav navbar>
                             <NavItem>
-                                <NavLink className="nav-link" to="/parenthome"> Zgłoszenia </NavLink>
+                                <NavLink className="nav-link" to="/parenthome"><b> Zgłoszenia </b></NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink className="nav-link" to="/parentchildren"> Dzieci </NavLink>
+                                <NavLink className="nav-link" to="/parentchildren"><b> Dzieci </b></NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink className="nav-link" to="/parentwiki"> O szczepieniach </NavLink>
+                                <NavLink className="nav-link" to="/parentwiki"><b> O szczepieniach</b> </NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink className="nav-link" to="/parentabout"> Jak korzystać? </NavLink>
+                                <NavLink className="nav-link" to="/parentabout"><b> Jak korzystać?</b> </NavLink>
                             </NavItem>
                         </Nav>
                         <Nav className="ml-auto" navbar>
