@@ -1,42 +1,34 @@
 import React, { useState } from 'react';
 import { makeStyles, Grid, Typography, Button, Dialog, FormControl,
-        DialogTitle, InputLabel, Select, MenuItem, List, ListItem } from '@material-ui/core';
+        DialogTitle, InputLabel, Select, MenuItem, TextField } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { buttonSuccess, buttonDanger } from '../styles/buttons'
 
 const useStyles = makeStyles((theme) => ({
-    button : {
-        backgroundColor: '#4c9a2a',
-        '&:hover' :{
-            backgroundColor: '#76ba1b'
-        }
-    }
-}));
-
-const dialogStyles = makeStyles((theme) => ({
     formControl: {
         margin: theme.spacing(1),
         minWidth: 120,
     },
+    accordionFormControl: {
+        minWidth: 240,
+    },
     selectEmpty: {
         marginTop: theme.spacing(2),
     },
-    buttonSuccess : {
-        backgroundColor: '#009900',
-        '&:hover' :{
-            backgroundColor: '#00dd00'
-        }
-    },
-    buttonDanger : {
-        backgroundColor: '#990000',
-        '&:hover' :{
-            backgroundColor: '#dd0000'
-        }
+    buttonSuccess : buttonSuccess,
+    buttonDanger : buttonDanger,
+    accordion : {
+        maxWidth: '600px'
     }
 }));
 
 function AddNOPDialog(props){
     const { onClose, open, nops } = props;
-    const classes = dialogStyles();
+    const classes = useStyles();
     const [selectedNOP, setSelectedNOP] = useState('');
     const handleChangeNOP = (event) => {
         setSelectedNOP(event.target.value);
@@ -49,8 +41,8 @@ function AddNOPDialog(props){
     return (
         <Dialog aria-labelledby="addnopdialog-title" open={open}>
             <DialogTitle id="addnopdialog-title">Wybierz typ odczynu z listy</DialogTitle>
-            <Grid container spacing={3}>
-                <Grid item  xs={12} align="center">
+            <Grid container>
+                <Grid item xs={12} align="center">
                     <FormControl className={classes.formControl}>
                         <InputLabel id="nopId"> Typ odczynu </InputLabel>
                         <Select
@@ -65,10 +57,10 @@ function AddNOPDialog(props){
                         </Select>
                     </FormControl>
                 </Grid>
-                <Grid item  xs={6} align="center" onClick={selectClickHandle}>
+                <Grid item xs={6} align="center" onClick={selectClickHandle}>
                     <Button className={classes.buttonSuccess}> Wybierz </Button>
                 </Grid>
-                <Grid item  xs={6} align="center" onClick={backClickHandle}>
+                <Grid item xs={6} align="center" onClick={backClickHandle}>
                     <Button className={classes.buttonDanger}> Cofnij </Button>
                 </Grid>
             </Grid>
@@ -76,23 +68,96 @@ function AddNOPDialog(props){
     );
 }
 
-function NOPEntry(props){
-    const {selectedNOPs, setSelectedNOPs, nop} = props;
-    const deleteClick = () => {
-        setSelectedNOPs(selectedNOPs.filter(n => n.nazwa !== nop.nazwa));
+function NOPSelectAttribute(props){
+    const { attribute } = props;
+    const classes = useStyles();
+    const [selected, setSelected] = useState('');
+
+    const handleChange = (event) =>  {
+        setSelected(event.target.value);
+        attribute.wartosc = event.target.value;
     }
+
     return (
-        <Grid container spacing={3}>
+        <FormControl className={classes.accordionFormControl}>
+            <InputLabel id={"attId" + attribute.id}> {attribute.nazwa} </InputLabel>
+            <Select
+                labelId={"attId" + attribute.id}
+                value={selected}
+                onChange={handleChange}>
+                {attribute.info.split(';').map((x, i) =>{
+                    return(
+                        <MenuItem key={i} value={x}> {x} </MenuItem>
+                    );
+                })}
+            </Select>
+        </FormControl>
+    )
+}
+
+function NOPNumberAttribute(props){
+    const { attribute } = props;
+    const [value, setValue] = useState(36.6);
+
+    const handleChange = (event) =>  {
+        setValue(event.target.value);
+        attribute.wartosc = event.target.value;
+    }
+    return(
+        <TextField
+            required
+            label={attribute.nazwa}
+            type="number"
+            value={value}
+            onChange={handleChange}
+            inputProps={{step: "0.1"}}
+        />
+    )
+}
+
+function NOPAttribute(props){
+    const { attribute } = props;
+    switch(attribute.typ){
+        case 'select': return <NOPSelectAttribute attribute={attribute}/> 
+        case 'number': return <NOPNumberAttribute attribute={attribute}/>
+        default: throw new Error('nieznany typ');
+    }
+}
+
+function NOPEntry(props){
+    const {deleteClick, nop} = props;
+    const classes = useStyles();
+    return (
+        <Grid container>
             <Grid item xs={12} align="center">
-                {nop.nazwa}
-                <Button 
-                    variant="contained" 
-                    color="secondary" 
-                    onClick={deleteClick} 
-                    style={ { margin : '5px' } }
-                    size="small"> 
-                    <DeleteIcon fontSize={"small"}/>
-                </Button>
+                <Accordion className={classes.accordion}>
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls={"panel" + nop.id + "-content"}
+                        id={"panel" + nop.id + "-header"}>
+                        <Typography variant="subtitle1"> {nop.nazwa} </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <Grid container>
+                            {nop.atrybuty.map(a => {
+                                return(
+                                    <Grid item xs={12} key={a.id}>
+                                        <NOPAttribute attribute={a}/>
+                                    </Grid>
+                                )
+                            })}
+                            <Grid item xs={12} align="right">
+                                <Button 
+                                    variant="contained"
+                                    onClick={deleteClick}
+                                    className={classes.buttonDanger}
+                                    size="small"> 
+                                    <DeleteIcon/>
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </AccordionDetails>
+                </Accordion>
             </Grid>
         </Grid>
     )
@@ -100,16 +165,24 @@ function NOPEntry(props){
 
 function NOPCreator(props){
     const [open, setOpen] = useState(false);
-    const handleClickOpen = () => setOpen(true);
-    const { show, nops } = props;
-    const [selectedNOPs, setSelectedNOPs] = useState([]);
+    const { show, nops, selectedNOPs, setSelectedNOPs } = props;
 
     const onDialogClose = (selected) => {
         if(selected !== undefined){
-            selectedNOPs.push(selected);
+            selectedNOPs.push({
+                id: selected.id,
+                nazwa: selected.nazwa,
+                atrybuty: selected.atrybuty.map(a => { return {...a, wartosc : ''}})
+            });
         }
         setOpen(false);
     }
+
+    const deleteNOP = (nop) => () => {
+        setSelectedNOPs(selectedNOPs.filter(n => n.id !== nop.id));
+    }
+
+    const handleClickOpen = () => setOpen(true);
 
     const classes = useStyles();
     if(!show){
@@ -118,29 +191,25 @@ function NOPCreator(props){
         );
     }
     return (
-        <Grid container spacing={3}>
+        <Grid container>
             <Grid item  xs={12} align="center">
-                    <Typography variant="h6" gutterBottom>
-                        Występujące niepożadane odczyny
-                    </Typography>
-                    <List>
-                        {selectedNOPs.map((n, i) => {
-                            return (
-                                <ListItem key={i}>
-                                    <NOPEntry
-                                        selectedNOPs={selectedNOPs}
-                                        setSelectedNOPs={setSelectedNOPs} 
-                                        nop={n}
-                                    />
-                                </ListItem>
-                                );
-                        })}
-                    </List>
-                    <Button variant="contained" className={classes.button} onClick={handleClickOpen}>
-                            Dodaj odczyn
-                    </Button>
-                    <AddNOPDialog onClose={onDialogClose} open={open} nops={nops}/>
-                </Grid>
+                <Typography variant="h6" gutterBottom>
+                    Występujące niepożądane odczyny
+                </Typography>
+                {selectedNOPs.map((n, i) => {
+                    return (
+                        <NOPEntry
+                            deleteClick={deleteNOP(n)}
+                            nop={n}
+                            key={i}
+                        />
+                    );
+                })}
+                <Button variant="contained" className={classes.buttonSuccess} onClick={handleClickOpen}>
+                    Dodaj odczyn
+                </Button>
+                <AddNOPDialog onClose={onDialogClose} open={open} nops={nops}/>
+            </Grid>
         </Grid>
     );
 }

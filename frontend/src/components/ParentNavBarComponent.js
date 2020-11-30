@@ -32,7 +32,7 @@ function ParentNavBar(){
                         </Nav>
                         <Nav className="ml-auto" navbar>
                             <NavItem>
-                                <NavLink className="nav-link" to="/parentprofile"> {user.imie + " " + user.nazwisko} </NavLink>
+                                <NavLink className="nav-link" to="/parentprofile"> <b> {user.imie + " " + user.nazwisko} </b> </NavLink>
                             </NavItem>
                             <NavItem>
                                 <Button outline color="primary" onClick={() => {setUser(undefined)}}><span className="fa fa-sign-out fa-lg"></span> Wyloguj </Button>

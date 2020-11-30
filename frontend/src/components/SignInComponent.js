@@ -14,6 +14,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import Loading from './LoadingComponent';
 
 
 const authorize =  async (values) => {
@@ -61,9 +62,10 @@ export default function SignIn() {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [emailValid, setEmailValid] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async  (values) => {
-    
+  const handleSubmit = async (values) => {
+    setIsLoading(true);
     setUser(await authorize(values));
   }
 
@@ -74,6 +76,10 @@ export default function SignIn() {
     }else{
         setEmailValid(false);
     }
+  }
+
+  if(isLoading){
+    return <Loading/>
   }
 
   return (
