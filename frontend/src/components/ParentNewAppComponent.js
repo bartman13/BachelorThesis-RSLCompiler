@@ -24,11 +24,31 @@ function ParentNewApp(){
             odczyny : [
                 {
                     nazwa : 'Kaszel',
+                    id : 0,
                     atrybuty : [
                         {
-                            nazwa : 'Stopien',
+                            id : 0,
+                            nazwa : 'Stopień',
                             typ : 'select',
-                            info : 'lekki;średni;silny' 
+                            info : 'Lekki;Średni;Silny' 
+                        },
+                        {
+                            id: 1,
+                            nazwa: 'Typ',
+                            typ: 'select',
+                            info: 'Mokry;Suchy'
+                        }
+                    ]
+                },
+                {
+                    nazwa: 'Gorączka',
+                    id: 1,
+                    atrybuty: [
+                        {
+                            id: 3,
+                            nazwa: 'Temperatura',
+                            typ: 'number',
+                            info: 'Stopnie Celsjusza'
                         }
                     ]
                 }
@@ -42,6 +62,7 @@ function ParentNewApp(){
     const children = ["Janek Kowalski", "Piotrek Kowalski"];
     const [selectedChild, setSelectedChild] = useState('');
     const [selectedVaccine, setSelectedVaccine] = useState('');
+    const [selectedNOPs, setSelectedNOPs] = useState([]);
     const handleVaccineChange = (event) => {
         setSelectedVaccine(event.target.value);
     };
@@ -52,9 +73,8 @@ function ParentNewApp(){
 
     return (
         <div> 
-            <Grid container spacing={3}
+            <Grid container
                 justify="center"
-                alignItems="center"
                 direction="row">
                 <Grid item xs={12} align="center">
                 <Typography variant="h4" gutterBottom>
@@ -109,6 +129,8 @@ function ParentNewApp(){
             <NOPCreator 
                 show={vaccines.find(v => v.id === selectedVaccine) !== undefined} 
                 nops={vaccines.find(v => v.id === selectedVaccine)?.odczyny}
+                selectedNOPs={selectedNOPs}
+                setSelectedNOPs={setSelectedNOPs}
             />
         </div>
     );
