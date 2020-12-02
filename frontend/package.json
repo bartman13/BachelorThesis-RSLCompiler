@@ -13,6 +13,7 @@
     "bootstrap": "4.0.0",
     "date-fns": "^2.16.1",
     "font-awesome": "4.7.0",
+    "form-data": "^3.0.0",
     "material-ui-icons": "^1.0.0-beta.36",
     "msal": "^1.4.4",
     "react": "^17.0.1",

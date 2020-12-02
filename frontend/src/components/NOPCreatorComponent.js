@@ -20,10 +20,7 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(2),
     },
     buttonSuccess : buttonSuccess,
-    buttonDanger : buttonDanger,
-    accordion : {
-        maxWidth: '600px'
-    }
+    buttonDanger : buttonDanger
 }));
 
 function AddNOPDialog(props){
@@ -130,7 +127,7 @@ function NOPEntry(props){
     return (
         <Grid container>
             <Grid item xs={12} align="center">
-                <Accordion className={classes.accordion}>
+                <Accordion>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls={"panel" + nop.id + "-content"}
@@ -187,15 +184,14 @@ function NOPCreator(props){
     const classes = useStyles();
     if(!show){
         return (
-            <div></div>
+            <Button variant="contained" className={classes.buttonSuccess} disabled>
+                Dodaj odczyn
+            </Button>
         );
     }
     return (
         <Grid container>
             <Grid item  xs={12} align="center">
-                <Typography variant="h6" gutterBottom>
-                    Występujące niepożądane odczyny
-                </Typography>
                 {selectedNOPs.map((n, i) => {
                     return (
                         <NOPEntry
