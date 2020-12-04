@@ -15,10 +15,10 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Loading from './LoadingComponent';
-
+import apiURL from '../shared/apiURL';
 
 const authorize =  async (values) => {
-    return axios.post('https://localhost:44304/Login', 
+    return axios.post(apiURL + 'Login', 
     { email : values.email, haslo: values.password })
      .then(res => res.data)
         .catch(err => console.error(err));

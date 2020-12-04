@@ -5,6 +5,8 @@ import { Button, List, ListItem, Box, Paper } from '@material-ui/core';
 import { useHistory, Link } from 'react-router-dom';
 import axios from 'axios';
 import { buttonSuccess } from "../styles/buttons";
+import authHeader from '../shared/authheader';
+import apiURL from '../shared/apiURL';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -53,13 +55,10 @@ function ParentVaccinationsList(){
     }
 
     useEffect(() => {
-        axios.get('https://localhost:44304/Rodzic/' + user.id,
-            {
-                headers: { Authorization: 'Bearer ' + user.token }
-            }
+        axios.get(apiURL + 'Rodzic/' + user.id, authHeader(user)
         ).then(data => setApps(data.data));
 
-    },[setApps,user.id,user.token]);
+    },[setApps, user]);
     return(
         <div className="container">
             <div className={classes.root}>

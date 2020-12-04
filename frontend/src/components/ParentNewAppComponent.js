@@ -2,12 +2,15 @@ import React, { useState, useEffect, useContext } from 'react';
 import UserContext from '../contexts/UserContext'
 import { Box, Button, Container, makeStyles } from '@material-ui/core';
 import { Grid, TextField, Select, InputLabel, MenuItem, FormControl, Typography,
-    FormControlLabel, Checkbox } from '@material-ui/core';
+    FormControlLabel, Checkbox, Snackbar } from '@material-ui/core';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import NOPCreator from './NOPCreatorComponent';
 import FormData from 'form-data';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import authHeader from '../shared/authheader';
+import apiURL from '../shared/apiURL';
+import Alert from './AlertComponent';
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -73,15 +76,18 @@ function ParentNewApp(){
     const [selectedNOPs, setSelectedNOPs] = useState([]);
     const [contact, setContact] = useState(false);
     const [touched] = useState([false, false, false]);
+    const [snackbarState, setSnackbarState] = useState({
+        open: false,
+        message: '',
+        type: 'success'
+    });
     const {user} = useContext(UserContext);
     const history = useHistory();
 
     const handleVaccineChange = async (event) => {
         setSelectedVaccine(event.target.value);
         setNops([]);
-        const n = await axios('https://localhost:44304/Rodzic/',{
-            headers: { Authorization: 'Bearer ' + user.token }
-        });
+        const n = await axios(apiURL + 'Rodzic/', authHeader(user));
         setNops(n.data);
         touched[0] = true;
     };
@@ -128,27 +134,46 @@ function ParentNewApp(){
         }));
         data.append('zdjecieKsZd', imageKsZd.file);
         try {
-            await axios.post('https://localhost:44304/Rodzic/', data, {
+            await axios.post(apiURL + 'Rodzic/', data, {
                 headers : {
                     'accept': 'application/json',
                     'Content-Type': `multipart/form-data; boundary=${data._boundary}`
                 }
             });
-            history.push('/parenthome');
+            setSnackbarState({
+                open: true,
+                type: 'success',
+                message: 'Zgłoszenie pomyślnie utworzono'
+            });
+            setTimeout(() => {
+                history.push('/parenthome');
+            }, 2000); 
         } catch (error) {
-
+            console.error(error);
+            setSnackbarState({
+                open: true,
+                type: 'error',
+                message: 'Wystąpił błąd'
+            });
         }
+    };
+    const snackbarClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackbarState({
+            ...snackbarState,
+            open: false
+        });
     };
 
     const classes = useStyles();
 
     useEffect(() => {
-        axios.get('https://localhost:44304/Rodzic/',{
-            headers: { Authorization: 'Bearer ' + user.token }
-        }).then(data => setChildren(data.data));
-        axios.get('https://localhost:44304/Rodzic/',{
-            headers: { Authorization: 'Bearer ' + user.token }
-        }).then(data => setVaccines(data.data));
+        axios.get(apiURL + 'Rodzic/', authHeader(user))
+            .then(data => setChildren(data.data));
+        axios.get(apiURL + 'Rodzic/', authHeader(user))
+            .then(data => setVaccines(data.data));
     });
 
     return (
@@ -234,7 +259,7 @@ function ParentNewApp(){
                         Występujące niepożądane odczyny
                     </Typography>
                     <NOPCreator 
-                        show={nops.length > 0}
+                        show={nops.length > 0 && touched[0] === true}
                         nops={nops}
                         selectedNOPs={selectedNOPs}
                         setSelectedNOPs={setSelectedNOPs}
@@ -259,6 +284,11 @@ function ParentNewApp(){
                         onClick={submit}> Utwórz </Button>
                 </Grid>
             </Grid>
+            <Snackbar open={snackbarState.open} onClose={snackbarClose}>
+                <Alert severity={snackbarState.type} onClose={snackbarClose}>
+                    {snackbarState.message}
+                </Alert>
+            </Snackbar>
         </Container>
     );
 }

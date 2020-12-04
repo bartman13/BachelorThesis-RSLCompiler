@@ -6,6 +6,7 @@ import ParentVaccinationsList from './ParentVaccinationsList';
 import ParentChildrenList from './ParentChildrenComponent';
 import ParentProfile from './ParentProfileComponent';
 import ParentNewApp from './ParentNewAppComponent';
+import ParentChild from './ParentChildComponent';
 import AppHistory from './AppHistoryComponent';
 import ParentWiki from './ParentWikiComponent';
 import About from './AboutComponent';
@@ -16,13 +17,20 @@ const AppHistoryWithId = ({match}) => {
     );
 }
 
+const ChildWithId = ({match}) => {
+    return(
+        <ParentChild childId={match.params.id}/>
+    );
+}
+
 function Parent(){
     return (
         <BrowserRouter>
             <ParentNavBar/>
             <Switch>
                 <Route path='/parenthome' component={ParentVaccinationsList}/>
-                <Route path='/parentchildren' component={ParentChildrenList}/>
+                <Route exact path='/parentchildren' component={ParentChildrenList}/>
+                <Route path='/parentchildren/:id' component={ChildWithId}/>
                 <Route path='/parentprofile' component={ParentProfile}/>
                 <Route path='/parentnewapp' component={ParentNewApp}/>
                 <Route path='/apphistory/:id' component={AppHistoryWithId}/>
