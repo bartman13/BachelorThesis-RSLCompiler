@@ -16,11 +16,11 @@ delete from Odczyny
 set identity_insert Uzytkownicy on
 
 insert into Uzytkownicy 
-	(id, imie, nazwisko, rola, "login", haslo)
+	(id, imie, nazwisko, rola, "login", haslo,email)
 values
-	(0, 'Jan', 'Kowalski', 0, 'rodzic', 'rodzic'),
-	(1, 'Pracownik', 'Medyczny', 1, 'lekarz', 'lekarz'),
-	(2, 'Pracownik', 'PZH', 2, 'pzh', 'pzh')
+	(0, 'Jan', 'Kowalski', 0, 'rodzic', 'rodzic','rodzic@wp.pl'),
+	(1, 'Pracownik', 'Medyczny', 1, 'lekarz', 'lekarz','lekarz@wp.pl'),
+	(2, 'Pracownik', 'PZH', 2, 'pzh', 'pzh','pzh@wp.pl')
 
 set identity_insert Uzytkownicy off
 

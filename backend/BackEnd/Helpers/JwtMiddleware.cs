@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BackEnd.Helpers;
+using BackEnd.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -6,7 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WebApi.Services;
+
 
 namespace BackEnd.Helpers
 {
@@ -21,17 +23,17 @@ namespace BackEnd.Helpers
             _appSettings = appSettings.Value;
         }
 
-        public async Task Invoke(HttpContext context, IUserService userService)
+        public async Task Invoke(HttpContext context, NopContext dataContext)
         {
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
             if (token != null)
-                attachUserToContext(context, userService, token);
+                await attachAccountToContext(context, dataContext, token);
 
             await _next(context);
         }
 
-        private void attachUserToContext(HttpContext context, IUserService userService, string token)
+        private async Task attachAccountToContext(HttpContext context, NopContext dataContext, string token)
         {
             try
             {
@@ -48,14 +50,15 @@ namespace BackEnd.Helpers
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
-                var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
-                // attach user to context on successful jwt validation
-                context.Items["User"] = userService.GetById(userId);
+                var accountId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
+
+                // attach account to context on successful jwt validation
+                context.Items["Account"] = await dataContext.Uzytkownicy.FindAsync(accountId);
             }
             catch
             {
                 // do nothing if jwt validation fails
-                // user is not attached to context so request won't have access to secure routes
+                // account is not attached to context so request won't have access to secure routes
             }
         }
     }

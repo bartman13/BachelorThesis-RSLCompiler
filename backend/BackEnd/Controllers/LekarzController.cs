@@ -9,7 +9,7 @@ namespace BackEnd.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LekarzController : ControllerBase
+    public class LekarzController : BaseController
     {
     }
 }

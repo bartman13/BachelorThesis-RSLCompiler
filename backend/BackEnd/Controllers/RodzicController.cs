@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BackEnd.Models;
+using BackEnd.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
+
 namespace BackEnd.Controllers
 {
     [ApiController]
-    [Authorize]
-    public class RodzicController : ControllerBase
+    
+    public class RodzicController : BaseController
     {
 
 
@@ -25,12 +27,14 @@ namespace BackEnd.Controllers
         }
 
         [HttpGet]
-        [Route("[controller]/{id:int}")]
-        public IActionResult GetList(int id)
+        [Route("[controller]")]
+        [Authorize(Role.Rodzic)]
+        public IActionResult GetList()
         {
 
+
             var zgl = (from Zgloszenia in _context.Zgloszenia.Include("Pacjent")
-                       where Zgloszenia.UzytId == id
+                       where Zgloszenia.UzytId == Account.Id
                        select Zgloszenia).ToList();
             if (zgl == null || zgl.Count == 0) return BadRequest(new { message = "Lista uzytkownikow jest nullem" });
             return Ok(zgl);
