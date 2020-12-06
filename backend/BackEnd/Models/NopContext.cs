@@ -20,6 +20,7 @@ namespace BackEnd.Models
         public virtual DbSet<Odczyny> Odczyny { get; set; }
         public virtual DbSet<OdczynyZgloszenia> OdczynyZgloszenia { get; set; }
         public virtual DbSet<Pacjenci> Pacjenci { get; set; }
+        public virtual DbSet<RefreshToken> RefreshToken { get; set; }
         public virtual DbSet<Szczepionki> Szczepionki { get; set; }
         public virtual DbSet<SzczepionkiOdczyny> SzczepionkiOdczyny { get; set; }
         public virtual DbSet<Uzytkownicy> Uzytkownicy { get; set; }
@@ -154,6 +155,49 @@ namespace BackEnd.Models
                     .HasConstraintName("FK_Pacjenci_Uzytkownicy");
             });
 
+            modelBuilder.Entity<RefreshToken>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Anulowane)
+                    .HasColumnName("anulowane")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.AnulowanePrzezIp)
+                    .HasColumnName("anulowane_przez_ip")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Token)
+                    .IsRequired()
+                    .HasColumnName("token")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.TokenWygasa)
+                    .HasColumnName("token_wygasa")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Utworzone)
+                    .HasColumnName("utworzone")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.UtworzonePrzezIp)
+                    .IsRequired()
+                    .HasColumnName("utworzone_przez_ip")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.UzytId).HasColumnName("uzyt_id");
+
+                entity.Property(e => e.ZastapionePrzezToken)
+                    .HasColumnName("zastapione_przez_token")
+                    .HasMaxLength(100);
+
+                entity.HasOne(d => d.Uzyt)
+                    .WithMany(p => p.RefreshToken)
+                    .HasForeignKey(d => d.UzytId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_RefreshToken_Uzytkownicy");
+            });
+
             modelBuilder.Entity<Szczepionki>(entity =>
             {
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -199,6 +243,8 @@ namespace BackEnd.Models
             {
                 entity.Property(e => e.Id).HasColumnName("id");
 
+                entity.Property(e => e.AkceptacjaWarunkow).HasColumnName("akceptacja_warunkow");
+
                 entity.Property(e => e.Email)
                     .HasColumnName("email")
                     .HasMaxLength(30);
@@ -223,11 +269,39 @@ namespace BackEnd.Models
                     .HasColumnName("nazwisko")
                     .HasMaxLength(30);
 
+                entity.Property(e => e.ResetHasla)
+                    .HasColumnName("reset_hasla")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.ResetToken)
+                    .HasColumnName("reset_token")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.ResetTokenWygasa)
+                    .HasColumnName("reset_token_wygasa")
+                    .HasColumnType("datetime");
+
                 entity.Property(e => e.Rola).HasColumnName("rola");
 
-                entity.Property(e => e.Tel)
-                    .HasColumnName("tel")
+                entity.Property(e => e.Telefon)
+                    .HasColumnName("telefon")
                     .HasMaxLength(30);
+
+                entity.Property(e => e.Utworzone)
+                    .HasColumnName("utworzone")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.VerificationToken)
+                    .HasColumnName("verification_token")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Zaktualizowane)
+                    .HasColumnName("zaktualizowane")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Zweryfikowany)
+                    .HasColumnName("zweryfikowany")
+                    .HasColumnType("datetime");
             });
 
             modelBuilder.Entity<Zgloszenia>(entity =>

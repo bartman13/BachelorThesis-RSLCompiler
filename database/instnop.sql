@@ -30,11 +30,19 @@ CREATE TABLE Uzytkownicy (
 	id int IDENTITY (1, 1) NOT NULL ,
 	imie nvarchar (20) NOT NULL,
 	nazwisko nvarchar (30) NOT NULL,
-	tel nvarchar (30) NULL,
+	telefon nvarchar (30) NULL,
 	email nvarchar (30) NULL,
 	rola int NOT NULL,
 	"login" nvarchar (20) NOT NULL,
 	haslo  nvarchar (30) NOT NULL,
+	akceptacja_warunkow bit NULL,
+	verification_token nvarchar(50) NULL,
+	zweryfikowany datetime NULL,
+	reset_token nvarchar(50) NULL,
+	reset_token_wygasa datetime NULL,
+	reset_hasla  datetime NULL,
+	utworzone datetime NULL,
+	zaktualizowane datetime NULL
 	CONSTRAINT PK_Uzytkownicy PRIMARY KEY CLUSTERED
 	(
 		id
@@ -43,6 +51,31 @@ CREATE TABLE Uzytkownicy (
 
 GO
 
+CREATE TABLE RefreshToken(
+	id int IDENTITY(1, 1) NOT NULL,
+	uzyt_id int NOT NULL,
+	token nvarchar(100) not null,
+	token_wygasa datetime not NULL,
+	utworzone datetime not NULL,
+	utworzone_przez_ip nvarchar(20) not NULL,
+	anulowane datetime NULL,
+	anulowane_przez_ip nvarchar(20) NULL,
+	zastapione_przez_token nvarchar(100) NULL
+
+
+	CONSTRAINT PK_RefreshToken PRIMARY KEY CLUSTERED
+	(
+		id
+	),
+	CONSTRAINT FK_RefreshToken_Uzytkownicy FOREIGN KEY
+	(
+		uzyt_id
+	) REFERENCES Uzytkownicy
+	(
+		id
+	)
+)
+Go
 CREATE TABLE Pacjenci (
 	id int IDENTITY (1, 1) NOT NULL ,
 	imie nvarchar (20) NOT NULL,
