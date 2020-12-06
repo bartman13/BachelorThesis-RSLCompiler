@@ -14,8 +14,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import Loading from './LoadingComponent';
 import apiURL from '../shared/apiURL';
+import LoadingContext from '../contexts/LoadingContext';
 
 const authorize =  async (values) => {
     return axios.post(apiURL + 'Login', 
@@ -57,16 +57,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignIn() {
-  const classes = useStyles();
-  const {setUser} = useContext(UserContext);
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [emailValid, setEmailValid] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
+
+  const { setLoading } = useContext(LoadingContext);
+  const { setUser } = useContext(UserContext);
+
+  const classes = useStyles();
 
   const handleSubmit = async (values) => {
-    setIsLoading(true);
+    setLoading(true);
     setUser(await authorize(values));
+    setLoading(false);
   }
 
   const emailChanged = (event) => {
@@ -76,10 +79,6 @@ export default function SignIn() {
     }else{
         setEmailValid(false);
     }
-  }
-
-  if(isLoading){
-    return <Loading/>
   }
 
   return (

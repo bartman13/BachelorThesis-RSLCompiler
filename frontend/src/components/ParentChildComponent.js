@@ -6,6 +6,8 @@ import authHeader from '../shared/authheader';
 import { makeStyles, Container, Grid, Typography, TextField, Button } from '@material-ui/core';
 import { buttonSuccess } from '../styles/buttons';
 import Form from "@material-ui/core/FormControl";
+import LoadingContext from "../contexts/LoadingContext";
+import SnackbarContext from "../contexts/SnackbarContext";
 
 const useStyles = makeStyles((theme) => ({
     buttonSuccess : buttonSuccess
@@ -19,7 +21,10 @@ function ParentChild(props){
         nazwisko: 'Kowalski',
         data_urodzenia: '2020-12-04T14:04'
     });
+
     const { user } = useContext(UserContext);
+    const { setLoading } = useContext(LoadingContext);
+    const { setSnackbar } = useContext(SnackbarContext);
 
     const classes = useStyles(); 
 
@@ -35,9 +40,24 @@ function ParentChild(props){
     }
 
     useEffect(() => {
-        axios.get(apiURL + 'Rodzic/' + childId, authHeader(user))
-            .then(data => setChild(data.data));
-    });
+        async function fetchData(){
+            setLoading(true);
+            try{
+                const childData = await axios.get(apiURL + 'Rodzic/' + childId, authHeader(user));
+                setChild(childData.data);
+            }catch(error){
+                console.error(error);
+                setSnackbar({
+                    open: true,
+                    message: "Błąd ładowania danych",
+                    type: "error",
+                });
+            }
+            setLoading(false);
+        }
+
+        fetchData();
+    }, [setChild, setLoading, setSnackbar, user, childId]);
 
     return(
         <Container maxWidth="md">

@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import UserContext from '../contexts/UserContext'
+import UserContext from '../contexts/UserContext';
+import SnackbarContext from '../contexts/SnackbarContext';
+import LoadingContext from '../contexts/LoadingContext';
 import { Box, Button, Container, makeStyles } from '@material-ui/core';
 import { Grid, TextField, Select, InputLabel, MenuItem, FormControl, Typography,
-    FormControlLabel, Checkbox, Snackbar } from '@material-ui/core';
+    FormControlLabel, Checkbox } from '@material-ui/core';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import NOPCreator from './NOPCreatorComponent';
 import FormData from 'form-data';
@@ -10,7 +12,6 @@ import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import authHeader from '../shared/authheader';
 import apiURL from '../shared/apiURL';
-import Alert from './AlertComponent';
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -76,20 +77,30 @@ function ParentNewApp(){
     const [selectedNOPs, setSelectedNOPs] = useState([]);
     const [contact, setContact] = useState(false);
     const [touched] = useState([false, false, false]);
-    const [snackbarState, setSnackbarState] = useState({
-        open: false,
-        message: '',
-        type: 'success'
-    });
-    const {user} = useContext(UserContext);
+    
+    const { user } = useContext(UserContext);
+    const { setLoading } = useContext(LoadingContext);
+    const { setSnackbar } = useContext(SnackbarContext);
+
     const history = useHistory();
 
     const handleVaccineChange = async (event) => {
         setSelectedVaccine(event.target.value);
-        setNops([]);
-        const n = await axios(apiURL + 'Rodzic/', authHeader(user));
-        setNops(n.data);
+        setLoading(true);
+        try{
+            const nopsData = await axios(apiURL + 'Rodzic/', authHeader(user));
+            setNops(nopsData.data);
+            setSelectedNOPs([]);
+        }catch(error){
+            console.error(error);
+            setSnackbar({
+                open: true,
+                type: 'error',
+                message: 'Błąd ładowania danych'
+            });
+        }
         touched[0] = true;
+        setLoading(false);
     };
     const handleChildChange = (event) => {
         setSelectedChild(event.target.value);
@@ -140,41 +151,45 @@ function ParentNewApp(){
                     'Content-Type': `multipart/form-data; boundary=${data._boundary}`
                 }
             });
-            setSnackbarState({
+            setSnackbar({
                 open: true,
                 type: 'success',
                 message: 'Zgłoszenie pomyślnie utworzono'
             });
-            setTimeout(() => {
-                history.push('/parenthome');
-            }, 2000); 
+            history.push('/parenthome');
         } catch (error) {
             console.error(error);
-            setSnackbarState({
+            setSnackbar({
                 open: true,
                 type: 'error',
                 message: 'Wystąpił błąd'
             });
         }
     };
-    const snackbarClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setSnackbarState({
-            ...snackbarState,
-            open: false
-        });
-    };
 
     const classes = useStyles();
 
     useEffect(() => {
-        axios.get(apiURL + 'Rodzic/', authHeader(user))
-            .then(data => setChildren(data.data));
-        axios.get(apiURL + 'Rodzic/', authHeader(user))
-            .then(data => setVaccines(data.data));
-    });
+        async function fetchData(){
+            setLoading(true);
+            try{
+                const childrenData = await axios.get(apiURL + 'Rodzic/', authHeader(user));
+                setChildren(childrenData.data);
+                const vaccineData = await axios.get(apiURL + 'Rodzic/', authHeader(user));
+                setVaccines(vaccineData.data);
+            }catch(error){
+                console.error(error);
+                setSnackbar({
+                    open: true,
+                    message: "Błąd ładowania danych",
+                    type: "error"
+                });
+            }
+            setLoading(false);
+        }
+
+        fetchData();
+    }, [setChildren, setVaccines, setLoading, setSnackbar, user]);
 
     return (
         <Container maxWidth='md'> 
@@ -284,11 +299,6 @@ function ParentNewApp(){
                         onClick={submit}> Utwórz </Button>
                 </Grid>
             </Grid>
-            <Snackbar open={snackbarState.open} onClose={snackbarClose}>
-                <Alert severity={snackbarState.type} onClose={snackbarClose}>
-                    {snackbarState.message}
-                </Alert>
-            </Snackbar>
         </Container>
     );
 }
