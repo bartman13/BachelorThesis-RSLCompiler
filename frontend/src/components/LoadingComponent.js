@@ -4,7 +4,13 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    position: 'relative'
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100vw',
+    height: '100vh',
+    zIndex: '10',
+    backgroundColor: '#FFFFFF'
   },
   spinner : {
     marginLeft: '50%',

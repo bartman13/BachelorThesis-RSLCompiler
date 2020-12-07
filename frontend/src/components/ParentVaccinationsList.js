@@ -5,6 +5,10 @@ import { Button, List, ListItem, Box, Paper } from '@material-ui/core';
 import { useHistory, Link } from 'react-router-dom';
 import axios from 'axios';
 import { buttonSuccess } from "../styles/buttons";
+import authHeader from '../shared/authheader';
+import apiURL from '../shared/apiURL';
+import LoadingContext from "../contexts/LoadingContext";
+import SnackbarContext from "../contexts/SnackbarContext";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -28,12 +32,14 @@ const useStyles = makeStyles((theme) => ({
 
 function ParentVaccinationsList(){
     const history = useHistory();
-    const createNewApplicationClick = () => {history.push("/parentnewapp")};
-    const classes = useStyles();
     const [apps, setApps] = useState([]);
-    const {user} = useContext(UserContext);
     const [appHovered, setAppHovered] = useState(-1);
 
+    const { user } = useContext(UserContext);
+    const { setLoading } = useContext(LoadingContext);
+    const { setSnackbar } = useContext(SnackbarContext);
+
+    const createNewApplicationClick = () => {history.push("/parentnewapp")};
     const makePaper = (a, i) => {
         return(
             <ListItem className={classes.listItem} button component={Link} to={"/apphistory/" + a.id} key={i}> 
@@ -52,14 +58,28 @@ function ParentVaccinationsList(){
         );
     }
 
-    useEffect(() => {
-        axios.get('https://localhost:44304/Rodzic/' + user.id,
-            {
-                headers: { Authorization: 'Bearer ' + user.token }
-            }
-        ).then(data => setApps(data.data));
+    const classes = useStyles();
 
-    },[setApps,user.id,user.token]);
+    useEffect(() => {
+        async function fetchData() {
+            setLoading(true);
+            try{
+                const response = await axios.get(apiURL + 'Rodzic/' + user.id, authHeader(user));
+                setApps(response.data);
+            } catch (error){
+                console.error(error);
+                setSnackbar({
+                    open: true,
+                    message: "Błąd ładowania danych",
+                    type: "error",
+                });
+            }
+            setLoading(false);
+        }
+
+        fetchData();
+    }, [setApps, user, setLoading, setSnackbar]);
+
     return(
         <div className="container">
             <div className={classes.root}>
@@ -69,8 +89,6 @@ function ParentVaccinationsList(){
                 <List component="nav">
                     {apps.map((a, i) => makePaper(a, i))}
                 </List>
-              
-
             </div>
         </div>
     );
