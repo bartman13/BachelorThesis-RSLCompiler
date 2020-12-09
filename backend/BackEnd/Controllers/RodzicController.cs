@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 namespace BackEnd.Controllers
 {
     [ApiController]
-    
+    [Authorize(Role.Rodzic)]
     public class RodzicController : BaseController
     {
         private readonly NopContext _context;
@@ -23,9 +23,7 @@ namespace BackEnd.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        [Route("[controller]")]
-        [Authorize(Role.Rodzic)]
+        [HttpGet("[controller]")]
         public IActionResult GetList()
         {
             var zgl = (from Zgloszenia in _context.Zgloszenia.Include("Pacjent")

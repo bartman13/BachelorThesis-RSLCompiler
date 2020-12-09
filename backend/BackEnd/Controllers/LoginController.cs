@@ -54,6 +54,7 @@ namespace BackEnd.Controllers
             else
                 return HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
         }
+        
         private void setTokenCookie(string token)
         {
             var cookieOptions = new CookieOptions
@@ -62,6 +63,15 @@ namespace BackEnd.Controllers
                 Expires = DateTime.UtcNow.AddDays(7)
             };
             Response.Cookies.Append("refreshToken", token, cookieOptions);
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("Logout")]
+        public IActionResult LogOut()
+        {
+            Response.Cookies.Delete("refreshToken");
+            return Ok();
         }
     }
 }
