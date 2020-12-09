@@ -7,6 +7,7 @@ import PZH from "./PZHComponent";
 import apiURL from '../shared/apiURL';
 import axios from "axios";
 import LoadingContext from "../contexts/LoadingContext";
+import authHeader from '../shared/authheader';
 
 function Main(){
     const { user, setUser } = useContext(UserContext);
@@ -24,6 +25,7 @@ function Main(){
     const refreshTokenTimer = async () => {
         try{
             const userData = await refreshToken();
+            console.log(userData);
             const refreshTokenTimeout = setTimeout(refreshTokenTimer, 14000 * 60);
             setUser({...userData, refreshTokenTimeout});
         }catch(error){
@@ -32,13 +34,20 @@ function Main(){
     };
 
     const logout = async () => {
+        setLoading(true);
         clearTimeout(user.refreshTokenTimeout);
         try{
-
+            await axios.get(apiURL + 'Logout', 
+                { 
+                    withCredentials : true,
+                    ...authHeader(user)
+                }
+            );
         } catch(error) {
 
         }
         setUser(undefined);
+        setLoading(false);
     };
 
     useEffect(() =>{

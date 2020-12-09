@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import UserContext from '../contexts/UserContext'
 import axios from "axios";
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -19,18 +18,11 @@ import LoadingContext from '../contexts/LoadingContext';
 
 const authorize =  async (values) => {
     try{
-      if(values.remember){
-        const response = await axios.post(
-          apiURL + 'signin', 
-          { email : values.email, haslo: values.password },
-          { withCredentials: true });
-        return response.data;
-      } else {
-        const response = await axios.post(
-           apiURL + 'signin', 
-          { email : values.email, haslo: values.password });
-        return response.data;
-      }
+      const response = await axios.post(
+        apiURL + 'signin', 
+        { email : values.email, haslo: values.password },
+        { withCredentials: true });
+      return response.data;
     }catch(error){
       console.error(error);
     }
@@ -60,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: '100%', // Fix IE 11 issue.
+    width: '100%',
     marginTop: theme.spacing(1),
   },
   submit: {
@@ -75,7 +67,6 @@ export default function SignIn(props) {
   const [emailValid, setEmailValid] = useState(true);
 
   const { setLoading } = useContext(LoadingContext);
-  const { setUser } = useContext(UserContext);
 
   const { startRefreshToken } = props;
 
@@ -84,8 +75,10 @@ export default function SignIn(props) {
   const handleSubmit = async (values) => {
     setLoading(true);
     const userData = await authorize(values);
+    if(userData && (userData.rola !== undefined)){
+      await startRefreshToken();
+    }
     setLoading(false);
-    startRefreshToken();
   }
 
   const emailChanged = (event) => {
