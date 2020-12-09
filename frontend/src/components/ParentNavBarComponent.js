@@ -3,12 +3,16 @@ import UserContext from '../contexts/UserContext'
 import { Nav, Navbar, NavItem, Button, NavbarToggler, Collapse, NavbarBrand} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 
-function ParentNavBar(){
+function ParentNavBar(props){
     const {user, setUser} = useContext(UserContext);
     const [isNavOpen, setIsNavOpen] = useState(false);
+
     const toggleNav = () => {
         setIsNavOpen(!isNavOpen);
-    }; 
+    };
+
+    const { logout } = props;
+
     return(
         <div>
             <Navbar dark expand="md">
@@ -35,7 +39,7 @@ function ParentNavBar(){
                                 <NavLink className="nav-link" to="/parentprofile"> <b> {user.imie + " " + user.nazwisko} </b> </NavLink>
                             </NavItem>
                             <NavItem>
-                                <Button outline color="primary" onClick={() => {setUser(undefined)}}><span className="fa fa-sign-out fa-lg"></span> Wyloguj </Button>
+                                <Button outline color="primary" onClick={logout}><span className="fa fa-sign-out fa-lg"></span> Wyloguj </Button>
                             </NavItem>
                         </Nav>
                     </Collapse>

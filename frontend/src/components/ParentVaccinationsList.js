@@ -64,7 +64,7 @@ function ParentVaccinationsList(){
         async function fetchData() {
             setLoading(true);
             try{
-                const response = await axios.get(apiURL + 'Rodzic/' + user.id, authHeader(user));
+                const response = await axios.get(apiURL + 'Rodzic', authHeader(user));
                 setApps(response.data);
             } catch (error){
                 console.error(error);

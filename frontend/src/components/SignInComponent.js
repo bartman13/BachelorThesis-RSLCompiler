@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import UserContext from '../contexts/UserContext'
 import axios from "axios";
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -18,10 +17,15 @@ import apiURL from '../shared/apiURL';
 import LoadingContext from '../contexts/LoadingContext';
 
 const authorize =  async (values) => {
-    return axios.post(apiURL + 'Login', 
-    { email : values.email, haslo: values.password })
-     .then(res => res.data)
-        .catch(err => console.error(err));
+    try{
+      const response = await axios.post(
+        apiURL + 'signin', 
+        { email : values.email, haslo: values.password },
+        { withCredentials: true });
+      return response.data;
+    }catch(error){
+      console.error(error);
+    }
 }
 function Copyright() {
   return (
@@ -48,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: '100%', // Fix IE 11 issue.
+    width: '100%',
     marginTop: theme.spacing(1),
   },
   submit: {
@@ -56,19 +60,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignIn() {
+export default function SignIn(props) {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [remember, setRemember] = useState(false);
   const [emailValid, setEmailValid] = useState(true);
 
   const { setLoading } = useContext(LoadingContext);
-  const { setUser } = useContext(UserContext);
+
+  const { startRefreshToken } = props;
 
   const classes = useStyles();
 
   const handleSubmit = async (values) => {
     setLoading(true);
-    setUser(await authorize(values));
+    const userData = await authorize(values);
+    if(userData && (userData.rola !== undefined)){
+      await startRefreshToken();
+    }
     setLoading(false);
   }
 
@@ -91,7 +100,11 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Zaloguj się
         </Typography>
-        <form className={classes.form} noValidate onSubmit={(event) => {event.preventDefault(); handleSubmit({email, password});}}>
+        <form className={classes.form} noValidate onSubmit={
+          (event) => {
+            event.preventDefault(); 
+            handleSubmit({email, password, remember});
+          }}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -119,7 +132,11 @@ export default function SignIn() {
             onChange={(event)=>{setPassword(event.target.value)}}
           />
           <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
+            control={<Checkbox 
+                        value="remember"
+                        color="primary" 
+                        checked={remember}
+                        onChange={(event)=>{setRemember(event.target.checked)}}/>}
             label="Zapamiętaj mnie"
           />
           <Button

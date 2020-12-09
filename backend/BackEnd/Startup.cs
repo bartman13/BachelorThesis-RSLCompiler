@@ -43,7 +43,8 @@ namespace BackEnd
             services.AddRouting();
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
-                builder.AllowAnyOrigin()
+                builder.SetIsOriginAllowed(s => true)
+                       .AllowCredentials()
                        .AllowAnyMethod()
                        .AllowAnyHeader();
             }));

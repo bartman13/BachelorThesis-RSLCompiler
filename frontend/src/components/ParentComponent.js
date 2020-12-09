@@ -23,10 +23,12 @@ const ChildWithId = ({match}) => {
     );
 }
 
-function Parent(){
+function Parent(props){
+    const { logout } = props;
+
     return (
         <BrowserRouter>
-            <ParentNavBar/>
+            <ParentNavBar logout={logout}/>
             <Switch>
                 <Route path='/parenthome' component={ParentVaccinationsList}/>
                 <Route exact path='/parentchildren' component={ParentChildrenList}/>
