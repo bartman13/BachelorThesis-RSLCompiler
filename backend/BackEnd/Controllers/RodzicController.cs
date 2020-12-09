@@ -16,10 +16,7 @@ namespace BackEnd.Controllers
     
     public class RodzicController : BaseController
     {
-
-
         private readonly NopContext _context;
-
 
         public RodzicController(NopContext context)
         {
@@ -31,8 +28,6 @@ namespace BackEnd.Controllers
         [Authorize(Role.Rodzic)]
         public IActionResult GetList()
         {
-
-
             var zgl = (from Zgloszenia in _context.Zgloszenia.Include("Pacjent")
                        where Zgloszenia.UzytId == Account.Id
                        select Zgloszenia).ToList();

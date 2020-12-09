@@ -24,9 +24,6 @@ namespace BackEnd.Controllers
         private readonly IAccountService _accountService;
         private readonly IMapper _mapper;
 
-
-
-
         public LoginController(IAccountService accountService,
             IMapper mapper)
         {
