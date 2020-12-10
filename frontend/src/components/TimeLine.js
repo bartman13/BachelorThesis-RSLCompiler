@@ -1,5 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState, useContext } from 'react';
+import UserContext from '../contexts/UserContext';
+import SnackbarContext from '../contexts/SnackbarContext';
+import LoadingContext from '../contexts/LoadingContext';
 import Timeline from '@material-ui/lab/Timeline';
+import axios from 'axios';
+import authHeader from '../shared/authheader';
+import apiURL from '../shared/apiURL';
 import TimelineItem from '@material-ui/lab/TimelineItem';
 import TimelineSeparator from '@material-ui/lab/TimelineSeparator';
 import TimelineConnector from '@material-ui/lab/TimelineConnector';
@@ -8,61 +14,63 @@ import TimelineDot from '@material-ui/lab/TimelineDot';
 import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
 import Typography from '@material-ui/core/Typography';
 
-export default function OppositeContentTimeline() {
-    return (
-        <Timeline align="left">
-          <TimelineItem>
-          <TimelineOppositeContent>
-            <Typography color="textSecondary">20-04-2020</Typography>
-          </TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineDot />
-              <TimelineConnector />
-            </TimelineSeparator>
-            <TimelineContent>Wykonanie szczepienia</TimelineContent>
-          </TimelineItem>
-          <TimelineItem>
+function AppTimelineItem({ item }){
+  return (
+    <TimelineItem>
+      <TimelineOppositeContent>
+        <Typography color="textSecondary">
+          {new Date(item.data).toLocaleDateString("pl", { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric', 
+            hour : "2-digit", 
+            minute : "2-digit" 
+          })} 
+        </Typography>
+      </TimelineOppositeContent>
+      <TimelineSeparator>
+        <TimelineDot />
+        <TimelineConnector />
+      </TimelineSeparator>
+      <TimelineContent>
+        <Typography> {item.tytul + " - " + item.tresc} </Typography>
+      </TimelineContent>
+    </TimelineItem>
+  );
+}
 
-          <TimelineOppositeContent>
-            <Typography color="textSecondary">22-04-2020</Typography>
-          </TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineDot color="primary" />
-              <TimelineConnector />
-            </TimelineSeparator>
-            <TimelineContent>Utworzenie zgłosznia</TimelineContent>
-          </TimelineItem>
-          <TimelineItem>
-          <TimelineOppositeContent>
-            <Typography color="textSecondary">22-04-2020</Typography>
-          </TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineDot color="secondary" />
-              <TimelineConnector />
-            </TimelineSeparator>
-            <TimelineContent>Zgłoszenie NOP</TimelineContent>
-          </TimelineItem>
-          <TimelineItem>
-          <TimelineOppositeContent>
-            <Typography color="textSecondary">22-04-2020</Typography>
-          </TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineDot color="#007E33" />
-              <TimelineConnector />
-            </TimelineSeparator>
-            <TimelineContent>Odpowiedz Lekarska</TimelineContent>
-          </TimelineItem>
-          <TimelineItem>
-          <TimelineOppositeContent>
-            <Typography color="textSecondary">24-04-2020</Typography>
-          </TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineDot />
-            </TimelineSeparator>
-            <TimelineContent>Zakończenie zgłoszenia</TimelineContent>
-          </TimelineItem>
-          
-          
-        </Timeline>
-      );
+export default function AppTimeline({ appid }) {
+  const [timelineEvents, setTimelineEvents] = useState([]);
+
+  const { user } = useContext(UserContext);
+  const { setLoading } = useContext(LoadingContext);
+  const { setSnackbar } = useContext(SnackbarContext);
+
+  useEffect(() => {
+    async function fetchData(){
+      setLoading(true);
+      try{
+        const eventsData = await axios.get(apiURL + "AppHistory/" + appid, authHeader(user));
+        setTimelineEvents(eventsData.data);
+      } catch(error) {
+        console.error(error);
+        setSnackbar({
+            open: true,
+            message: "Błąd ładowania danych",
+            type: "error"
+        });
+      }
+      setLoading(false);
+    }
+    fetchData();
+  }, [appid, user, setLoading, setSnackbar]);
+
+  return (
+    <Timeline align="alternate">
+      {timelineEvents.map((item, index) => {
+        return <AppTimelineItem item={item} key={index}/>;
+      })}
+    </Timeline>
+  );
 }

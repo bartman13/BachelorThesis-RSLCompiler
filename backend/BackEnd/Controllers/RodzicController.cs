@@ -91,14 +91,35 @@ namespace BackEnd.Controllers
             }
             return Ok();
         }
-
-
-
-
-        
-
-
-            
+        [HttpGet("AppHistory/{id?}")]
+        public IActionResult GetAppHistory(int? id)
+        {
+            var app = _context.Zgloszenia
+                .Where(z => z.Id == id)
+                .Include("OdczynyZgloszenia")
+                .Include("DecyzjeLekarza")
+                .FirstOrDefault();
+            if (app == null) return BadRequest("Zgloszenie o poadnym id nie istnieje");
+            List<EventResponse> events = new List<EventResponse>
+            {
+                new EventResponse
+                {
+                    Data = app.Data,
+                    Tytul = "Wykonanie szcepienia"
+                }
+            };
+            foreach(var n in app.OdczynyZgloszenia)
+            {
+                events.Add(new EventResponse
+                    {
+                        Data = n.Data,
+                        Tytul = _context.Odczyny.Where(x => x.Id == n.OdczynId).FirstOrDefault()?.Nazwa,
+                        Tresc = n.Wartosc.Replace(";", ", ")
+                    }
+                );
+            }
+            return Ok(events);
+        }
     }
 }
 
