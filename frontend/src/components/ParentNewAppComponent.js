@@ -12,6 +12,7 @@ import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import authHeader from '../shared/authheader';
 import apiURL from '../shared/apiURL';
+import toFormData from '../shared/objectToFormData';
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -24,52 +25,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ParentNewApp(){
-    const [vaccines, setVaccines] = useState([
-        {
-            id : 0,
-            nazwa : 'Menveo',
-            opis: `Produkt Menveo jest przeznaczony do czynnego uodpornienia dzieci (w wieku od 2 lat), młodzieży
-            i dorosłych narażonych na kontakt z dwoinkami zapalenia opon mózgowych (Neisseria meningitidis)
-            z grup serologicznych A, C, W135 i Y, w celu zapobiegania chorobie inwazyjnej.
-            Szczepionkę należy stosować zgodnie z obowiązującymi oficjalnymi zaleceniami.`
-        }
-    ]); 
-    const [children, setChildren] = useState([
-        {id: 0, imie: "Janek", nazwisko: "Kowalski"},
-        {id: 1, imie: "Piotrek", nazwisko: "Kowalski"}
-    ]);
-    const [nops, setNops] = useState([
-                {
-                    nazwa : 'Kaszel',
-                    id : 0,
-                    atrybuty : [
-                        {
-                            id : 0,
-                            nazwa : 'Stopień',
-                            typ : 'select',
-                            info : 'Lekki;Średni;Silny' 
-                        },
-                        {
-                            id: 1,
-                            nazwa: 'Typ',
-                            typ: 'select',
-                            info: 'Mokry;Suchy'
-                        }
-                    ]
-                },
-                {
-                    nazwa: 'Gorączka',
-                    id: 1,
-                    atrybuty: [
-                        {
-                            id: 3,
-                            nazwa: 'Temperatura',
-                            typ: 'number',
-                            info: 'Stopnie Celsjusza'
-                        }
-                    ]
-                }
-            ]);
+    const [vaccines, setVaccines] = useState([]); 
+    const [children, setChildren] = useState([]);
+    const [nops, setNops] = useState([]);
     const [selectedChild, setSelectedChild] = useState('');
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().substring(0, 16));
     const [selectedVaccine, setSelectedVaccine] = useState('');
@@ -88,8 +46,9 @@ function ParentNewApp(){
         setSelectedVaccine(event.target.value);
         setLoading(true);
         try{
-            const nopsData = await axios(apiURL + 'Rodzic/', authHeader(user));
+            const nopsData = await axios.get(apiURL + 'Nop/' + event.target.value, authHeader(user));
             setNops(nopsData.data);
+            console.log(nopsData.data);
             setSelectedNOPs([]);
         }catch(error){
             console.error(error);
@@ -114,9 +73,8 @@ function ParentNewApp(){
             let reader = new FileReader();
             reader.onload = (e) => {
               setImageKsZd({ 
-                  file: e.target.result, 
-                  name: event.target.files[0].name, 
-                  type: event.target.files[0].type
+                  file: event.target.files[0], 
+                  image: e.target.result
                 });
             };
             reader.readAsDataURL(event.target.files[0]);
@@ -131,8 +89,8 @@ function ParentNewApp(){
         data.append('data', selectedDate);
         data.append('szczepionkaId', selectedVaccine);
         data.append('pacjentId', selectedChild);
-        data.append('prosba_o_kontakt', contact);
-        data.append('nopy', selectedNOPs.map(n => {
+        data.append('ProsbaOKontakt', contact);
+        toFormData( selectedNOPs.map(n => {
             return {
                 id: n.id,
                 atrybuty: n.atrybuty.map(a => {
@@ -142,13 +100,14 @@ function ParentNewApp(){
                     };
                 })
             };
-        }));
+        }), data, 'nopy');
         data.append('zdjecieKsZd', imageKsZd.file);
         try {
-            await axios.post(apiURL + 'Rodzic/', data, {
+            await axios.post(apiURL + 'UtworzZgloszenie', data, {
                 headers : {
                     'accept': 'application/json',
-                    'Content-Type': `multipart/form-data; boundary=${data._boundary}`
+                    'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
+                    ...(authHeader(user).headers)
                 }
             });
             setSnackbar({
@@ -173,9 +132,9 @@ function ParentNewApp(){
         async function fetchData(){
             setLoading(true);
             try{
-                const childrenData = await axios.get(apiURL + 'Rodzic/', authHeader(user));
+                const childrenData = await axios.get(apiURL + 'Dzieci', authHeader(user));
                 setChildren(childrenData.data);
-                const vaccineData = await axios.get(apiURL + 'Rodzic/', authHeader(user));
+                const vaccineData = await axios.get(apiURL + 'Szczepionki', authHeader(user));
                 setVaccines(vaccineData.data);
             }catch(error){
                 console.error(error);
@@ -190,7 +149,6 @@ function ParentNewApp(){
 
         fetchData();
     }, [setChildren, setVaccines, setLoading, setSnackbar, user]);
-
     return (
         <Container maxWidth='md'> 
             <Grid container spacing={3}
@@ -264,7 +222,7 @@ function ParentNewApp(){
                             onChange={handleImageKsZdChange}/>
                     </Button>
                     <br/>
-                    <img alt='' src={imageKsZd?.file} style={{maxWidth : '300px'}}/>
+                    <img alt='' src={imageKsZd?.image} style={{maxWidth : '300px'}}/>
                 </Grid>
                 <Grid item xs={1} align="center">
                   <Box padding={2}> 5. </Box>

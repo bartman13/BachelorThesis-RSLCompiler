@@ -7,6 +7,7 @@ namespace BackEnd.Models
     {
         public int Id { get; set; }
         public int OdczynId { get; set; }
+        public string Nazwa { get; set; }
         public int Typ { get; set; }
         public string Info { get; set; }
 
