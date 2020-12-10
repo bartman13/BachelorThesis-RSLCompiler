@@ -115,8 +115,8 @@ function NOPNumberAttribute(props){
 function NOPAttribute(props){
     const { attribute } = props;
     switch(attribute.typ){
-        case 'select': return <NOPSelectAttribute attribute={attribute}/> 
-        case 'number': return <NOPNumberAttribute attribute={attribute}/>
+        case  1: return <NOPSelectAttribute attribute={attribute}/> 
+        case  0: return <NOPNumberAttribute attribute={attribute}/>
         default: throw new Error('nieznany typ');
     }
 }
@@ -169,7 +169,7 @@ function NOPCreator(props){
             selectedNOPs.push({
                 id: selected.id,
                 nazwa: selected.nazwa,
-                atrybuty: selected.atrybuty.map(a => { return {...a, wartosc : ''}})
+                atrybuty: selected.atrybutyOdczynow.map(a => { return {...a, wartosc : ''}})
             });
         }
         setOpen(false);

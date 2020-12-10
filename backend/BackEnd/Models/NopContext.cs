@@ -48,6 +48,10 @@ namespace BackEnd.Models
                     .HasColumnName("info")
                     .HasMaxLength(1000);
 
+                entity.Property(e => e.Nazwa)
+                    .HasColumnName("nazwa")
+                    .HasMaxLength(100);
+
                 entity.Property(e => e.OdczynId).HasColumnName("odczyn_id");
 
                 entity.Property(e => e.Typ).HasColumnName("typ");
