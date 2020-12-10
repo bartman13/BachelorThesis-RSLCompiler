@@ -66,7 +66,7 @@ function Main(){
         return <Parent logout={logout}/>;
     }
     if(user.rola === 1){
-        return <Doctor/>;
+        return <Doctor logout={logout}/>;
     }
     if(user.rola === 2){
         return <PZH/>;
