@@ -33,7 +33,6 @@ CREATE TABLE Uzytkownicy (
 	telefon nvarchar (30) NULL,
 	email nvarchar (30) NULL,
 	rola int NOT NULL,
-	"login" nvarchar (20) NOT NULL,
 	haslo  nvarchar (30) NOT NULL,
 	akceptacja_warunkow bit NULL,
 	verification_token nvarchar(50) NULL,
@@ -206,6 +205,7 @@ GO
 CREATE TABLE Atrybuty_Odczynow(
 	id int IDENTITY (1, 1) NOT NULL PRIMARY KEY,
 	odczyn_id int NOT NULL,
+	nazwa nvarchar(100) NULL,
 	typ int NOT NULL,
 	info nvarchar(1000) NULL,
 	CONSTRAINT FK_ATOD_Odczyny FOREIGN KEY

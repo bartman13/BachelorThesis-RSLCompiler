@@ -19,17 +19,9 @@ namespace BackEnd.Services
     {
         AuthenticateResponse Authenticate(AuthenticateRequest model, string ipAddress);
         AuthenticateResponse RefreshToken(string token, string ipAddress);
-        //void RevokeToken(string token, string ipAddress);
-        //void Register(RegisterRequest model, string origin);
-        //void VerifyEmail(string token);
-        //void ForgotPassword(ForgotPasswordRequest model, string origin);
-        //void ValidateResetToken(ValidateResetTokenRequest model);
-        //void ResetPassword(ResetPasswordRequest model);
-        //IEnumerable<AccountResponse> GetAll();
-        //AccountResponse GetById(int id);
-        //AccountResponse Create(CreateRequest model);
-        //AccountResponse Update(int id, UpdateRequest model);
-        //void Delete(int id);
+        void RevokeToken(string token, string ipAddress);
+        void ParentRegister(SignUpParentRequest model);
+        
     }
 
     public class AccountService : IAccountService
@@ -152,6 +144,34 @@ namespace BackEnd.Services
             var refreshToken = _context.RefreshToken.Single(x => x.Token == token);
             if (refreshToken.TokenWygasa <  DateTime.UtcNow) throw new AppException("Invalid token");
             return (refreshToken, account);
+        }
+        public void RevokeToken(string token, string ipAddress)
+        {
+            var (refreshToken, account) = getRefreshToken(token);
+            // revoke token and save
+            refreshToken.Anulowane = DateTime.UtcNow;
+            refreshToken.AnulowanePrzezIp = ipAddress;
+            _context.Update(account);
+            _context.SaveChanges();
+        }
+        public void ParentRegister(SignUpParentRequest model)
+        {
+            if (_context.Uzytkownicy.Any(x => x.Email == model.Email))
+            {
+                throw new AppException("Email Exist");
+            }
+
+            // map model to new account object
+            var account = _mapper.Map<Uzytkownicy>(model);
+
+            // first registered account is an admin
+            account.Rola = (int)Role.Rodzic;
+            account.Utworzone = DateTime.UtcNow;
+            account.VerificationToken = randomTokenString();
+            // save account
+            _context.Uzytkownicy.Add(account);
+            _context.SaveChanges();
+            
         }
     }
 }
