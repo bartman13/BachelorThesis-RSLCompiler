@@ -20,7 +20,6 @@ namespace BackEnd.Models
         public string Telefon { get; set; }
         public string Email { get; set; }
         public int Rola { get; set; }
-        public string Login { get; set; }
         public string Haslo { get; set; }
         public bool? AkceptacjaWarunkow { get; set; }
         public string VerificationToken { get; set; }

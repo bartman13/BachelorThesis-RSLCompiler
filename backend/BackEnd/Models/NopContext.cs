@@ -263,11 +263,6 @@ namespace BackEnd.Models
                     .HasColumnName("imie")
                     .HasMaxLength(20);
 
-                entity.Property(e => e.Login)
-                    .IsRequired()
-                    .HasColumnName("login")
-                    .HasMaxLength(20);
-
                 entity.Property(e => e.Nazwisko)
                     .IsRequired()
                     .HasColumnName("nazwisko")

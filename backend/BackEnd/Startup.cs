@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using BackEnd.Helpers;
 using BackEnd.Models;
 using BackEnd.Services;
@@ -14,10 +11,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using AutoMapper;
-
+using Microsoft.OpenApi.Models;
+using System.Reflection;
+using System.IO;
 
 namespace BackEnd
 {
@@ -36,6 +33,20 @@ namespace BackEnd
             var connection = Configuration["DatabaseConnectionString"];
             services.AddDbContext<NopContext>(options => options.UseSqlServer(connection)); // database
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "My Good API",
+                    Version = "v1",
+                    Description = "Dokumentacja API"
+                });
+
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings")); // seccret key key of token
             services.AddScoped<IAccountService, AccountService>(); // inject UserService
             services.AddControllersWithViews().AddNewtonsoftJson(options =>
@@ -58,6 +69,8 @@ namespace BackEnd
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseSwagger();
+            app.UseSwaggerUI(x => x.SwaggerEndpoint("/swagger/v1/swagger.json", "Nop endpoints"));
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors("MyPolicy");
