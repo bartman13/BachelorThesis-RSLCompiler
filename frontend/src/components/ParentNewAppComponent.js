@@ -48,7 +48,6 @@ function ParentNewApp(){
         try{
             const nopsData = await axios.get(apiURL + 'Nop/' + event.target.value, authHeader(user));
             setNops(nopsData.data);
-            console.log(nopsData.data);
             setSelectedNOPs([]);
         }catch(error){
             console.error(error);

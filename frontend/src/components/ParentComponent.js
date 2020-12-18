@@ -10,6 +10,7 @@ import ParentChild from './ParentChildComponent';
 import AppHistory from './AppHistoryComponent';
 import ParentWiki from './ParentWikiComponent';
 import About from './AboutComponent';
+import AddNOP from './AddNOPComponent';
 
 const AppHistoryWithId = ({match}) => {
     return(
@@ -20,6 +21,12 @@ const AppHistoryWithId = ({match}) => {
 const ChildWithId = ({match}) => {
     return(
         <ParentChild childId={match.params.id}/>
+    );
+}
+
+const UpdateAppWithId = ({match}) => {
+    return(
+        <AddNOP appid={match.params.id}/>
     );
 }
 
@@ -38,6 +45,7 @@ function Parent(props){
                 <Route path='/apphistory/:id' component={AppHistoryWithId}/>
                 <Route path='/parentwiki' component={ParentWiki}/>
                 <Route path='/parentabout' component={About}/>
+                <Route path='/addnop/:id' component={UpdateAppWithId}/>
                 <Redirect to='/parenthome' />
             </Switch>
         </BrowserRouter>

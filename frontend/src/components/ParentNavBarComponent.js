@@ -4,7 +4,7 @@ import { Nav, Navbar, NavItem, Button, NavbarToggler, Collapse, NavbarBrand} fro
 import { NavLink } from 'react-router-dom';
 
 function ParentNavBar(props){
-    const {user, setUser} = useContext(UserContext);
+    const { user } = useContext(UserContext);
     const [isNavOpen, setIsNavOpen] = useState(false);
 
     const toggleNav = () => {

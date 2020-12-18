@@ -75,12 +75,14 @@ CREATE TABLE RefreshToken(
 		id
 	)
 )
-Go
+
+GO
+
 CREATE TABLE Pacjenci (
 	id int IDENTITY (1, 1) NOT NULL ,
 	imie nvarchar (20) NOT NULL,
 	nazwisko nvarchar (30) NOT NULL,
-	data_urodzenia datetime NOT NULL,
+	data_urodzenia date NOT NULL,
 	uzyt_id int NOT NULL,
 	lekarz_id int NULL
 	CONSTRAINT PK_Pacjenci PRIMARY KEY CLUSTERED
@@ -145,6 +147,7 @@ GO
 CREATE TABLE Decyzje_Lekarza (
 	id int IDENTITY (1, 1) NOT NULL,
 	decyzja int NOT NULL,
+	"data" datetime NOT NULL,
 	komentarz nvarchar(3000) NULL,
 	zgloszenie_id int NOT NULL,
 	CONSTRAINT PK_Decyzje_Lekarza PRIMARY KEY CLUSTERED
@@ -206,6 +209,7 @@ GO
 CREATE TABLE Atrybuty_Odczynow(
 	id int IDENTITY (1, 1) NOT NULL PRIMARY KEY,
 	odczyn_id int NOT NULL,
+	nazwa nvarchar(100) NOT NULL,
 	typ int NOT NULL,
 	info nvarchar(1000) NULL,
 	CONSTRAINT FK_ATOD_Odczyny FOREIGN KEY
@@ -223,7 +227,6 @@ CREATE TABLE Odczyny_Zgloszenia(
 	id int IDENTITY (1, 1) NOT NULL PRIMARY KEY,
 	odczyn_id int NOT NULL,
 	zgloszenie_id int NOT NULL,
-	wartosc nvarchar(100) NULL,
 	"data" datetime NOT NULL,
 	CONSTRAINT FK_ODZG_Odczyny FOREIGN KEY
 	(
@@ -247,7 +250,7 @@ CREATE TABLE Szczepionki_Odczyny (
 	id int IDENTITY (1, 1) NOT NULL PRIMARY KEY,
 	odczyn_id int NOT NULL,
 	szczepionka_id int NOT NULL,
-	stopien_ciezkosci int NULL,
+	stopien_ciezkosci int NOT NULL,
 	czestosc int NULL,
 	CONSTRAINT FK_SZOD_Odczyny FOREIGN KEY
 	(
@@ -266,3 +269,24 @@ CREATE TABLE Szczepionki_Odczyny (
 )
 
 GO
+
+CREATE TABLE Atrybuty_Zgloszenia (
+	id int IDENTITY (1, 1) NOT NULL PRIMARY KEY,
+	odzg_id int NOT NULL,
+	atod_id int NOT NULL,
+	wartosc nvarchar(4000) NULL,
+	CONSTRAINT FK_AZODZG FOREIGN KEY
+	(
+		odzg_id
+	) REFERENCES Odczyny_Zgloszenia
+	(
+		id
+	),
+	CONSTRAINT FK_AZATOD FOREIGN KEY
+	(
+		atod_id
+	) REFERENCES Atrybuty_Odczynow
+	(
+		id
+	)
+)

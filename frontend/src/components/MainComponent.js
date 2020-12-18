@@ -25,7 +25,6 @@ function Main(){
     const refreshTokenTimer = async () => {
         try{
             const userData = await refreshToken();
-            console.log(userData);
             const refreshTokenTimeout = setTimeout(refreshTokenTimer, 14000 * 60);
             setUser({...userData, refreshTokenTimeout});
         }catch(error){

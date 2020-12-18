@@ -1,17 +1,16 @@
 use Nop
 
-delete from Uzytkownicy
-delete from Pacjenci
-delete from Zgloszenia
-delete from Decyzje_Lekarza
 delete from Zgloszenie_Szczepionki
-delete from Odczyny_Zgloszenia
 delete from Szczepionki_Odczyny
-delete from Szczepionki
+delete from Atrybuty_Zgloszenia
+delete from Decyzje_Lekarza
 delete from Atrybuty_Odczynow
+delete from Odczyny_Zgloszenia
+delete from Szczepionki
 delete from Odczyny
-
-
+delete from Zgloszenia
+delete from Pacjenci
+delete from Uzytkownicy
 
 set identity_insert Uzytkownicy on
 
@@ -63,20 +62,33 @@ values
 
 set identity_insert Odczyny off
 
+set identity_insert Atrybuty_Odczynow on
+
 insert into Atrybuty_Odczynow
-	(odczyn_id, typ, info)
+	(id, odczyn_id, typ, nazwa, info)
 values
-	(0, 0, 'Stopni Celsjusza')
+	(0, 0, 0, 'Temperatura', 'Stopni Celsjusza')
+
+set identity_insert Atrybuty_Odczynow off
 
 insert into Szczepionki_Odczyny
 	(szczepionka_id, odczyn_id, stopien_ciezkosci, czestosc)
 values
 	(0, 0, 0, 0)
 
+set identity_insert Odczyny_Zgloszenia on
+
 insert into Odczyny_Zgloszenia
-	(odczyn_id, zgloszenie_id, wartosc, "data")
+	(id, odczyn_id, zgloszenie_id, "data")
 values
-	(0, 0, '37.7', GETDATE())
+	(0, 0, 0, GETDATE())
+
+set identity_insert Odczyny_Zgloszenia off
+
+insert into Atrybuty_Zgloszenia
+	(odzg_id, atod_id, wartosc)
+values
+	(0, 0, '37.7')
 
 insert into Zgloszenie_Szczepionki
 	(zgloszenie_id, szczepionka_id)
