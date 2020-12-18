@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BackEnd</name>
+    </assembly>
+    <members>
+        <member name="M:BackEnd.Controllers.LoginController.SignIn(BackEnd.DataTransferObjects.AuthenticateRequest)">
+            <summary>
+            Zwraca dane o użytkowniku wraz z krótkoterminowym tokenem dostępu i 
+            długoterminowym refresh tokenem umiesczonym w plikach cookies. 
+            </summary>
+            <param name="value"> Email i hasło użytkownika </param>
+            <returns> Dane o użytkowniku </returns>
+        </member>
+        <member name="M:BackEnd.Controllers.LoginController.RefreshToken">
+            <summary>
+            Na podstawie długoterminowego refresh-tokenu umieszczonego w plikach cookies tworzy i zwraca
+            nowy krótkoterminowy token dostępu
+            </summary>
+            <returns> Dane o użytkowniku wraqz z krótkoterminowym tokenem </returns>
+        </member>
+        <member name="M:BackEnd.Controllers.LoginController.LogOut">
+            <summary>
+            Wyloguwuje obecnie zalogowanego użytownika, czyli usuwa plik cookies z długoterminowym 
+            refresh-tokenem.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:BackEnd.Controllers.RodzicController">
+            <summary>
+            Kontroler służący  do obsługi ządaużytkowników zalogowanych jako Rodzic
+            </summary>
+        </member>
+        <member name="M:BackEnd.Controllers.RodzicController.#ctor(BackEnd.Models.NopContext)">
+            <summary>
+            Konstruktor przyjmujacy kontekst bazy danych
+            </summary>
+        </member>
+        <member name="M:BackEnd.Controllers.RodzicController.GetApps">
+            <summary>
+            Zwraca wszystkie zgłoszenia utworzone przez zalogowanego użytkownika
+            </summary>
+            <returns> Listę zgłoszeń </returns>
+        </member>
+        <member name="M:BackEnd.Controllers.RodzicController.GetVaccines">
+            <summary>
+            Zwraca wszystkie szczepionki predefiniowane w systemie
+            </summary>
+            <returns> Listę szczepionek </returns>
+        </member>
+        <member name="M:BackEnd.Controllers.RodzicController.GetChildren">
+            <summary>
+            Zwraca wszystkie dzieci przypisane przez zalogowanego urzytkownika
+            </summary>
+            <returns> Listę dzieci </returns>
+        </member>
+        <member name="M:BackEnd.Controllers.RodzicController.GetNop(System.Nullable{System.Int32})">
+            <summary>
+            Zwraca predefiniowaną liste nieporządanych odczynów poszczepiennych dla danej szcczepionki
+            </summary>
+            <param name="id"> Id szczepionki </param>
+            <returns> Listę niepożądanych odczynów </returns>
+        </member>
+        <member name="M:BackEnd.Controllers.RodzicController.CreateApp(BackEnd.DataTransferObjects.CreateAppRequest)">
+            <summary>
+            Tworzy nowe zgloszenie
+            </summary>
+            <param name="value"> Dane pozwalajace utworzyc nowe zgłoszenie </param>
+            <returns> Listę Nop </returns>
+        </member>
+        <member name="M:BackEnd.Controllers.RodzicController.GetAppHistory(System.Nullable{System.Int32})">
+            <summary>
+            Zwraca historię zgłoszenia, czyli listę wszystkich wydarzeń dotyczących danego zgłoszenia.
+            </summary>
+            <param name="id">Id zgłoszenia </param>
+            <returns>Listę wydarzeń dotyczących danego zgłoszenia</returns>
+        </member>
+        <member name="M:BackEnd.Controllers.RodzicController.UpdateApp(System.Nullable{System.Int32},System.Collections.Generic.ICollection{BackEnd.DataTransferObjects.NopAtrybuty})">
+            <summary>
+            Dodaje do zgłoszenia nowe podejrzewane niepożądane odczyny.
+            </summary>
+            <param name="id"> Id zgłoszenia </param>
+            <param name="nops"> Lista nowych podejrzewanych niepożądanych odczynów </param>
+            <returns> Ok </returns>
+        </member>
+    </members>
+</doc>

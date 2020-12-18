@@ -33,7 +33,6 @@ CREATE TABLE Uzytkownicy (
 	telefon nvarchar (30) NULL,
 	email nvarchar (30) NULL,
 	rola int NOT NULL,
-	"login" nvarchar (20) NOT NULL,
 	haslo  nvarchar (30) NOT NULL,
 	akceptacja_warunkow bit NULL,
 	verification_token nvarchar(50) NULL,

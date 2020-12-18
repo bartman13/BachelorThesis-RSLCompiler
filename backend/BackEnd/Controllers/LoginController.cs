@@ -30,7 +30,12 @@ namespace BackEnd.Controllers
             _accountService = accountService;
             _mapper = mapper;
         }
-        
+        /// <summary>
+        /// Zwraca dane o użytkowniku wraz z krótkoterminowym tokenem dostępu i 
+        /// długoterminowym refresh tokenem umiesczonym w plikach cookies. 
+        /// </summary>
+        /// <param name="value"> Email i hasło użytkownika </param>
+        /// <returns> Dane o użytkowniku </returns>
         [HttpPost("SignIn")]
         public IActionResult SignIn([FromBody] AuthenticateRequest value)
         {
@@ -38,7 +43,11 @@ namespace BackEnd.Controllers
             setTokenCookie(response.RefreshToken);
             return Ok(response);
         }
-        
+        /// <summary>
+        /// Na podstawie długoterminowego refresh-tokenu umieszczonego w plikach cookies tworzy i zwraca
+        /// nowy krótkoterminowy token dostępu
+        /// </summary>
+        /// <returns> Dane o użytkowniku wraqz z krótkoterminowym tokenem </returns>
         [HttpPost("refresh-token")]
         public ActionResult<AuthenticateResponse> RefreshToken()
         {
@@ -64,7 +73,18 @@ namespace BackEnd.Controllers
             };
             Response.Cookies.Append("refreshToken", token, cookieOptions);
         }
+        [HttpPost("ParentSignUp")]
 
+        public IActionResult ParentSignUp([FromBody] SignUpParentRequest value)
+        {
+            _accountService.ParentRegister(value);
+            return Ok();
+        }
+        /// <summary>
+        /// Wyloguwuje obecnie zalogowanego użytownika, czyli usuwa plik cookies z długoterminowym 
+        /// refresh-tokenem.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Authorize]
         [Route("Logout")]

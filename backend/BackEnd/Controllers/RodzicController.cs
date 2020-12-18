@@ -10,21 +10,32 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.IO;
-
+using Microsoft.AspNetCore.Http;
 
 namespace BackEnd.Controllers
 {
+    /// <summary>
+    /// Kontroler służący  do obsługi ządaużytkowników zalogowanych jako Rodzic
+    /// </summary>
     [ApiController]
     [Authorize(Role.Rodzic)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public class RodzicController : BaseController
     {
         private readonly NopContext _context;
 
+        /// <summary>
+        /// Konstruktor przyjmujacy kontekst bazy danych
+        /// </summary>
         public RodzicController(NopContext context)
         {
             _context = context;
         }
-
+        /// <summary>
+        /// Zwraca wszystkie zgłoszenia utworzone przez zalogowanego użytkownika
+        /// </summary>
+        /// <returns> Listę zgłoszeń </returns>
         [HttpGet("[controller]")]
         public IActionResult GetApps()
         {
@@ -34,6 +45,10 @@ namespace BackEnd.Controllers
             if (zgl == null) return BadRequest(new { message = "Lista uzytkownikow jest nullem" });
             return Ok(zgl);
         }
+        /// <summary>
+        /// Zwraca wszystkie szczepionki predefiniowane w systemie
+        /// </summary>
+        /// <returns> Listę szczepionek </returns>
         [HttpGet("Szczepionki")]
         public IActionResult GetVaccines()
         {
@@ -41,6 +56,10 @@ namespace BackEnd.Controllers
             if (vaccines == null) return BadRequest(new { message = "Lista szczepionek jest nullem" });
             return Ok(vaccines);
         }
+        /// <summary>
+        /// Zwraca wszystkie dzieci przypisane przez zalogowanego urzytkownika
+        /// </summary>
+        /// <returns> Listę dzieci </returns>
         [HttpGet("Dzieci")]
         public IActionResult GetChildren()
         {
@@ -48,6 +67,11 @@ namespace BackEnd.Controllers
             if (children == null) return BadRequest(new { message = "Lista dzieci jest nullem" });
             return Ok(children);
         }
+        /// <summary>
+        /// Zwraca predefiniowaną liste nieporządanych odczynów poszczepiennych dla danej szcczepionki
+        /// </summary>
+        /// <param name="id"> Id szczepionki </param>
+        /// <returns> Listę niepożądanych odczynów </returns>
         [HttpGet("Nop/{id?}")]
         public IActionResult GetNop(int? id)
         {
@@ -58,11 +82,16 @@ namespace BackEnd.Controllers
             if (nops == null) return BadRequest(new { message = "Lista odczynow jest nullem" });
             return Ok(nops);
         }
+        /// <summary>
+        /// Tworzy nowe zgloszenie
+        /// </summary>
+        /// <param name="value"> Dane pozwalajace utworzyc nowe zgłoszenie </param>
+        /// <returns> Listę Nop </returns>
         [HttpPost("UtworzZgloszenie")]
         public IActionResult CreateApp([FromForm] CreateAppRequest value)
         {
-           if (value == null) return BadRequest(new { message = "Vallue jest nullem" });
-            var user = _context.Uzytkownicy.Single(x => x.Id==Account.Id);
+            if (value == null) return BadRequest(new { message = "Vallue jest nullem" });
+            var user = _context.Uzytkownicy.Single(x => x.Id == Account.Id);
             Zgloszenia app = new Zgloszenia
             {
                 Data = value.Data,
@@ -100,6 +129,11 @@ namespace BackEnd.Controllers
             }
             return Ok();
         }
+        /// <summary>
+        /// Zwraca historię zgłoszenia, czyli listę wszystkich wydarzeń dotyczących danego zgłoszenia.
+        /// </summary>
+        /// <param name="id">Id zgłoszenia </param>
+        /// <returns>Listę wydarzeń dotyczących danego zgłoszenia</returns>
         [HttpGet("AppHistory/{id?}")]
         public IActionResult GetAppHistory(int? id)
         {
@@ -188,13 +222,19 @@ namespace BackEnd.Controllers
             timeline[1].Tytul = timeline[1].Zdarzenia[0].Tytul;
             return Ok(timeline);
         }
-        public class AppEvent
+        private class AppEvent
         {
             public DateTime Data { get; set; }
             public string Tytul { get; set; }
             public string Tresc { get; set; }
             public int Typ { get; set; }
         }
+        /// <summary>
+        /// Dodaje do zgłoszenia nowe podejrzewane niepożądane odczyny.
+        /// </summary>
+        /// <param name="id"> Id zgłoszenia </param>
+        /// <param name="nops"> Lista nowych podejrzewanych niepożądanych odczynów </param>
+        /// <returns> Ok </returns>
         [HttpPost("UpdateApp/{id?}")]
         public IActionResult UpdateApp(int? id, [FromBody] ICollection<NopAtrybuty> nops)
         {
@@ -228,4 +268,4 @@ namespace BackEnd.Controllers
     }
 }
 
-    
+
