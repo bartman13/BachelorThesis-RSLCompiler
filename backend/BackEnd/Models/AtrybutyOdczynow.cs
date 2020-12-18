@@ -5,6 +5,11 @@ namespace BackEnd.Models
 {
     public partial class AtrybutyOdczynow
     {
+        public AtrybutyOdczynow()
+        {
+            AtrybutyZgloszenia = new HashSet<AtrybutyZgloszenia>();
+        }
+
         public int Id { get; set; }
         public int OdczynId { get; set; }
         public string Nazwa { get; set; }
@@ -12,5 +17,6 @@ namespace BackEnd.Models
         public string Info { get; set; }
 
         public virtual Odczyny Odczyn { get; set; }
+        public virtual ICollection<AtrybutyZgloszenia> AtrybutyZgloszenia { get; set; }
     }
 }

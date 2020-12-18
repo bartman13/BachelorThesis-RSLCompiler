@@ -166,11 +166,11 @@ function NOPCreator(props){
 
     const onDialogClose = (selected) => {
         if(selected !== undefined){
-            selectedNOPs.push({
+            setSelectedNOPs([...selectedNOPs, {
                 id: selected.id,
                 nazwa: selected.nazwa,
                 atrybuty: selected.atrybutyOdczynow.map(a => { return {...a, wartosc : ''}})
-            });
+            }]);
         }
         setOpen(false);
     }

@@ -7,6 +7,7 @@ namespace BackEnd.Models
     {
         public int Id { get; set; }
         public int Decyzja { get; set; }
+        public DateTime Data { get; set; }
         public string Komentarz { get; set; }
         public int ZgloszenieId { get; set; }
 

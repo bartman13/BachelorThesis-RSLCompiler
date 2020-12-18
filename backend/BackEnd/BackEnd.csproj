@@ -6,6 +6,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <WarningLevel>3</WarningLevel>
+    <DocumentationFile>BackEnd.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

@@ -16,6 +16,7 @@ namespace BackEnd.Models
         }
 
         public virtual DbSet<AtrybutyOdczynow> AtrybutyOdczynow { get; set; }
+        public virtual DbSet<AtrybutyZgloszenia> AtrybutyZgloszenia { get; set; }
         public virtual DbSet<DecyzjeLekarza> DecyzjeLekarza { get; set; }
         public virtual DbSet<Odczyny> Odczyny { get; set; }
         public virtual DbSet<OdczynyZgloszenia> OdczynyZgloszenia { get; set; }
@@ -32,7 +33,7 @@ namespace BackEnd.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=Nop;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=Nop;Trusted_Connection=True;");
             }
         }
 
@@ -49,6 +50,7 @@ namespace BackEnd.Models
                     .HasMaxLength(1000);
 
                 entity.Property(e => e.Nazwa)
+                    .IsRequired()
                     .HasColumnName("nazwa")
                     .HasMaxLength(100);
 
@@ -63,11 +65,42 @@ namespace BackEnd.Models
                     .HasConstraintName("FK_ATOD_Odczyny");
             });
 
+            modelBuilder.Entity<AtrybutyZgloszenia>(entity =>
+            {
+                entity.ToTable("Atrybuty_Zgloszenia");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.AtodId).HasColumnName("atod_id");
+
+                entity.Property(e => e.OdzgId).HasColumnName("odzg_id");
+
+                entity.Property(e => e.Wartosc)
+                    .HasColumnName("wartosc")
+                    .HasMaxLength(4000);
+
+                entity.HasOne(d => d.Atod)
+                    .WithMany(p => p.AtrybutyZgloszenia)
+                    .HasForeignKey(d => d.AtodId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_AZATOD");
+
+                entity.HasOne(d => d.Odzg)
+                    .WithMany(p => p.AtrybutyZgloszenia)
+                    .HasForeignKey(d => d.OdzgId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_AZODZG");
+            });
+
             modelBuilder.Entity<DecyzjeLekarza>(entity =>
             {
                 entity.ToTable("Decyzje_Lekarza");
 
                 entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Data)
+                    .HasColumnName("data")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.Decyzja).HasColumnName("decyzja");
 
@@ -106,10 +139,6 @@ namespace BackEnd.Models
 
                 entity.Property(e => e.OdczynId).HasColumnName("odczyn_id");
 
-                entity.Property(e => e.Wartosc)
-                    .HasColumnName("wartosc")
-                    .HasMaxLength(100);
-
                 entity.Property(e => e.ZgloszenieId).HasColumnName("zgloszenie_id");
 
                 entity.HasOne(d => d.Odczyn)
@@ -131,7 +160,7 @@ namespace BackEnd.Models
 
                 entity.Property(e => e.DataUrodzenia)
                     .HasColumnName("data_urodzenia")
-                    .HasColumnType("datetime");
+                    .HasColumnType("date");
 
                 entity.Property(e => e.Imie)
                     .IsRequired()
