@@ -68,6 +68,62 @@ namespace BackEnd.Controllers
             return Ok(children);
         }
         /// <summary>
+        /// Wyszukuje i zwraca dziecko o podanym id
+        /// </summary>
+        /// <param name="id"> Id dziecka </param>
+        /// <returns> Pacjent o podanym id </returns>
+        [HttpGet("Dziecko/{id}")]
+        public IActionResult GetChild(int id)
+        {
+            var child = _context.Pacjenci.Where(x => x.Id == id).FirstOrDefault();
+            if (child == null) return BadRequest(new { message = "Pacjent o podanym id nie istnieje" });
+            if (child.UzytId != Account.Id) return Unauthorized();
+            return Ok(child);
+        }
+        /// <summary>
+        /// Aktualizuje dane pacjenta o podanym id lub tworzy nowego.
+        /// </summary>
+        /// <param name="id"> Id pacjenta. </param>
+        /// <param name="pacjent"> Zaktualizowane dane pacjenta. </param>
+        /// <returns></returns>
+        [HttpPost("Dziecko/{id?}")]
+        public IActionResult UpdateChild(int? id, [FromBody] Pacjenci pacjent)
+        {
+            if(id == null)
+            {
+                _context.Pacjenci.Attach(new Pacjenci 
+                    {
+                        Imie = pacjent.Imie,
+                        Nazwisko = pacjent.Nazwisko,
+                        DataUrodzenia = pacjent.DataUrodzenia,
+                        LekarzId = pacjent.LekarzId,
+                        UzytId = Account.Id
+                    }
+                );
+                _context.SaveChanges();
+                return Ok();
+            }
+            var p = _context.Pacjenci.Where(p => p.Id == id).FirstOrDefault();
+            if (p == null) return BadRequest(new { message = "Pacjent o podanym id nie istnieje" });
+            if (p.UzytId != Account.Id) return Unauthorized();
+            p.Imie = pacjent.Imie;
+            p.Nazwisko = pacjent.Nazwisko;
+            p.DataUrodzenia = pacjent.DataUrodzenia;
+            p.LekarzId = pacjent.LekarzId;
+            _context.SaveChanges();
+            return Ok();
+        }
+        /// <summary>
+        /// Zwraca wszystkich lekarzy w systemie
+        /// </summary>
+        /// <returns> Lekarze </returns>
+        [HttpGet("Lekarze")]
+        public IActionResult GetDoctors()
+        {
+            var doctors = _context.Uzytkownicy.Where(u => u.Rola == 1).Select(u => new DoctorResponse { Id = u.Id, Imie = u.Imie, Nazwisko = u.Nazwisko });
+            return Ok(doctors);
+        }
+        /// <summary>
         /// Zwraca predefiniowaną liste nieporządanych odczynów poszczepiennych dla danej szcczepionki
         /// </summary>
         /// <param name="id"> Id szczepionki </param>
@@ -265,7 +321,15 @@ namespace BackEnd.Controllers
             _context.SaveChanges();
             return Ok();
         }
+        [HttpPost("UpdateUser")]
+        public IActionResult UpdateUser([FromBody] UserUpdate userUpdate)
+        {
+            var user = _context.Uzytkownicy.Where(u => u.Id == Account.Id).FirstOrDefault();
+            user.Imie = userUpdate.Imie;
+            user.Nazwisko = userUpdate.Nazwisko;
+            user.Email = userUpdate.Email;
+            _context.SaveChanges();
+            return Ok();
+        }
     }
 }
-
-

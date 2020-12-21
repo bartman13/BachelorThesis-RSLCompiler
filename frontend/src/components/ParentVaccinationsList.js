@@ -27,7 +27,6 @@ const useStyles = makeStyles((theme) => ({
         
     },
     button: buttonSuccess
-    
 }));
 
 function ParentVaccinationsList(){

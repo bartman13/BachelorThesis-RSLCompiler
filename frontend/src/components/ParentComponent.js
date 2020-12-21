@@ -40,6 +40,7 @@ function Parent(props){
                 <Route path='/parenthome' component={ParentVaccinationsList}/>
                 <Route exact path='/parentchildren' component={ParentChildrenList}/>
                 <Route path='/parentchildren/:id' component={ChildWithId}/>
+                <Route exact path='/addchild' component={ParentChild}/>
                 <Route path='/parentprofile' component={ParentProfile}/>
                 <Route path='/parentnewapp' component={ParentNewApp}/>
                 <Route path='/apphistory/:id' component={AppHistoryWithId}/>

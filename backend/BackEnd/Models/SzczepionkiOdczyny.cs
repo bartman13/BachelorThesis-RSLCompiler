@@ -8,7 +8,7 @@ namespace BackEnd.Models
         public int Id { get; set; }
         public int OdczynId { get; set; }
         public int SzczepionkaId { get; set; }
-        public int? StopienCiezkosci { get; set; }
+        public int StopienCiezkosci { get; set; }
         public int? Czestosc { get; set; }
 
         public virtual Odczyny Odczyn { get; set; }

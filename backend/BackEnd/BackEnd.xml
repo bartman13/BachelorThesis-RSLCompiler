@@ -54,6 +54,27 @@
             </summary>
             <returns> Listę dzieci </returns>
         </member>
+        <member name="M:BackEnd.Controllers.RodzicController.GetChild(System.Int32)">
+            <summary>
+            Wyszukuje i zwraca dziecko o podanym id
+            </summary>
+            <param name="id"> Id dziecka </param>
+            <returns> Pacjent o podanym id </returns>
+        </member>
+        <member name="M:BackEnd.Controllers.RodzicController.UpdateChild(System.Nullable{System.Int32},BackEnd.Models.Pacjenci)">
+            <summary>
+            Aktualizuje dane pacjenta o podanym id lub tworzy nowego.
+            </summary>
+            <param name="id"> Id pacjenta. </param>
+            <param name="pacjent"> Zaktualizowane dane pacjenta. </param>
+            <returns></returns>
+        </member>
+        <member name="M:BackEnd.Controllers.RodzicController.GetDoctors">
+            <summary>
+            Zwraca wszystkich lekarzy w systemie
+            </summary>
+            <returns> Lekarze </returns>
+        </member>
         <member name="M:BackEnd.Controllers.RodzicController.GetNop(System.Nullable{System.Int32})">
             <summary>
             Zwraca predefiniowaną liste nieporządanych odczynów poszczepiennych dla danej szcczepionki
