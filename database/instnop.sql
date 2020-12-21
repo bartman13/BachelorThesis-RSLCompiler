@@ -60,8 +60,6 @@ CREATE TABLE RefreshToken(
 	anulowane datetime NULL,
 	anulowane_przez_ip nvarchar(20) NULL,
 	zastapione_przez_token nvarchar(100) NULL
-
-
 	CONSTRAINT PK_RefreshToken PRIMARY KEY CLUSTERED
 	(
 		id
@@ -72,7 +70,7 @@ CREATE TABLE RefreshToken(
 	) REFERENCES Uzytkownicy
 	(
 		id
-	)
+	) ON DELETE CASCADE
 )
 
 GO
@@ -94,8 +92,8 @@ CREATE TABLE Pacjenci (
 	) REFERENCES Uzytkownicy
 	(
 		id
-	),
-	CONSTRAINT FK_Pacjenci_Uzytkwnicy2 FOREIGN KEY
+	) ON DELETE CASCADE,
+	CONSTRAINT FK_Pacjenci_Uzytkownicy2 FOREIGN KEY
 	(
 		lekarz_id
 	) REFERENCES Uzytkownicy
@@ -125,7 +123,7 @@ CREATE TABLE Zgloszenia (
 	(
 		id
 	),
-	CONSTRAINT FK_Zgloszenia_Uzytkwnicy2 FOREIGN KEY
+	CONSTRAINT FK_Zgloszenia_Uzytkownicy2 FOREIGN KEY
 	(
 		lekarz_id
 	) REFERENCES Uzytkownicy
@@ -159,7 +157,7 @@ CREATE TABLE Decyzje_Lekarza (
 	) REFERENCES Zgloszenia
 	(
 		id
-	)
+	) ON DELETE CASCADE
 )
 
 GO
@@ -186,14 +184,14 @@ CREATE TABLE Zgloszenie_Szczepionki (
 	) REFERENCES Zgloszenia
 	(
 		id
-	),
+	) ON DELETE CASCADE,
 	CONSTRAINT FK_ZGSZ_Szczepionki FOREIGN KEY
 	(
 		szczepionka_id
 	) REFERENCES Szczepionki
 	(
 		id
-	)
+	) ON DELETE CASCADE
 )
 
 GO
@@ -217,7 +215,7 @@ CREATE TABLE Atrybuty_Odczynow(
 	) REFERENCES Odczyny
 	(
 		id
-	)
+	) ON DELETE CASCADE
 )
 
 GO
@@ -240,7 +238,7 @@ CREATE TABLE Odczyny_Zgloszenia(
 	) REFERENCES Zgloszenia
 	(
 		id
-	)
+	) ON DELETE CASCADE
 )
 
 GO
@@ -257,14 +255,14 @@ CREATE TABLE Szczepionki_Odczyny (
 	) REFERENCES Odczyny
 	(
 		id
-	),
+	) ON DELETE CASCADE,
 	CONSTRAINT FK_SZOD_Szczepionki FOREIGN KEY
 	(
 		szczepionka_id
 	) REFERENCES Szczepionki
 	(
 		id
-	)
+	) ON DELETE CASCADE
 )
 
 GO
@@ -280,7 +278,7 @@ CREATE TABLE Atrybuty_Zgloszenia (
 	) REFERENCES Odczyny_Zgloszenia
 	(
 		id
-	),
+	) ON DELETE CASCADE,
 	CONSTRAINT FK_AZATOD FOREIGN KEY
 	(
 		atod_id

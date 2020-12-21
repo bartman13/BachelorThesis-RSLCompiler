@@ -10,6 +10,7 @@ delete from Szczepionki
 delete from Odczyny
 delete from Zgloszenia
 delete from Pacjenci
+delete from RefreshToken
 delete from Uzytkownicy
 
 set identity_insert Uzytkownicy on
@@ -38,9 +39,7 @@ set identity_insert Zgloszenia on
 insert into Zgloszenia
 	(id, uzyt_id, "data", zdjecie_ks_zd, lekarz_id, prosba_o_kontakt, pacjent_id)
 values
-	(0, 0, GETDATE(), './zdjecie.png', 1, 1, 0),
-	(1, 0, GETDATE(), './zdjecie.png', 1, 0, 0),
-	(2, 0, GETDATE(), './zdjecie.png', 1, 1, 0)
+	(0, 0, GETDATE(), './zdjecie.png', 1, 1, 0)
 	
 
 set identity_insert Zgloszenia off
