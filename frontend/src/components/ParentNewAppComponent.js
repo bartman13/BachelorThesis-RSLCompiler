@@ -7,7 +7,6 @@ import { Grid, TextField, Select, InputLabel, MenuItem, FormControl, Typography,
     FormControlLabel, Checkbox } from '@material-ui/core';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import NOPCreator from './NOPCreatorComponent';
-import FormData from 'form-data';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import authHeader from '../shared/authheader';
@@ -84,23 +83,25 @@ function ParentNewApp(){
         setContact(event.target.checked);
     };
     const submit = async () => {
-        let data = new FormData();
-        data.append('data', selectedDate);
-        data.append('szczepionkaId', selectedVaccine);
-        data.append('pacjentId', selectedChild);
-        data.append('ProsbaOKontakt', contact);
-        toFormData( selectedNOPs.map(n => {
-            return {
-                id: n.id,
-                atrybuty: n.atrybuty.map(a => {
-                    return {
-                        id: a.id,
-                        wartosc: a.wartosc
-                    };
-                })
-            };
-        }), data, 'nopy');
-        data.append('zdjecieKsZd', imageKsZd.file);
+        const app = {
+            data: selectedDate,
+            szczepionkaId: selectedVaccine,
+            pacjentId: selectedChild,
+            prosbaOKontakt: contact,
+            zdjecieKsZd: imageKsZd.file,
+            nopy: selectedNOPs.map(n => {
+                return {
+                    id: n.id,
+                    atrybuty: n.atrybuty.map(a => {
+                        return {
+                            id: a.id,
+                            wartosc: a.wartosc
+                        };
+                    })
+                };
+            })
+        };
+        const data = toFormData(app);
         try {
             await axios.post(apiURL + 'UtworzZgloszenie', data, {
                 headers : {

@@ -89,6 +89,13 @@
             <param name="value"> Dane pozwalajace utworzyc nowe zgłoszenie </param>
             <returns> Listę Nop </returns>
         </member>
+        <member name="M:BackEnd.Controllers.RodzicController.GetAppVaccines(System.Int32)">
+            <summary>
+            Zwraca listę id wszystkich szczepionek dotyczących zgłoszeniach o podanym id.
+            </summary>
+            <param name="id"> Id zgłoszenia </param>
+            <returns> Lista id szczepionek </returns>
+        </member>
         <member name="M:BackEnd.Controllers.RodzicController.GetAppHistory(System.Nullable{System.Int32})">
             <summary>
             Zwraca historię zgłoszenia, czyli listę wszystkich wydarzeń dotyczących danego zgłoszenia.

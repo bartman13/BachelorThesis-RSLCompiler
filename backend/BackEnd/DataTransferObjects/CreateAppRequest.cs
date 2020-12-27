@@ -14,8 +14,7 @@ namespace BackEnd.DataTransferObjects
         public int pacjentId { get; set; }
         public bool prosba_o_kontakt { get; set; }
         public virtual ICollection<NopAtrybuty> nopy { get; set; }
-        public virtual IFormFile zdjecieKsZd {get;set;}
-        
+        public virtual IFormFile zdjecieKsZd { get; set; }
     }
     
     public class NopAtrybuty
@@ -28,7 +27,7 @@ namespace BackEnd.DataTransferObjects
     }
     public class Atrybuty
     {
-       public int id { get; set; }
-       public string wartosc { get; set; }
+        public int id { get; set; }
+        public string wartosc { get; set; }
     }
 }
