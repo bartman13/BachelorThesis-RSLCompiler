@@ -76,7 +76,7 @@ namespace BackEnd.Controllers
         public IActionResult GetChild(int id)
         {
             var child = _context.Pacjenci.Where(x => x.Id == id).FirstOrDefault();
-            if (child == null) return BadRequest(new { message = "Pacjent o podanym id nie istnieje" });
+            if (child == null) return NotFound(new { message = "Pacjent o podanym id nie istnieje" });
             if (child.UzytId != Account.Id) return Unauthorized();
             return Ok(child);
         }
@@ -104,7 +104,7 @@ namespace BackEnd.Controllers
                 return Ok();
             }
             var p = _context.Pacjenci.Where(p => p.Id == id).FirstOrDefault();
-            if (p == null) return BadRequest(new { message = "Pacjent o podanym id nie istnieje" });
+            if (p == null) return NotFound(new { message = "Pacjent o podanym id nie istnieje" });
             if (p.UzytId != Account.Id) return Unauthorized();
             p.Imie = pacjent.Imie;
             p.Nazwisko = pacjent.Nazwisko;
@@ -148,6 +148,7 @@ namespace BackEnd.Controllers
         {
             if (value == null) return BadRequest(new { message = "Vallue jest nullem" });
             var user = _context.Uzytkownicy.Single(x => x.Id == Account.Id);
+            var kek = Request.Form.Files;
             Zgloszenia app = new Zgloszenia
             {
                 Data = value.Data,
@@ -186,6 +187,23 @@ namespace BackEnd.Controllers
             return Ok();
         }
         /// <summary>
+        /// Zwraca listę id wszystkich szczepionek dotyczących zgłoszeniach o podanym id.
+        /// </summary>
+        /// <param name="id"> Id zgłoszenia </param>
+        /// <returns> Lista id szczepionek </returns>
+        [HttpGet("AppVaccines/{id}")]
+        public IActionResult GetAppVaccines(int id)
+        {
+            var app = _context.Zgloszenia
+                .Where(z => z.Id == id)
+                .Include(i => i.ZgloszenieSzczepionki)
+                .FirstOrDefault();
+            if (app == null) return NotFound("Zgloszenie o podanym id nie istnieje");
+            if (app.UzytId != Account.Id) return Unauthorized();
+            List<int> vaccines = app.ZgloszenieSzczepionki.Select(zs => zs.SzczepionkaId).ToList();
+            return Ok(vaccines);
+        }
+        /// <summary>
         /// Zwraca historię zgłoszenia, czyli listę wszystkich wydarzeń dotyczących danego zgłoszenia.
         /// </summary>
         /// <param name="id">Id zgłoszenia </param>
@@ -202,7 +220,7 @@ namespace BackEnd.Controllers
                 .Include(i => i.ZgloszenieSzczepionki)
                 .ThenInclude(it => it.Szczepionka)
                 .FirstOrDefault();
-            if (app == null) return BadRequest("Zgloszenie o podanym id nie istnieje");
+            if (app == null) return NotFound("Zgloszenie o podanym id nie istnieje");
             if (app.UzytId != Account.Id) return Unauthorized();
             List<AppEvent> events = new List<AppEvent>
             {
@@ -329,6 +347,47 @@ namespace BackEnd.Controllers
             user.Nazwisko = userUpdate.Nazwisko;
             user.Email = userUpdate.Email;
             _context.SaveChanges();
+            return Ok();
+        }
+        [HttpPost("Upload")]
+        public IActionResult UploadFile([FromForm] IFormFile file)
+        {
+            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            string directorypath = @"C:\NopImages";
+            Directory.CreateDirectory(directorypath);
+            using (FileStream stream = new FileStream(Path.Combine(directorypath, fileName), FileMode.Create))
+            {
+                file.CopyTo(stream);
+            }
+            _context.Pliki.Add(new Pliki 
+            {
+                UzytId = Account.Id,
+                OryginalnaNazwa = file.FileName,
+                NazwaPliku = fileName
+            });
+            _context.SaveChanges();
+            return Ok(fileName);
+        }
+        [HttpGet("File/{filename}")]
+        public IActionResult DownloadFile(string filename)
+        {
+            var file = _context.Pliki.FirstOrDefault(f => f.NazwaPliku == filename);
+            if (file == null) return NotFound();
+            if (file.UzytId != Account.Id) return Unauthorized();
+            string directorypath = @"C:\NopImages";
+            Stream stream = new FileStream(Path.Combine(directorypath, filename), FileMode.Open);
+            if (stream == null) return NotFound();
+            return File(stream, "application/octet-stream", file.OryginalnaNazwa);
+        }
+        [HttpDelete("File/{filename}")]
+        public IActionResult DeleteFile(string filename)
+        {
+            var file = _context.Pliki.FirstOrDefault(f => f.NazwaPliku == filename);
+            if (file == null) return NotFound();
+            if (file.UzytId != Account.Id) return Unauthorized();
+            string directorypath = @"C:\NopImages";
+            FileInfo localFile = new FileInfo(Path.Combine(directorypath, filename));
+            localFile.Delete();
             return Ok();
         }
     }

@@ -9,6 +9,7 @@ namespace BackEnd.Models
         {
             PacjenciLekarz = new HashSet<Pacjenci>();
             PacjenciUzyt = new HashSet<Pacjenci>();
+            Pliki = new HashSet<Pliki>();
             RefreshToken = new HashSet<RefreshToken>();
             ZgloszeniaLekarz = new HashSet<Zgloszenia>();
             ZgloszeniaUzyt = new HashSet<Zgloszenia>();
@@ -32,6 +33,7 @@ namespace BackEnd.Models
 
         public virtual ICollection<Pacjenci> PacjenciLekarz { get; set; }
         public virtual ICollection<Pacjenci> PacjenciUzyt { get; set; }
+        public virtual ICollection<Pliki> Pliki { get; set; }
         public virtual ICollection<RefreshToken> RefreshToken { get; set; }
         public virtual ICollection<Zgloszenia> ZgloszeniaLekarz { get; set; }
         public virtual ICollection<Zgloszenia> ZgloszeniaUzyt { get; set; }

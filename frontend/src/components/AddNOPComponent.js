@@ -59,7 +59,8 @@ function AddNOP(props){
         async function fetchData(){
             setLoading(true);
             try{
-                const nopsData = await axios.get(apiURL + 'Nop/' + appid, authHeader(user));
+                const vaccinesData = await axios.get(apiURL + 'AppVaccines/' + appid, authHeader(user));
+                const nopsData = await axios.get(apiURL + 'Nop/' + vaccinesData.data[0], authHeader(user));
                 setNops(nopsData.data);
             }catch(error){
                 console.error(error);

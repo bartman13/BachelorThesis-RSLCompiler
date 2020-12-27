@@ -21,6 +21,7 @@ namespace BackEnd.Models
         public virtual DbSet<Odczyny> Odczyny { get; set; }
         public virtual DbSet<OdczynyZgloszenia> OdczynyZgloszenia { get; set; }
         public virtual DbSet<Pacjenci> Pacjenci { get; set; }
+        public virtual DbSet<Pliki> Pliki { get; set; }
         public virtual DbSet<RefreshToken> RefreshToken { get; set; }
         public virtual DbSet<Szczepionki> Szczepionki { get; set; }
         public virtual DbSet<SzczepionkiOdczyny> SzczepionkiOdczyny { get; set; }
@@ -61,7 +62,6 @@ namespace BackEnd.Models
                 entity.HasOne(d => d.Odczyn)
                     .WithMany(p => p.AtrybutyOdczynow)
                     .HasForeignKey(d => d.OdczynId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ATOD_Odczyny");
             });
 
@@ -88,7 +88,6 @@ namespace BackEnd.Models
                 entity.HasOne(d => d.Odzg)
                     .WithMany(p => p.AtrybutyZgloszenia)
                     .HasForeignKey(d => d.OdzgId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_AZODZG");
             });
 
@@ -113,7 +112,6 @@ namespace BackEnd.Models
                 entity.HasOne(d => d.Zgloszenie)
                     .WithMany(p => p.DecyzjeLekarza)
                     .HasForeignKey(d => d.ZgloszenieId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Decyzje_Zgloszenia");
             });
 
@@ -150,7 +148,6 @@ namespace BackEnd.Models
                 entity.HasOne(d => d.Zgloszenie)
                     .WithMany(p => p.OdczynyZgloszenia)
                     .HasForeignKey(d => d.ZgloszenieId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ODZG_Zgloszenia");
             });
 
@@ -179,13 +176,35 @@ namespace BackEnd.Models
                 entity.HasOne(d => d.Lekarz)
                     .WithMany(p => p.PacjenciLekarz)
                     .HasForeignKey(d => d.LekarzId)
-                    .HasConstraintName("FK_Pacjenci_Uzytkwnicy2");
+                    .HasConstraintName("FK_Pacjenci_Uzytkownicy2");
 
                 entity.HasOne(d => d.Uzyt)
                     .WithMany(p => p.PacjenciUzyt)
                     .HasForeignKey(d => d.UzytId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Pacjenci_Uzytkownicy");
+            });
+
+            modelBuilder.Entity<Pliki>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.NazwaPliku)
+                    .IsRequired()
+                    .HasColumnName("nazwa_pliku")
+                    .HasMaxLength(4000);
+
+                entity.Property(e => e.OryginalnaNazwa)
+                    .IsRequired()
+                    .HasColumnName("oryginalna_nazwa")
+                    .HasMaxLength(4000);
+
+                entity.Property(e => e.UzytId).HasColumnName("uzyt_id");
+
+                entity.HasOne(d => d.Uzyt)
+                    .WithMany(p => p.Pliki)
+                    .HasForeignKey(d => d.UzytId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Pliki_Uzytkownicy");
             });
 
             modelBuilder.Entity<RefreshToken>(entity =>
@@ -227,7 +246,6 @@ namespace BackEnd.Models
                 entity.HasOne(d => d.Uzyt)
                     .WithMany(p => p.RefreshToken)
                     .HasForeignKey(d => d.UzytId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_RefreshToken_Uzytkownicy");
             });
 
@@ -262,13 +280,11 @@ namespace BackEnd.Models
                 entity.HasOne(d => d.Odczyn)
                     .WithMany(p => p.SzczepionkiOdczyny)
                     .HasForeignKey(d => d.OdczynId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SZOD_Odczyny");
 
                 entity.HasOne(d => d.Szczepionka)
                     .WithMany(p => p.SzczepionkiOdczyny)
                     .HasForeignKey(d => d.SzczepionkaId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SZOD_Szczepionki");
             });
 
@@ -356,7 +372,7 @@ namespace BackEnd.Models
                 entity.HasOne(d => d.Lekarz)
                     .WithMany(p => p.ZgloszeniaLekarz)
                     .HasForeignKey(d => d.LekarzId)
-                    .HasConstraintName("FK_Zgloszenia_Uzytkwnicy2");
+                    .HasConstraintName("FK_Zgloszenia_Uzytkownicy2");
 
                 entity.HasOne(d => d.Pacjent)
                     .WithMany(p => p.Zgloszenia)
@@ -384,13 +400,11 @@ namespace BackEnd.Models
                 entity.HasOne(d => d.Szczepionka)
                     .WithMany(p => p.ZgloszenieSzczepionki)
                     .HasForeignKey(d => d.SzczepionkaId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ZGSZ_Szczepionki");
 
                 entity.HasOne(d => d.Zgloszenie)
                     .WithMany(p => p.ZgloszenieSzczepionki)
                     .HasForeignKey(d => d.ZgloszenieId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ZGSZ_Zgloszenia");
             });
 

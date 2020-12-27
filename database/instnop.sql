@@ -287,3 +287,17 @@ CREATE TABLE Atrybuty_Zgloszenia (
 		id
 	)
 )
+
+CREATE TABLE Pliki (
+	id int IDENTITY (1, 1) NOT NULL PRIMARY KEY,
+	oryginalna_nazwa nvarchar(4000) NOT NULL,
+	nazwa_pliku nvarchar(4000) NOT NULL,
+	uzyt_id int NOT NULL,
+	CONSTRAINT FK_Pliki_Uzytkownicy FOREIGN KEY
+	(
+		uzyt_id
+	) REFERENCES Uzytkownicy
+	(
+		id
+	)
+)
