@@ -17,5 +17,12 @@ namespace BackEnd.DataTransferObjects
         public int Typ { get; set; }
         public string Tytul { get; set; }
         public string Tresc { get; set; }
+        public List<AppEventAttribute> Atrybuty { get; set; }
+    }
+    public class AppEventAttribute
+    {
+        public string Nazwa { get; set; }
+        public string Wartosc { get; set; }
+        public int Typ { get; set; }
     }
 }

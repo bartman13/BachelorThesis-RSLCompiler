@@ -243,8 +243,12 @@ namespace BackEnd.Controllers
                 events.Add(new AppEvent
                     {
                         Data = n.Data,
-                        Tytul = "Nowy odczyn - " + odczyn?.Nazwa,
-                        Tresc = string.Join(", ", n.AtrybutyZgloszenia.Select(a => a.Atod.Nazwa + " - " + a.Wartosc)),
+                        Tytul = odczyn?.Nazwa,
+                        Atrybuty = new List<AppEventAttribute>(n.AtrybutyZgloszenia.Select(a => new AppEventAttribute() {
+                            Nazwa = a.Atod.Nazwa,
+                            Wartosc = a.Wartosc,
+                            Typ = a.Atod.Typ
+                        })),
                         Typ = 2 + (int) sc
                     }
                 );
@@ -282,7 +286,8 @@ namespace BackEnd.Controllers
                         {
                             Typ = v.Typ,
                             Tytul = v.Tytul,
-                            Tresc = v.Tresc
+                            Tresc = v.Tresc,
+                            Atrybuty = v.Atrybuty
                         }).ToList()
                     };
                 }).ToList();
@@ -302,6 +307,7 @@ namespace BackEnd.Controllers
             public string Tytul { get; set; }
             public string Tresc { get; set; }
             public int Typ { get; set; }
+            public List<AppEventAttribute> Atrybuty { get; set; }
         }
         /// <summary>
         /// Dodaje do zgłoszenia nowe podejrzewane niepożądane odczyny.
@@ -339,6 +345,11 @@ namespace BackEnd.Controllers
             _context.SaveChanges();
             return Ok();
         }
+        /// <summary>
+        /// Aktualizuje dane użytkownika.
+        /// </summary>
+        /// <param name="userUpdate"> Zaktualizowane dane użytkownika </param>
+        /// <returns></returns>
         [HttpPost("UpdateUser")]
         public IActionResult UpdateUser([FromBody] UserUpdate userUpdate)
         {
@@ -349,6 +360,11 @@ namespace BackEnd.Controllers
             _context.SaveChanges();
             return Ok();
         }
+        /// <summary>
+        /// Przesyła plik do serwera i zapisuje go.
+        /// </summary>
+        /// <param name="file"> Dany plik </param>
+        /// <returns></returns>
         [HttpPost("Upload")]
         public IActionResult UploadFile([FromForm] IFormFile file)
         {
@@ -368,6 +384,11 @@ namespace BackEnd.Controllers
             _context.SaveChanges();
             return Ok(fileName);
         }
+        /// <summary>
+        /// Zwraca plik o poadnej nazwie
+        /// </summary>
+        /// <param name="filename"> Nazwa pliku </param>
+        /// <returns> Żądany plik </returns>
         [HttpGet("File/{filename}")]
         public IActionResult DownloadFile(string filename)
         {
@@ -379,6 +400,11 @@ namespace BackEnd.Controllers
             if (stream == null) return NotFound();
             return File(stream, "application/octet-stream", file.OryginalnaNazwa);
         }
+        /// <summary>
+        /// Usuwa plik z serwera
+        /// </summary>
+        /// <param name="filename"> Nazwa pliku </param>
+        /// <returns></returns>
         [HttpDelete("File/{filename}")]
         public IActionResult DeleteFile(string filename)
         {
@@ -388,7 +414,22 @@ namespace BackEnd.Controllers
             string directorypath = @"C:\NopImages";
             FileInfo localFile = new FileInfo(Path.Combine(directorypath, filename));
             localFile.Delete();
+            _context.Pliki.Remove(file);
+            _context.SaveChanges();
             return Ok();
+        }
+        /// <summary>
+        /// Zwraca nazwę pliku 
+        /// </summary>
+        /// <param name="filename"> Nazwa pliku na serwerze </param>
+        /// <returns> Oryginalna nazwa pliku </returns>
+        [HttpGet("FileInfo/{filename}")]
+        public IActionResult GetFileInfo(string filename)
+        {
+            var file = _context.Pliki.FirstOrDefault(f => f.NazwaPliku == filename);
+            if (file == null) return NotFound();
+            if (file.UzytId != Account.Id) return Unauthorized();
+            return Ok(file.OryginalnaNazwa);
         }
     }
 }
