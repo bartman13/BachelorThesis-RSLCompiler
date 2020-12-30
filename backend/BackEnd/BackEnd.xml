@@ -111,5 +111,40 @@
             <param name="nops"> Lista nowych podejrzewanych niepożądanych odczynów </param>
             <returns> Ok </returns>
         </member>
+        <member name="M:BackEnd.Controllers.RodzicController.UpdateUser(BackEnd.DataTransferObjects.UserUpdate)">
+            <summary>
+            Aktualizuje dane użytkownika.
+            </summary>
+            <param name="userUpdate"> Zaktualizowane dane użytkownika </param>
+            <returns></returns>
+        </member>
+        <member name="M:BackEnd.Controllers.RodzicController.UploadFile(Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            Przesyła plik do serwera i zapisuje go.
+            </summary>
+            <param name="file"> Dany plik </param>
+            <returns></returns>
+        </member>
+        <member name="M:BackEnd.Controllers.RodzicController.DownloadFile(System.String)">
+            <summary>
+            Zwraca plik o poadnej nazwie
+            </summary>
+            <param name="filename"> Nazwa pliku </param>
+            <returns> Żądany plik </returns>
+        </member>
+        <member name="M:BackEnd.Controllers.RodzicController.DeleteFile(System.String)">
+            <summary>
+            Usuwa plik z serwera
+            </summary>
+            <param name="filename"> Nazwa pliku </param>
+            <returns></returns>
+        </member>
+        <member name="M:BackEnd.Controllers.RodzicController.GetFileInfo(System.String)">
+            <summary>
+            Zwraca nazwę pliku 
+            </summary>
+            <param name="filename"> Nazwa pliku na serwerze </param>
+            <returns> Oryginalna nazwa pliku </returns>
+        </member>
     </members>
 </doc>
