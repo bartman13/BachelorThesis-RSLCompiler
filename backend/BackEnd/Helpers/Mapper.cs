@@ -13,6 +13,8 @@ namespace BackEnd.Helpers
         public AutoMapperProfile()
         {
             CreateMap<Uzytkownicy, AuthenticateResponse>();
+            
+            CreateMap<Zgloszenia, DoctorAppResponse>();
 
             ////CreateMap<Account, AuthenticateResponse>();
 
