@@ -16,6 +16,8 @@ namespace BackEnd.Helpers
             
             CreateMap<Zgloszenia, DoctorAppResponse>();
 
+            CreateMap<SignUpParentRequest, Uzytkownicy>();
+
             ////CreateMap<Account, AuthenticateResponse>();
 
             ////CreateMap<RegisterRequest, Account>();

@@ -167,11 +167,10 @@ namespace BackEnd.Services
             // first registered account is an admin
             account.Rola = (int)Role.Rodzic;
             account.Utworzone = DateTime.UtcNow;
-            account.VerificationToken = randomTokenString();
+            //account.VerificationToken = randomTokenString();
             // save account
             _context.Uzytkownicy.Add(account);
             _context.SaveChanges();
-            
         }
     }
 }

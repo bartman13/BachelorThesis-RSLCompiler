@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import UserContext from '../contexts/UserContext'
-import SignIn from "./SignInComponent";
+import LoggedOut from "./LoggedOutComponent";
 import Parent from "./ParentComponent";
 import Doctor from "./DoctorComponent";
 import PZH from "./PZHComponent";
@@ -59,7 +59,7 @@ function Main(){
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     if(user === undefined){
-        return <SignIn startRefreshToken={refreshTokenTimer}/>;
+        return <LoggedOut startRefreshToken={refreshTokenTimer}/>;
     }
     if(user.rola === 0){
         return <Parent logout={logout}/>;
@@ -68,7 +68,7 @@ function Main(){
         return <Doctor logout={logout}/>;
     }
     if(user.rola === 2){
-        return <PZH/>;
+        return <PZH logout={logout}/>;
     }
 }
 
