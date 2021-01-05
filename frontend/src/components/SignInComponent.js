@@ -92,7 +92,6 @@ export default function SignIn(props) {
             setEmailValid(false);
         }
     }
-    console.log(props);
 
     return (
         <Container component="main" maxWidth="xs">

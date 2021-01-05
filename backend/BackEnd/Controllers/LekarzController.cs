@@ -41,7 +41,7 @@ namespace BackEnd.Controllers
                 ret.Add(new DoctorAppResponse
                 {
                     Id = el.Id,
-                    Data = el.Data,
+                    Data = el.DataUtworzenia,
                     Nazwa_Szczepionki = "Polfarma",
                     Imie = el.Uzyt.Imie,
                     Nazwisko = el.Uzyt.Nazwisko,

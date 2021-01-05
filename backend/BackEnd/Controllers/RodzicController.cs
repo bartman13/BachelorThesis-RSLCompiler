@@ -148,10 +148,11 @@ namespace BackEnd.Controllers
         {
             if (value == null) return BadRequest(new { message = "Vallue jest nullem" });
             var user = _context.Uzytkownicy.Single(x => x.Id == Account.Id);
-            var kek = Request.Form.Files;
+            DateTime timestamp = DateTime.Now;
             Zgloszenia app = new Zgloszenia
             {
-                Data = value.Data,
+                DataUtworzenia = timestamp,
+                DataSzczepienia = value.Data,
                 PacjentId = value.pacjentId,
                 ProsbaOKontakt = value.prosba_o_kontakt,
                 UzytId = Account.Id,
@@ -159,12 +160,12 @@ namespace BackEnd.Controllers
             };
             _context.Zgloszenia.Attach(app);
             app.ZgloszenieSzczepionki.Add(new ZgloszenieSzczepionki { SzczepionkaId = value.szczepionkaId });
-            DateTime timestamp = DateTime.Now;
             foreach (var nop in value.nopy)
             {
                 var oz = new OdczynyZgloszenia
                 {
                     Data = timestamp,
+                    DataWystapenia = nop.data,
                     OdczynId = nop.id
                 };
                 foreach (var attr in nop.atrybuty)
@@ -226,7 +227,7 @@ namespace BackEnd.Controllers
             {
                 new AppEvent
                 {
-                    Data = app.Data,
+                    Data = app.DataSzczepienia,
                     Tytul = "Wykonanie szczepienia",
                     Tresc = "Wykonanie szczepienia przy użyciu szczepionek: " + 
                         string.Join(", ", app.ZgloszenieSzczepionki.Select(zs => zs.Szczepionka.Nazwa)),
@@ -242,7 +243,7 @@ namespace BackEnd.Controllers
                 int? sc = odczyn.SzczepionkiOdczyny.Max(so => so.StopienCiezkosci);
                 events.Add(new AppEvent
                     {
-                        Data = n.Data,
+                        Data = n.DataWystapenia,
                         Tytul = odczyn?.Nazwa,
                         Atrybuty = new List<AppEventAttribute>(n.AtrybutyZgloszenia.Select(a => new AppEventAttribute() {
                             Nazwa = a.Atod.Nazwa,
@@ -273,6 +274,13 @@ namespace BackEnd.Controllers
                     }
                 );
             }
+            events.Add(new AppEvent
+            {
+                Typ = 1,
+                Tytul = "Utworzenie zgłoszenia",
+                Tresc = "Utworzono zgłoszenie",
+                Data = app.DataUtworzenia
+            });
             var timeline = events.GroupBy(e => e.Data,
                 (key, values) =>
                 {
@@ -290,15 +298,7 @@ namespace BackEnd.Controllers
                             Atrybuty = v.Atrybuty
                         }).ToList()
                     };
-                }).ToList();
-            timeline[1].Zdarzenia.Insert(0, new AppEventResponse 
-            {
-                Typ = 1,
-                Tytul = "Utworzenie zgłoszenia",
-                Tresc = "Utworzono zgłoszenie"
-            });
-            timeline[1].Typ = timeline[1].Zdarzenia[0].Typ;
-            timeline[1].Tytul = timeline[1].Zdarzenia[0].Tytul;
+                }).OrderBy(i => i.Data).ToList();
             return Ok(timeline);
         }
         private class AppEvent
