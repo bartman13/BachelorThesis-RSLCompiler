@@ -9,6 +9,7 @@ import authHeader from '../shared/authheader';
 import apiURL from '../shared/apiURL';
 import LoadingContext from "../contexts/LoadingContext";
 import SnackbarContext from "../contexts/SnackbarContext";
+import FormatDate from "../shared/formatDate";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -49,7 +50,7 @@ function ParentVaccinationsList(){
                    
                     {a.pacjent.nazwisko + ' | '} 
                     
-                    {a.data + ' |' } 
+                    {FormatDate(true, a.dataUtworzenia) + ' |' } 
                    
                     {a.szczepionka}
                 </Paper> 

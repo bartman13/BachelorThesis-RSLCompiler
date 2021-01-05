@@ -135,6 +135,10 @@ namespace BackEnd.Models
                     .HasColumnName("data")
                     .HasColumnType("datetime");
 
+                entity.Property(e => e.DataWystapenia)
+                    .HasColumnName("data_wystapenia")
+                    .HasColumnType("datetime");
+
                 entity.Property(e => e.OdczynId).HasColumnName("odczyn_id");
 
                 entity.Property(e => e.ZgloszenieId).HasColumnName("zgloszenie_id");
@@ -352,9 +356,13 @@ namespace BackEnd.Models
             {
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Data)
-                    .HasColumnName("data")
-                    .HasColumnType("date");
+                entity.Property(e => e.DataSzczepienia)
+                    .HasColumnName("data_szczepienia")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataUtworzenia)
+                    .HasColumnName("data_utworzenia")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.LekarzId).HasColumnName("lekarz_id");
 

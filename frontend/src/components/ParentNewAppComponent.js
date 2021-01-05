@@ -4,7 +4,7 @@ import SnackbarContext from '../contexts/SnackbarContext';
 import LoadingContext from '../contexts/LoadingContext';
 import { Box, Button, Container, makeStyles } from '@material-ui/core';
 import { Grid, TextField, Select, InputLabel, MenuItem, FormControl, Typography,
-    FormControlLabel, Checkbox } from '@material-ui/core';
+    FormControlLabel, Checkbox, Collapse } from '@material-ui/core';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import NOPCreator from './NOPCreatorComponent';
 import axios from 'axios';
@@ -12,6 +12,7 @@ import { useHistory } from 'react-router-dom';
 import authHeader from '../shared/authheader';
 import apiURL from '../shared/apiURL';
 import toFormData from '../shared/objectToFormData';
+import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -33,7 +34,7 @@ function ParentNewApp(){
     const [imageKsZd, setImageKsZd] = useState('');
     const [selectedNOPs, setSelectedNOPs] = useState([]);
     const [contact, setContact] = useState(false);
-    const [touched] = useState([false, false, false]);
+    const [requiredNotSet, setRequiredNotSet] = useState([false, false, false]);
     
     const { user } = useContext(UserContext);
     const { setLoading } = useContext(LoadingContext);
@@ -56,12 +57,14 @@ function ParentNewApp(){
                 message: 'Błąd ładowania danych'
             });
         }
-        touched[0] = true;
+        requiredNotSet[1] = false;
+        setRequiredNotSet([...requiredNotSet]);
         setLoading(false);
     };
     const handleChildChange = (event) => {
         setSelectedChild(event.target.value);
-        touched[1] = true;
+        requiredNotSet[0] = false;
+        setRequiredNotSet([...requiredNotSet]);
     };
     const handleDateChange = (event) => {
         setSelectedDate(event.target.value);
@@ -76,13 +79,27 @@ function ParentNewApp(){
                 });
             };
             reader.readAsDataURL(event.target.files[0]);
-            touched[2] = true;
+            requiredNotSet[2] = false;
+            setRequiredNotSet([...requiredNotSet]);
         }
     };
     const handleContactChange = (event) => {
         setContact(event.target.checked);
     };
     const submit = async () => {
+        if(!selectedChild){
+            requiredNotSet[0] = true;
+        }
+        if(selectedVaccine === ''){
+            requiredNotSet[1] = true;
+        }
+        if(!imageKsZd){
+            requiredNotSet[2] = true;
+        }
+        if(requiredNotSet.filter(item => item).length > 0){
+            setRequiredNotSet([...requiredNotSet]);
+            return;
+        }
         const app = {
             data: selectedDate,
             szczepionkaId: selectedVaccine,
@@ -92,6 +109,7 @@ function ParentNewApp(){
             nopy: selectedNOPs.map(n => {
                 return {
                     id: n.id,
+                    data: n.data,
                     atrybuty: n.atrybuty.map(a => {
                         return {
                             id: a.id,
@@ -159,7 +177,7 @@ function ParentNewApp(){
                 </Typography>
                 </Grid>
                 <Grid item xs={1} align="center">
-                  <Box padding={2}> 1. </Box>
+                    <Box padding={2}> 1. </Box>
                 </Grid>
                 <Grid item xs={11}>
                     <FormControl className={classes.formControl}>
@@ -174,10 +192,13 @@ function ParentNewApp(){
                                 );
                             })}
                         </Select>
+                        <Collapse in={requiredNotSet[0]}>
+                            <Alert severity="error"> To pole jest wymagane </Alert>
+                        </Collapse>
                     </FormControl>
                 </Grid>
                 <Grid item xs={1} align="center">
-                  <Box padding={2}> 2. </Box>
+                    <Box padding={2}> 2. </Box>
                 </Grid>
                 <Grid item xs={11}>
                     <TextField
@@ -211,6 +232,9 @@ function ParentNewApp(){
                     <Box>
                         {vaccines.find(v => v.id === selectedVaccine)?.opis}
                     </Box>
+                    <Collapse in={requiredNotSet[1]}>
+                        <Alert severity="error"> To pole jest wymagane </Alert>
+                    </Collapse>
                 </Grid>
                 <Grid item xs={1} align="center">
                   <Box padding={2}> 4. </Box>
@@ -223,6 +247,9 @@ function ParentNewApp(){
                     </Button>
                     <br/>
                     <img alt='' src={imageKsZd?.image} style={{maxWidth : '300px'}}/>
+                    <Collapse in={requiredNotSet[2]}>
+                        <Alert severity="error"> Zdjęcie książeczki zdrowia jest wymagane </Alert>
+                    </Collapse>
                 </Grid>
                 <Grid item xs={1} align="center">
                   <Box padding={2}> 5. </Box>
@@ -232,7 +259,7 @@ function ParentNewApp(){
                         Występujące niepożądane odczyny
                     </Typography>
                     <NOPCreator 
-                        show={nops.length > 0 && touched[0] === true}
+                        show={selectedVaccine !== '' && nops.length > 0}
                         nops={nops}
                         selectedNOPs={selectedNOPs}
                         setSelectedNOPs={setSelectedNOPs}
@@ -253,7 +280,6 @@ function ParentNewApp(){
                     <Button 
                         variant="contained"
                         color="primary"
-                        disabled={touched.includes(false)}
                         onClick={submit}> Utwórz </Button>
                 </Grid>
             </Grid>

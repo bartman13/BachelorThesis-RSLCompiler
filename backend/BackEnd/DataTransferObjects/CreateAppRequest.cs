@@ -21,9 +21,7 @@ namespace BackEnd.DataTransferObjects
     {
         public int id { get; set; }
         public virtual ICollection<Atrybuty> atrybuty { get; set; }
-       
-        
-
+        public DateTime data { get; set; }
     }
     public class Atrybuty
     {

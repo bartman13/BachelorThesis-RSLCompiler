@@ -14,7 +14,8 @@ namespace BackEnd.Models
 
         public int Id { get; set; }
         public int UzytId { get; set; }
-        public DateTime Data { get; set; }
+        public DateTime DataUtworzenia { get; set; }
+        public DateTime DataSzczepienia { get; set; }
         public string ZdjecieKsZd { get; set; }
         public int? LekarzId { get; set; }
         public bool ProsbaOKontakt { get; set; }
