@@ -1653,10 +1653,10 @@
     react-is "^16.8.0"
     react-transition-group "^4.4.0"
 
-"@material-ui/data-grid@^4.0.0-alpha.13":
-  version "4.0.0-alpha.13"
-  resolved "https://registry.yarnpkg.com/@material-ui/data-grid/-/data-grid-4.0.0-alpha.13.tgz#1893711243717eab8121f613c819ba83f442e46d"
-  integrity sha512-TBa1NztWDXiB0E8i7s3Vi+usk1k5aODjA5wz7wr5QHiY1h5Iky/82IjtYgilqn9xC/f+jcbfbtPBGxG4qIiv2g==
+"@material-ui/data-grid@^4.0.0-alpha.14":
+  version "4.0.0-alpha.14"
+  resolved "https://registry.yarnpkg.com/@material-ui/data-grid/-/data-grid-4.0.0-alpha.14.tgz#7e82ae1f73a339fb0ca3627f77bcf72735d13084"
+  integrity sha512-Ig4gMgJae6oEXWbFdZIzOWbFuzsiZOxszPgx94YJJdsfAqHEAye3IFvOiOSiZj1rUAr40R0zLDJ4ZUB9ulX5+Q==
   dependencies:
     "@material-ui/utils" "^5.0.0-alpha.14"
     prop-types "^15.7.2"
@@ -1759,9 +1759,9 @@
     react-is "^16.8.0 || ^17.0.0"
 
 "@material-ui/utils@^5.0.0-alpha.14":
-  version "5.0.0-alpha.20"
-  resolved "https://registry.yarnpkg.com/@material-ui/utils/-/utils-5.0.0-alpha.20.tgz#3b8a5e1ead2a86faf3d6b35b24e14df22d1cc39d"
-  integrity sha512-GOi2zO8fuqraK8j1n4VxTHsd9L75EiUaM9H5sM16MYG5Ewd27trglAzOyO74Xzxg4j1y9IYuC04ymZbiZ67pUg==
+  version "5.0.0-alpha.21"
+  resolved "https://registry.yarnpkg.com/@material-ui/utils/-/utils-5.0.0-alpha.21.tgz#f060a16ca37cd89338734b38952af356ad696022"
+  integrity sha512-vpfxzH4+lNkD5WS9LpDlTzm0qduyU1X2mbzv43mSwrhx5eXBYscO4sFH6FczSKkTc+Xaaq5GXNDhsbCDPYcdiQ==
   dependencies:
     "@babel/runtime" "^7.4.4"
     "@types/prop-types" "^15.7.3"

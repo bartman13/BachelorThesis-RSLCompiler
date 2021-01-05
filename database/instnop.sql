@@ -33,7 +33,7 @@ CREATE TABLE Uzytkownicy (
 	telefon nvarchar (30) NULL,
 	email nvarchar (30) NULL,
 	rola int NOT NULL,
-	haslo  nvarchar (30) NOT NULL,
+	hash_hasla  nvarchar (120) NOT NULL,
 	akceptacja_warunkow bit NULL,
 	verification_token nvarchar(50) NULL,
 	zweryfikowany datetime NULL,
@@ -109,7 +109,6 @@ CREATE TABLE Zgloszenia (
 	uzyt_id int NOT NULL,
 	"data" date NOT NULL,
 	zdjecie_ks_zd nvarchar(50) NOT NULL,
-	lekarz_id int NULL,
 	prosba_o_kontakt bit NOT NULL,
 	pacjent_id int NOT NULL
 	CONSTRAINT PK_Zgloszenia PRIMARY KEY CLUSTERED
@@ -119,13 +118,6 @@ CREATE TABLE Zgloszenia (
 	CONSTRAINT FK_Zgloszenia_Uzytkownicy FOREIGN KEY
 	(
 		uzyt_id
-	) REFERENCES Uzytkownicy
-	(
-		id
-	),
-	CONSTRAINT FK_Zgloszenia_Uzytkownicy2 FOREIGN KEY
-	(
-		lekarz_id
 	) REFERENCES Uzytkownicy
 	(
 		id

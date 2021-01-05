@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
@@ -28,7 +29,7 @@ namespace BackEnd.Helpers
             {
                 var response = context.Response;
                 response.ContentType = "application/json";
-
+               
                 switch (error)
                 {
                     case AppException e:

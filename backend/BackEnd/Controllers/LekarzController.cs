@@ -31,8 +31,9 @@ namespace BackEnd.Controllers
         {
             var zgloszenia = (from Zgloszenia in _context.Zgloszenia
                               .Include("Uzyt") 
-                              .Include("DecyzjeLekarza")// w przyszlosci zamienic na data transfer objet
-                       where Zgloszenia.LekarzId == Account.Id
+                              .Include("DecyzjeLekarza")
+                              .Include("Pacjent")// w przyszlosci zamienic na data transfer objet
+                       where Zgloszenia.Pacjent.LekarzId == Account.Id
                        select Zgloszenia).ToList();
 
             var ret = new List<DoctorAppResponse>();
@@ -42,7 +43,7 @@ namespace BackEnd.Controllers
                 {
                     Id = el.Id,
                     Data = el.Data,
-                    Nazwa_Szczepionki = "Polfarma",
+                    Nazwa_Szczepionki = "Menuvo",
                     Imie = el.Uzyt.Imie,
                     Nazwisko = el.Uzyt.Nazwisko,
                     Status = el.DecyzjeLekarza.Count == 0 ? false : true

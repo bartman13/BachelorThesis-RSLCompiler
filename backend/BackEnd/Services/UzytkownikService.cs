@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using BC = BCrypt.Net.BCrypt;
+using AutoMapper;
 using BackEnd.DataTransferObjects;
 using BackEnd.Helpers;
 using BackEnd.Models;
@@ -44,9 +45,9 @@ namespace BackEnd.Services
         }
         public AuthenticateResponse Authenticate(AuthenticateRequest model, string ipAddress)
         {
-            var account = _context.Uzytkownicy.SingleOrDefault(x => x.Email == model.Email && x.Haslo==model.Haslo);
+            var account = _context.Uzytkownicy.SingleOrDefault(x => x.Email == model.Email );
 
-            if (account == null ) 
+            if (account == null || !BC.Verify(model.Haslo, account.HashHasla)) 
                 throw new AppException("Email or password is incorrect");
 
             // authentication successful so generate jwt and refresh tokens
@@ -163,11 +164,11 @@ namespace BackEnd.Services
 
             // map model to new account object
             var account = _mapper.Map<Uzytkownicy>(model);
-
+            account.HashHasla = BC.HashPassword(model.Haslo);
             // first registered account is an admin
             account.Rola = (int)Role.Rodzic;
             account.Utworzone = DateTime.UtcNow;
-            account.VerificationToken = randomTokenString();
+            //account.VerificationToken = randomTokenString();
             // save account
             _context.Uzytkownicy.Add(account);
             _context.SaveChanges();

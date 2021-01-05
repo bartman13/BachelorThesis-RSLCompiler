@@ -30,6 +30,13 @@ namespace BackEnd.Controllers
             _accountService = accountService;
             _mapper = mapper;
         }
+        
+        [HttpGet("Test")]
+        public IActionResult Test()
+        {
+            return (Ok("ok"));
+        }
+        
         /// <summary>
         /// Zwraca dane o użytkowniku wraz z krótkoterminowym tokenem dostępu i 
         /// długoterminowym refresh tokenem umiesczonym w plikach cookies. 

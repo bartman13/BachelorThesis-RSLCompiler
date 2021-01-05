@@ -11,8 +11,7 @@ namespace BackEnd.Models
             PacjenciUzyt = new HashSet<Pacjenci>();
             Pliki = new HashSet<Pliki>();
             RefreshToken = new HashSet<RefreshToken>();
-            ZgloszeniaLekarz = new HashSet<Zgloszenia>();
-            ZgloszeniaUzyt = new HashSet<Zgloszenia>();
+            Zgloszenia = new HashSet<Zgloszenia>();
         }
 
         public int Id { get; set; }
@@ -21,7 +20,7 @@ namespace BackEnd.Models
         public string Telefon { get; set; }
         public string Email { get; set; }
         public int Rola { get; set; }
-        public string Haslo { get; set; }
+        public string HashHasla { get; set; }
         public bool? AkceptacjaWarunkow { get; set; }
         public string VerificationToken { get; set; }
         public DateTime? Zweryfikowany { get; set; }
@@ -35,7 +34,6 @@ namespace BackEnd.Models
         public virtual ICollection<Pacjenci> PacjenciUzyt { get; set; }
         public virtual ICollection<Pliki> Pliki { get; set; }
         public virtual ICollection<RefreshToken> RefreshToken { get; set; }
-        public virtual ICollection<Zgloszenia> ZgloszeniaLekarz { get; set; }
-        public virtual ICollection<Zgloszenia> ZgloszeniaUzyt { get; set; }
+        public virtual ICollection<Zgloszenia> Zgloszenia { get; set; }
     }
 }
