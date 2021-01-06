@@ -17,11 +17,11 @@ delete from Uzytkownicy
 set identity_insert Uzytkownicy on
 
 insert into Uzytkownicy 
-	(id, imie, nazwisko, rola, haslo,email,telefon)
+	(id, imie, nazwisko, rola, hash_hasla,email,telefon)
 values
-	(0, 'Jan', 'Kowalski', 0, 'rodzic','rodzic@wp.pl','888-88-88'),
-	(1, 'Adam', 'Lekarski', 1, 'lekarz','lekarz@wp.pl','888-88-88'),
-	(2, 'Krzysztof', 'PracowniczyPZH', 2,'pzh','pzh@wp.pl','888-88-88')
+	(0, 'Jan', 'Kowalski', 0, '$2a$11$sLwsQHGwX0HWGrN2Y44kXebgjpEEJ6bcU3uaHbd.5B1pvlQpEbxGm','rodzic@wp.pl','888-88-88'),
+	(1, 'Adam', 'Lekarski', 1, '$2a$11$7V1ZrWGAALER2OCHl0N7cevVQNiJtS7Tw80E2Mv5WCA8sbvZtgAJC','lekarz@wp.pl','888-88-88'),
+	(2, 'Krzysztof', 'PracowniczyPZH', 2,'$2a$11$7VsuNXvpR7zREk2qbkWX4OSRzZLTbB9uXdzNz55Zw3W87sZacuHiC','pzh@wp.pl','888-88-88')
 
 set identity_insert Uzytkownicy off
 
@@ -41,6 +41,18 @@ insert into Szczepionki
 	(id, nazwa, opis)
 values
 	(0, 'Menveo', 'Produkt Menveo jest przeznaczony do czynnego uodpornienia dzieci (w wieku od 2 lat), młodzieży
+i dorosłych narażonych na kontakt z dwoinkami zapalenia opon mózgowych (Neisseria meningitidis)
+z grup serologicznych A, C, W135 i Y, w celu zapobiegania chorobie inwazyjnej.
+Szczepionkę należy stosować zgodnie z obowiazujacymi oficjalnymi zaleceniami.'),
+(1, 'Aether', 'Produkt Menveo jest przeznaczony do czynnego uodpornienia dzieci (w wieku od 2 lat), młodzieży
+i dorosłych narażonych na kontakt z dwoinkami zapalenia opon mózgowych (Neisseria meningitidis)
+z grup serologicznych A, C, W135 i Y, w celu zapobiegania chorobie inwazyjnej.
+Szczepionkę należy stosować zgodnie z obowiazujacymi oficjalnymi zaleceniami.'),
+(2, 'Polfarma', 'Produkt Menveo jest przeznaczony do czynnego uodpornienia dzieci (w wieku od 2 lat), młodzieży
+i dorosłych narażonych na kontakt z dwoinkami zapalenia opon mózgowych (Neisseria meningitidis)
+z grup serologicznych A, C, W135 i Y, w celu zapobiegania chorobie inwazyjnej.
+Szczepionkę należy stosować zgodnie z obowiazujacymi oficjalnymi zaleceniami.'),
+(3, 'Pfizer', 'Produkt Menveo jest przeznaczony do czynnego uodpornienia dzieci (w wieku od 2 lat), młodzieży
 i dorosłych narażonych na kontakt z dwoinkami zapalenia opon mózgowych (Neisseria meningitidis)
 z grup serologicznych A, C, W135 i Y, w celu zapobiegania chorobie inwazyjnej.
 Szczepionkę należy stosować zgodnie z obowiazujacymi oficjalnymi zaleceniami.')

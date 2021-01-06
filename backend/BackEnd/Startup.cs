@@ -31,6 +31,9 @@ namespace BackEnd
         public void ConfigureServices(IServiceCollection services)
         {
             var connection = Configuration["DatabaseConnectionString"];
+            services.Configure<IISOptions>(options => {
+                
+            });
             services.AddDbContext<NopContext>(options => options.UseSqlServer(connection)); // database
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddSwaggerGen(c =>
@@ -69,6 +72,7 @@ namespace BackEnd
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseDeveloperExceptionPage();
             app.UseSwagger();
             app.UseSwaggerUI(x => x.SwaggerEndpoint("/swagger/v1/swagger.json", "Nop endpoints"));
             app.UseHttpsRedirection();

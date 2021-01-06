@@ -17,11 +17,9 @@ namespace BackEnd.Models
         public DateTime DataUtworzenia { get; set; }
         public DateTime DataSzczepienia { get; set; }
         public string ZdjecieKsZd { get; set; }
-        public int? LekarzId { get; set; }
         public bool ProsbaOKontakt { get; set; }
         public int PacjentId { get; set; }
 
-        public virtual Uzytkownicy Lekarz { get; set; }
         public virtual Pacjenci Pacjent { get; set; }
         public virtual Uzytkownicy Uzyt { get; set; }
         public virtual ICollection<DecyzjeLekarza> DecyzjeLekarza { get; set; }

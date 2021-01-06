@@ -34,7 +34,7 @@ namespace BackEnd.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=Nop;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=Nop;Trusted_Connection=false;User ID=Nop;Password=nop");
             }
         }
 
@@ -302,10 +302,10 @@ namespace BackEnd.Models
                     .HasColumnName("email")
                     .HasMaxLength(30);
 
-                entity.Property(e => e.Haslo)
+                entity.Property(e => e.HashHasla)
                     .IsRequired()
-                    .HasColumnName("haslo")
-                    .HasMaxLength(30);
+                    .HasColumnName("hash_hasla")
+                    .HasMaxLength(120);
 
                 entity.Property(e => e.Imie)
                     .IsRequired()
@@ -364,8 +364,6 @@ namespace BackEnd.Models
                     .HasColumnName("data_utworzenia")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.LekarzId).HasColumnName("lekarz_id");
-
                 entity.Property(e => e.PacjentId).HasColumnName("pacjent_id");
 
                 entity.Property(e => e.ProsbaOKontakt).HasColumnName("prosba_o_kontakt");
@@ -377,11 +375,6 @@ namespace BackEnd.Models
                     .HasColumnName("zdjecie_ks_zd")
                     .HasMaxLength(50);
 
-                entity.HasOne(d => d.Lekarz)
-                    .WithMany(p => p.ZgloszeniaLekarz)
-                    .HasForeignKey(d => d.LekarzId)
-                    .HasConstraintName("FK_Zgloszenia_Uzytkownicy2");
-
                 entity.HasOne(d => d.Pacjent)
                     .WithMany(p => p.Zgloszenia)
                     .HasForeignKey(d => d.PacjentId)
@@ -389,7 +382,7 @@ namespace BackEnd.Models
                     .HasConstraintName("FK_Zgloszenia_Pacjenci");
 
                 entity.HasOne(d => d.Uzyt)
-                    .WithMany(p => p.ZgloszeniaUzyt)
+                    .WithMany(p => p.Zgloszenia)
                     .HasForeignKey(d => d.UzytId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Zgloszenia_Uzytkownicy");

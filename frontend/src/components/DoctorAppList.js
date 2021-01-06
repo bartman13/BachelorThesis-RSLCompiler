@@ -1,8 +1,8 @@
 import React,{ useState, useEffect, useContext } from "react";
-import {DataGrid,GridOverlay}  from '@material-ui/data-grid';
+import {AutoSizer, DataGrid,GridOverlay}  from '@material-ui/data-grid';
 import clsx from 'clsx';
 import { makeStyles,styled  } from '@material-ui/core/styles';
-import Link from '@material-ui/core/Link';
+import { useHistory, Link } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import axios from 'axios';
 import UserContext from '../contexts/UserContext'
@@ -11,14 +11,14 @@ import IconButton from '@material-ui/core/IconButton';
 import apiURL from '../shared/apiURL';
 import authHeader from '../shared/authheader';
 import SnackbarContext from "../contexts/SnackbarContext";
-
+import Pagination from '@material-ui/lab/Pagination';
+import PropTypes from 'prop-types';
  
   const useStyles = makeStyles({
     root: {
       '& .super-app-theme--cell': {
-        backgroundColor: '#bdbdbd',
+        backgroundColor: '#00acc1',
         color: '#1a3e72',
-        fontWeight: '600'
       },
       '& .super-app.negative': {
         backgroundColor: 'rgba(157, 255, 118, 0.49)',
@@ -30,7 +30,13 @@ import SnackbarContext from "../contexts/SnackbarContext";
         color: '#1a3e72',
         fontWeight: '600',
       },
+    '& .super-app-theme--link': {
+      margin: 'auto'
     },
+    },
+    page: {
+      display: 'flex',
+    }
   });
   const useStylesNoRows = makeStyles((theme) => ({
     root: {
@@ -60,7 +66,7 @@ import SnackbarContext from "../contexts/SnackbarContext";
    margin: 'auto',
    variant: 'text',
   });
-
+  
   function CustomNoRowsOverlay() {
     const classes = useStylesNoRows();
   
@@ -109,52 +115,137 @@ import SnackbarContext from "../contexts/SnackbarContext";
       </GridOverlay>
     );
   }
-function CustomToolbar() {
-  return <div>This is my custom Toolbar!</div>;
-}
-
+  function CustomPagination(props) {
+    const { pagination, api } = props;
+    const classes = useStyles();
+  
+    return (
+      <Pagination
+        className={classes.page}
+        color="primary"
+        page={pagination.page}
+        count={pagination.pageCount}
+        onChange={(event, value) => api.current.setPage(value)}
+      />
+    );
+  }
+  CustomPagination.propTypes = {
+    /**
+     * ApiRef that let you manipulate the grid.
+     */
+    api: PropTypes.shape({
+      current: PropTypes.object.isRequired,
+    }).isRequired,
+    /**
+     * The object containing all pagination details in [[PaginationState]].
+     */
+    pagination: PropTypes.shape({
+      page: PropTypes.number.isRequired,
+      pageCount: PropTypes.number.isRequired,
+      pageSize: PropTypes.number.isRequired,
+      paginationMode: PropTypes.oneOf(['client', 'server']).isRequired,
+      rowCount: PropTypes.number.isRequired,
+    }).isRequired,
+  };
 const columns = [
-  { field: 'imie', headerName: 'Imie',headerAlign: 'center',cellAlign:'center', width: 160,headerClassName:'super-app-theme--cell' },
-  { field: 'nazwisko', headerName: 'Nazwisko',headerAlign: 'center', width: 160,headerClassName:'super-app-theme--cell' },
-  { field: 'nazwa_Szczepionki',  headerName: 'Nazwa szczepionki',headerAlign: 'center', width: 160,headerClassName:'super-app-theme--cell',
+  {
+    field: 'imie',
+    headerAlign: 'center',
+    flex: 1, 
+    headerClassName: 'super-app-theme--cell', 
+    align: 'center',
+    renderHeader: () => (
+      <strong>
+        Imie
+      </strong>
+    ),
+  },
+  { 
+    field: 'nazwisko', 
+    headerAlign: 'center', 
+    flex: 1,
+    headerClassName:'super-app-theme--cell',
+    align:'center',
+    renderHeader: () => (
+      <strong>
+        Nazwisko
+      </strong>
+    ), 
+  },
+  { 
+    field: 'nazwa_Szczepionki',
+    headerAlign: 'center', 
+    flex: 0.7,
+    align:'center',
+    headerClassName:'super-app-theme--cell',
+    renderHeader: () => (
+      <strong>
+        Nazwa szczepionki
+      </strong>
+    ), 
     renderCell: (params) => (
-          <Typography >
+          <Typography class='super-app-theme--link' >
           <Link href="#" >
           {params.value}
           </Link>
         </Typography>
       )},
-  { field: 'data', headerName: 'Data utworzenia zglosznia', width: 160,headerClassName:'super-app-theme--cell',
-  headerClassName: 'super-app-theme--cell',
+  { 
+    field: 'data', 
+    flex: 1,
+    headerAlign: 'center',
+    align:'center',
+    headerClassName:'super-app-theme--cell',
+    renderHeader: () => (
+      <strong>
+        Data utworzenia
+      </strong>
+    ), 
   },
  
-  { field: 'status', headerName: 'Status', width: 130, headerAlign: 'center',headerClassName:'super-app-theme--cell',
-      cellClassName: (params) =>
+  { 
+    field: 'status', 
+    flex: 0.5,
+    headerAlign: 'center',
+    align:'center',
+    headerClassName:'super-app-theme--cell',
+    cellClassName: (params) =>
       clsx('super-app', {
           positive: params.value == false,
           negative: params.value == true,
+          
       }),
-      
+    valueGetter: (params) => params.value ? 'Zatwierdzone':'Oczekujace' ,
+    renderHeader: () => (
+      <strong>
+        Obecny Stan
+      </strong>
+    ), 
     },
-    { field: 'link', headerName: 'Edytuj', width: 100, headerAlign: 'center',headerClassName:'super-app-theme--cell',
-    renderCell: (params) => (
-      <MyButton >
-      <EditLocationRoundedIcon fontSize='large' />
-    </MyButton>
-    )}
+    { 
+      field: 'link',
+      headerName: 'Edytuj',
+      flex: 0.4,
+      headerAlign: 'center',
+      align: 'center',
+      headerClassName: 'super-app-theme--cell',
+      renderCell: (params) => (
+        <MyButton >
+        <Link  to={"doctorapp/0"}>
+          <EditLocationRoundedIcon fontSize='large' />
+        </Link>
+        </MyButton>
+      ),
+      renderHeader: () => (
+        <strong>
+          Zarządzaj
+        </strong>
+      ), 
+  }
 ];
-const rows = [
-  { id: 1, lastName: 'Kowalski', firstName: 'Adam',vaccine:'Menuvo', date: '22-10-2020', status:'Oczekujace' },
-  { id: 2, lastName: 'Nowak', firstName: 'Cersei', vaccine:'Menuvo',date: '22-10-2020', status:'Rozpatrzone' },
-  { id: 3, lastName: 'Lanister', firstName: 'Jaime', vaccine:'Atari',date: '22-10-2020', status:'Oczekujace' },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', vaccine:'Polirtus',date: '22-10-2020', status:'Rozpatrzone' },
-  { id: 5, lastName: 'Targaryyen', firstName: 'Daenerys', vaccine:'Polirtus',date: '22-10-2020', status:'Rozpatrzone' },
-  { id: 6, lastName: 'Kowalski', firstName: 'Adam', vaccine:'Menuvo',date: '22-10-2020', status:'Oczekujace' },
-  { id: 7, lastName: 'Kowalski', firstName: 'Ferrara', vaccine:'Atari',date: '22-10-2020', status:'Oczekujace'},
-  { id: 8, lastName: 'Manci', firstName: 'Rossini',vaccine:'Atari',date: '22-10-2020', status:'Oczekujace' },
-  { id: 9, lastName: 'Dent', firstName: 'Harvey', vaccine:'Polirtus',date: '22-10-2020', status:'Oczekujace' },
-];
-
+const riceFilterModel = {
+  items: [{ columnField: columns, operatorValue: 'contains', value: 'rice' }],
+};
 function DoctorAppList(){
   const classes = useStyles();
   const [apps, setApps] = useState([]);
@@ -180,12 +271,12 @@ function DoctorAppList(){
     fetchData();
   }, [setApps, user]);
 
-
     return(
         <div style={{ height: 600, width: '100%' }} className={classes.root}>
-            <DataGrid rows={apps} columns={columns} pageSize={8} components={{
-          header: CustomToolbar,
-          noRowsOverlay: CustomNoRowsOverlay
+            <DataGrid rows={apps} columns={columns} pagination showToolbar  pageSize={8} filterModel={riceFilterModel} components={{
+          noRowsOverlay: CustomNoRowsOverlay,
+          pagination:CustomPagination
+
         }} />
         </div>
     );
