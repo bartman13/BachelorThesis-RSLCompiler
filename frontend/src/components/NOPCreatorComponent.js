@@ -302,6 +302,17 @@ function NOPAttribute(props) {
 
 function NOPEntry(props) {
     const { deleteClick, nop } = props;
+
+    const [date, setDate] = useState(new Date().toISOString().substring(0, 16));
+
+    const handleDateChange = (event) => {
+        setDate(event.target.value);
+    };
+
+    useEffect(() => {
+        nop.data = date;
+    }, [date, nop]);
+
     const classes = useStyles();
     return (
         <Grid container>
@@ -315,6 +326,34 @@ function NOPEntry(props) {
                     </AccordionSummary>
                     <AccordionDetails>
                         <Grid container>
+                            <Grid item xs={12} align="left">
+                                <Box fontWeight='fontWeightMedium' 
+                                    display='inline'
+                                    margin='10%'
+                                > 
+                                    Data i czas pojawienia odczynu:
+                                </Box>
+                            </Grid>
+                            <Grid item xs={12} align="center">
+                                <TextField
+                                    id="datetime-local"
+                                    label="Data i czas"
+                                    type="datetime-local"
+                                    value={date}
+                                    onChange={handleDateChange}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={12} align="left">
+                                <Box fontWeight='fontWeightMedium' 
+                                    display='inline'
+                                    margin='10%'
+                                > 
+                                    Dodatkowe dane o odczynu:
+                                </Box>
+                            </Grid>
                             {nop.atrybuty.map(a => {
                                 return (
                                     <Grid item xs={12} key={a.id}>

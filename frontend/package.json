@@ -19,6 +19,7 @@
     "form-data": "^3.0.0",
     "js-file-download": "^0.4.12",
     "material-ui-icons": "^1.0.0-beta.36",
+    "material-ui-phone-number": "^2.2.6",
     "msal": "^1.4.4",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",

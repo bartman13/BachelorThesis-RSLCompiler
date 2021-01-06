@@ -42,8 +42,8 @@ namespace BackEnd.Controllers
                 ret.Add(new DoctorAppResponse
                 {
                     Id = el.Id,
-                    Data = el.Data,
-                    Nazwa_Szczepionki = "Menuvo",
+                    Data = el.DataUtworzenia,
+                    Nazwa_Szczepionki = "Polfarma",
                     Imie = el.Uzyt.Imie,
                     Nazwisko = el.Uzyt.Nazwisko,
                     Status = el.DecyzjeLekarza.Count == 0 ? false : true

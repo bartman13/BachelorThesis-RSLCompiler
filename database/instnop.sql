@@ -1,30 +1,22 @@
-SET NOCOUNT ON
-GO
-
-USE master
-GO
-if exists (select * from sysdatabases where name='Nop')
-		drop database Nop
-go
-
-DECLARE @device_directory NVARCHAR(520)
-SELECT @device_directory = SUBSTRING(filename, 1, CHARINDEX(N'master.mdf', LOWER(filename)) - 1)
-FROM master.dbo.sysaltfiles WHERE dbid = 1 AND fileid = 1
-
-EXECUTE (N'CREATE DATABASE Nop
-  ON PRIMARY (NAME = N''Nop'', FILENAME = N''' + @device_directory + N'nop.mdf'')
-  LOG ON (NAME = N''Nop_log'',  FILENAME = N''' + @device_directory + N'nop.ldf'')')
-go
-
-GO
-
-set quoted_identifier on
-GO
-
 SET DATEFORMAT mdy
 GO
+
 use "Nop"
-go
+GO
+
+drop table if exists Pliki
+drop table if exists Atrybuty_Zgloszenia
+drop table if exists Szczepionki_Odczyny
+drop table if exists Odczyny_Zgloszenia
+drop table if exists Atrybuty_Odczynow
+drop table if exists Odczyny
+drop table if exists Zgloszenie_Szczepionki
+drop table if exists Szczepionki
+drop table if exists Decyzje_Lekarza
+drop table if exists Zgloszenia
+drop table if exists Pacjenci
+drop table if exists RefreshToken
+drop table if exists Uzytkownicy
 
 CREATE TABLE Uzytkownicy (
 	id int IDENTITY (1, 1) NOT NULL ,
@@ -107,7 +99,8 @@ GO
 CREATE TABLE Zgloszenia (
 	id int IDENTITY (1, 1) NOT NULL,
 	uzyt_id int NOT NULL,
-	"data" date NOT NULL,
+	data_utworzenia datetime NOT NULL,
+	data_szczepienia datetime NOT NULL,
 	zdjecie_ks_zd nvarchar(50) NOT NULL,
 	prosba_o_kontakt bit NOT NULL,
 	pacjent_id int NOT NULL
@@ -217,6 +210,7 @@ CREATE TABLE Odczyny_Zgloszenia(
 	odczyn_id int NOT NULL,
 	zgloszenie_id int NOT NULL,
 	"data" datetime NOT NULL,
+	data_wystapenia datetime NOT NULL,
 	CONSTRAINT FK_ODZG_Odczyny FOREIGN KEY
 	(
 		odczyn_id

@@ -172,7 +172,6 @@ namespace BackEnd.Services
             // save account
             _context.Uzytkownicy.Add(account);
             _context.SaveChanges();
-            
         }
     }
 }

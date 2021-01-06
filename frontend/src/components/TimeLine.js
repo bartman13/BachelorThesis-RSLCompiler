@@ -8,6 +8,7 @@ import TimelineDot from '@material-ui/lab/TimelineDot';
 import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
+import FormatDate from '../shared/formatDate';
 
 function AppTimelineDot({ type }) {
     switch (type) {
@@ -25,26 +26,6 @@ function AppTimelineDot({ type }) {
 }
 
 function AppTimelineItem({ item, onItemClick }) {
-
-    const FormatDate = (withTime, date) => {
-        if (withTime) {
-            return new Date(date).toLocaleDateString("pl", {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-        }
-        return new Date(date).toLocaleDateString("pl", {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: "2-digit",
-            minute: "2-digit"
-        });
-    }
-
     return (
         <TimelineItem>
             <TimelineOppositeContent>

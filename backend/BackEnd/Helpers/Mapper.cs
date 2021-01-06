@@ -18,6 +18,8 @@ namespace BackEnd.Helpers
             CreateMap<SignUpParentRequest,Uzytkownicy>();
 
 
+            CreateMap<SignUpParentRequest, Uzytkownicy>();
+
             ////CreateMap<Account, AuthenticateResponse>();
 
             ////CreateMap<RegisterRequest, Account>();
