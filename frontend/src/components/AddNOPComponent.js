@@ -28,6 +28,7 @@ function AddNOP(props){
                 selectedNOPs.map(n => {
                     return {
                         id: n.id,
+                        data: n.data,
                         atrybuty: n.atrybuty.map(a => {
                             return {
                                 id: a.id,

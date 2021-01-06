@@ -330,6 +330,7 @@ namespace BackEnd.Controllers
                 var oz = new OdczynyZgloszenia
                 {
                     Data = timestamp,
+                    DataWystapenia = nop.data,
                     OdczynId = nop.id
                 }; 
                 foreach (var attr in nop.atrybuty)
