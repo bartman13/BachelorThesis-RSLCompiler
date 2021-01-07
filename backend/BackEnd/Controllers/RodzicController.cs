@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace BackEnd.Controllers
 {
@@ -24,13 +25,14 @@ namespace BackEnd.Controllers
     public class RodzicController : BaseController
     {
         private readonly NopContext _context;
-
+        private readonly IConfiguration _configuration;
         /// <summary>
         /// Konstruktor przyjmujacy kontekst bazy danych
         /// </summary>
-        public RodzicController(NopContext context)
+        public RodzicController(NopContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
         /// <summary>
         /// Zwraca wszystkie zgłoszenia utworzone przez zalogowanego użytkownika
@@ -149,6 +151,19 @@ namespace BackEnd.Controllers
             if (value == null) return BadRequest(new { message = "Vallue jest nullem" });
             var user = _context.Uzytkownicy.Single(x => x.Id == Account.Id);
             DateTime timestamp = DateTime.Now;
+            string directorypath = _configuration["FileStorage"];
+            var zdjecieKsZd = new Pliki()
+            {
+                OryginalnaNazwa = value.zdjecieKsZd.FileName,
+                NazwaPliku = Guid.NewGuid().ToString() + Path.GetExtension(value.zdjecieKsZd.FileName),
+                UzytId = Account.Id
+            };
+            Directory.CreateDirectory(directorypath);
+            using (FileStream stream = new FileStream(Path.Combine(directorypath, zdjecieKsZd.NazwaPliku), FileMode.Create))
+            {
+                value.zdjecieKsZd.CopyTo(stream);
+            }
+            _context.Pliki.Attach(zdjecieKsZd);
             Zgloszenia app = new Zgloszenia
             {
                 DataUtworzenia = timestamp,
@@ -156,7 +171,7 @@ namespace BackEnd.Controllers
                 PacjentId = value.pacjentId,
                 ProsbaOKontakt = value.prosba_o_kontakt,
                 UzytId = Account.Id,
-                ZdjecieKsZd = Guid.NewGuid().ToString() + Path.GetExtension(value.zdjecieKsZd.FileName)
+                ZdjecieKsZd = zdjecieKsZd
             };
             _context.Zgloszenia.Attach(app);
             app.ZgloszenieSzczepionki.Add(new ZgloszenieSzczepionki { SzczepionkaId = value.szczepionkaId });
@@ -179,12 +194,6 @@ namespace BackEnd.Controllers
                 app.OdczynyZgloszenia.Add(oz);
             }
             _context.SaveChanges();
-            string directorypath = @"C:\NopImages";
-            Directory.CreateDirectory(directorypath);
-            using (FileStream stream = new FileStream(Path.Combine(directorypath, app.ZdjecieKsZd), FileMode.Create))
-            {
-                value.zdjecieKsZd.CopyTo(stream);
-            }
             return Ok();
         }
         /// <summary>
@@ -370,7 +379,7 @@ namespace BackEnd.Controllers
         public IActionResult UploadFile([FromForm] IFormFile file)
         {
             string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-            string directorypath = @"C:\NopImages";
+            string directorypath = _configuration["FileStorage"];
             Directory.CreateDirectory(directorypath);
             using (FileStream stream = new FileStream(Path.Combine(directorypath, fileName), FileMode.Create))
             {
@@ -396,7 +405,7 @@ namespace BackEnd.Controllers
             var file = _context.Pliki.FirstOrDefault(f => f.NazwaPliku == filename);
             if (file == null) return NotFound();
             if (file.UzytId != Account.Id) return Unauthorized();
-            string directorypath = @"C:\NopImages";
+            string directorypath = _configuration["FileStorage"];
             Stream stream = new FileStream(Path.Combine(directorypath, filename), FileMode.Open);
             if (stream == null) return NotFound();
             return File(stream, "application/octet-stream", file.OryginalnaNazwa);
@@ -412,7 +421,7 @@ namespace BackEnd.Controllers
             var file = _context.Pliki.FirstOrDefault(f => f.NazwaPliku == filename);
             if (file == null) return NotFound();
             if (file.UzytId != Account.Id) return Unauthorized();
-            string directorypath = @"C:\NopImages";
+            string directorypath = _configuration["FileStorage"];
             FileInfo localFile = new FileInfo(Path.Combine(directorypath, filename));
             localFile.Delete();
             _context.Pliki.Remove(file);

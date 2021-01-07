@@ -13,6 +13,7 @@ import authHeader from '../shared/authheader';
 import apiURL from '../shared/apiURL';
 import toFormData from '../shared/objectToFormData';
 import Alert from '@material-ui/lab/Alert';
+import datenow from '../shared/datenow';
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -29,12 +30,12 @@ function ParentNewApp(){
     const [children, setChildren] = useState([]);
     const [nops, setNops] = useState([]);
     const [selectedChild, setSelectedChild] = useState('');
-    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().substring(0, 16));
+    const [selectedDate, setSelectedDate] = useState(datenow());
     const [selectedVaccine, setSelectedVaccine] = useState('');
     const [imageKsZd, setImageKsZd] = useState('');
     const [selectedNOPs, setSelectedNOPs] = useState([]);
     const [contact, setContact] = useState(false);
-    const [requiredNotSet, setRequiredNotSet] = useState([false, false, false]);
+    const [requiredNotSet, setRequiredNotSet] = useState([false, false, false, false]);
     
     const { user } = useContext(UserContext);
     const { setLoading } = useContext(LoadingContext);
@@ -87,7 +88,7 @@ function ParentNewApp(){
         setContact(event.target.checked);
     };
     const submit = async () => {
-        if(!selectedChild){
+        if(selectedChild === ''){
             requiredNotSet[0] = true;
         }
         if(selectedVaccine === ''){
@@ -96,10 +97,16 @@ function ParentNewApp(){
         if(!imageKsZd){
             requiredNotSet[2] = true;
         }
+        if(selectedNOPs.length === 0){
+            requiredNotSet[3] = true;
+        } else {
+            requiredNotSet[3] = false;
+        }
         if(requiredNotSet.filter(item => item).length > 0){
             setRequiredNotSet([...requiredNotSet]);
             return;
         }
+        setLoading(true);
         const app = {
             data: selectedDate,
             szczepionkaId: selectedVaccine,
@@ -142,6 +149,7 @@ function ParentNewApp(){
                 message: 'Wystąpił błąd'
             });
         }
+        setLoading(false);
     };
 
     const classes = useStyles();
@@ -167,6 +175,7 @@ function ParentNewApp(){
 
         fetchData();
     }, [setChildren, setVaccines, setLoading, setSnackbar, user]);
+
     return (
         <Container maxWidth='md'> 
             <Grid container spacing={3}
@@ -192,10 +201,10 @@ function ParentNewApp(){
                                 );
                             })}
                         </Select>
-                        <Collapse in={requiredNotSet[0]}>
-                            <Alert severity="error"> To pole jest wymagane </Alert>
-                        </Collapse>
                     </FormControl>
+                    <Collapse in={requiredNotSet[0]}>
+                        <Alert severity="error"> To pole jest wymagane </Alert>
+                    </Collapse>
                 </Grid>
                 <Grid item xs={1} align="center">
                     <Box padding={2}> 2. </Box>
@@ -264,6 +273,9 @@ function ParentNewApp(){
                         selectedNOPs={selectedNOPs}
                         setSelectedNOPs={setSelectedNOPs}
                     />
+                    <Collapse in={requiredNotSet[3] && selectedNOPs.length === 0}>
+                        <Alert severity="error"> Wymagane jest dodanie co najmniej jednego odczynu </Alert>
+                    </Collapse>
                 </Grid>
                 <Grid item xs={1} align="center">
                   <Box padding={2}> 6. </Box>
