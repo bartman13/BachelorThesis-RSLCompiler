@@ -50,6 +50,7 @@ namespace BackEnd
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+            services.AddSingleton(Configuration);
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings")); // seccret key key of token
             services.AddScoped<IAccountService, AccountService>(); // inject UserService
             services.AddControllersWithViews().AddNewtonsoftJson(options =>

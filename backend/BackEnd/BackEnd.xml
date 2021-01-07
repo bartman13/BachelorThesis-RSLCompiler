@@ -31,7 +31,7 @@
             Kontroler służący  do obsługi ządaużytkowników zalogowanych jako Rodzic
             </summary>
         </member>
-        <member name="M:BackEnd.Controllers.RodzicController.#ctor(BackEnd.Models.NopContext)">
+        <member name="M:BackEnd.Controllers.RodzicController.#ctor(BackEnd.Models.NopContext,Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
             Konstruktor przyjmujacy kontekst bazy danych
             </summary>

@@ -24,6 +24,7 @@ import apiURL from '../shared/apiURL';
 import axios from 'axios';
 import LinearProgressWithLabel from '../shared/LinearProgressWithLabel';
 import fileDownload from 'js-file-download';
+import datenow from '../shared/datenow';
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -303,7 +304,7 @@ function NOPAttribute(props) {
 function NOPEntry(props) {
     const { deleteClick, nop } = props;
 
-    const [date, setDate] = useState(new Date().toISOString().substring(0, 16));
+    const [date, setDate] = useState(datenow());
 
     const handleDateChange = (event) => {
         setDate(event.target.value);

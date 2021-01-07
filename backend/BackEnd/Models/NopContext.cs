@@ -29,15 +29,6 @@ namespace BackEnd.Models
         public virtual DbSet<Zgloszenia> Zgloszenia { get; set; }
         public virtual DbSet<ZgloszenieSzczepionki> ZgloszenieSzczepionki { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=Nop;Trusted_Connection=false;User ID=Nop;Password=nop");
-            }
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AtrybutyOdczynow>(entity =>
@@ -370,10 +361,7 @@ namespace BackEnd.Models
 
                 entity.Property(e => e.UzytId).HasColumnName("uzyt_id");
 
-                entity.Property(e => e.ZdjecieKsZd)
-                    .IsRequired()
-                    .HasColumnName("zdjecie_ks_zd")
-                    .HasMaxLength(50);
+                entity.Property(e => e.ZdjecieKsZdId).HasColumnName("zdjecie_ks_zd_id");
 
                 entity.HasOne(d => d.Pacjent)
                     .WithMany(p => p.Zgloszenia)
@@ -386,6 +374,12 @@ namespace BackEnd.Models
                     .HasForeignKey(d => d.UzytId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Zgloszenia_Uzytkownicy");
+
+                entity.HasOne(d => d.ZdjecieKsZd)
+                    .WithMany(p => p.Zgloszenia)
+                    .HasForeignKey(d => d.ZdjecieKsZdId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Zgloszenia_Pliki");
             });
 
             modelBuilder.Entity<ZgloszenieSzczepionki>(entity =>
