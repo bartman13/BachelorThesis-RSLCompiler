@@ -52,5 +52,28 @@ namespace BackEnd.Controllers
             }
             return Ok(ret);
         }
+        [HttpGet("[controller]/Zgloszenie/{id?}")]
+        public IActionResult GetNop(int id)
+        {
+            var zgloszenie = _context.Zgloszenia.Where(p => p.Id == id)
+                .Include("Pacjent")
+                .Include("Uzyt")
+                .Include("DecyzjeLekarza")
+                .FirstOrDefault();
+            DotorZgłoszenieInfo response = new DotorZgłoszenieInfo
+            {
+                Imie = zgloszenie.Uzyt.Imie,
+                Nazwisko = zgloszenie.Uzyt.Nazwisko,
+                Email = zgloszenie.Uzyt.Email,
+                Telefon = zgloszenie.Uzyt.Telefon,
+                Pacjent_Imie = zgloszenie.Pacjent.Imie,
+                Pacjent_Nazwisko = zgloszenie.Pacjent.Nazwisko,
+                ProsbaOKontakt = zgloszenie.ProsbaOKontakt,
+                decyzja = zgloszenie.DecyzjeLekarza.Count == 0 ? -1 : zgloszenie.DecyzjeLekarza.Last().Decyzja
+
+            };
+            return Ok(response);
+        }
+
     }
 }

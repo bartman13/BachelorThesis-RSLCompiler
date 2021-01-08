@@ -26,6 +26,10 @@ function AppTimelineDot({ type }) {
 }
 
 function AppTimelineItem({ item, onItemClick }) {
+    const mystyle = {
+        cursor: 'pointer',
+    }
+    
     return (
         <TimelineItem>
             <TimelineOppositeContent>
@@ -38,7 +42,7 @@ function AppTimelineItem({ item, onItemClick }) {
                 <TimelineConnector />
             </TimelineSeparator>
             <TimelineContent>
-                <Tooltip title="Kliknij żeby wybrać" placement="bottom-end">
+                <Tooltip title="Kliknij żeby wybrać" placement="bottom-end" style={mystyle}>
                     <Typography onClick={() => onItemClick(item)}>
                         {item.tytul}
                     </Typography>
