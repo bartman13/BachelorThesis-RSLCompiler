@@ -96,13 +96,6 @@
             <param name="id"> Id zgłoszenia </param>
             <returns> Lista id szczepionek </returns>
         </member>
-        <member name="M:BackEnd.Controllers.RodzicController.GetAppHistory(System.Nullable{System.Int32})">
-            <summary>
-            Zwraca historię zgłoszenia, czyli listę wszystkich wydarzeń dotyczących danego zgłoszenia.
-            </summary>
-            <param name="id">Id zgłoszenia </param>
-            <returns>Listę wydarzeń dotyczących danego zgłoszenia</returns>
-        </member>
         <member name="M:BackEnd.Controllers.RodzicController.UpdateApp(System.Nullable{System.Int32},System.Collections.Generic.ICollection{BackEnd.DataTransferObjects.NopAtrybuty})">
             <summary>
             Dodaje do zgłoszenia nowe podejrzewane niepożądane odczyny.
@@ -125,13 +118,6 @@
             <param name="file"> Dany plik </param>
             <returns></returns>
         </member>
-        <member name="M:BackEnd.Controllers.RodzicController.DownloadFile(System.String)">
-            <summary>
-            Zwraca plik o poadnej nazwie
-            </summary>
-            <param name="filename"> Nazwa pliku </param>
-            <returns> Żądany plik </returns>
-        </member>
         <member name="M:BackEnd.Controllers.RodzicController.DeleteFile(System.String)">
             <summary>
             Usuwa plik z serwera
@@ -139,7 +125,26 @@
             <param name="filename"> Nazwa pliku </param>
             <returns></returns>
         </member>
-        <member name="M:BackEnd.Controllers.RodzicController.GetFileInfo(System.String)">
+        <member name="M:BackEnd.Controllers.SharedController.#ctor(BackEnd.Models.NopContext)">
+            <summary>
+            Konstruktor przyjmujacy kontekst bazy danych
+            </summary>
+        </member>
+        <member name="M:BackEnd.Controllers.SharedController.GetAppHistory(System.Nullable{System.Int32})">
+            <summary>
+            Zwraca historię zgłoszenia, czyli listę wszystkich wydarzeń dotyczących danego zgłoszenia.
+            </summary>
+            <param name="id">Id zgłoszenia </param>
+            <returns>Listę wydarzeń dotyczących danego zgłoszenia</returns>
+        </member>
+        <member name="M:BackEnd.Controllers.SharedController.DownloadFile(System.String)">
+            <summary>
+            Zwraca plik o poadnej nazwie
+            </summary>
+            <param name="filename"> Nazwa pliku </param>
+            <returns> Żądany plik </returns>
+        </member>
+        <member name="M:BackEnd.Controllers.SharedController.GetFileInfo(System.String)">
             <summary>
             Zwraca nazwę pliku 
             </summary>

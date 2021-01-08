@@ -2,11 +2,12 @@ import React,{ useState, useEffect, useContext } from "react";
 import {AutoSizer, DataGrid,GridOverlay}  from '@material-ui/data-grid';
 import clsx from 'clsx';
 import { makeStyles,styled  } from '@material-ui/core/styles';
-import { useHistory, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import LoadingContext from '../contexts/LoadingContext';
 import Typography from '@material-ui/core/Typography';
 import axios from 'axios';
-import UserContext from '../contexts/UserContext'
-import EditLocationRoundedIcon from '@material-ui/icons/EditLocationRounded';
+import UserContext from '../contexts/UserContext';
+import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import apiURL from '../shared/apiURL';
 import authHeader from '../shared/authheader';
@@ -231,8 +232,8 @@ const columns = [
       headerClassName: 'super-app-theme--cell',
       renderCell: (params) => (
         <MyButton >
-        <Link  to={"doctorapp/0"}>
-          <EditLocationRoundedIcon fontSize='large' />
+        <Link  to={"doctorapp/" + params.getValue('id') }>
+          <EditIcon fontSize='large' />
         </Link>
         </MyButton>
       ),
@@ -251,9 +252,11 @@ function DoctorAppList(){
   const [apps, setApps] = useState([]);
   const { user } = useContext(UserContext);
   const { setSnackbar } = useContext(SnackbarContext);
+  const { setLoading } = useContext(LoadingContext);
+
   useEffect(() => {
     async function fetchData() {
-      //setLoading(true);
+      setLoading(true);
       try {
         const response = await axios.get(apiURL + 'Lekarz/Zgloszenia', authHeader(user));
         setApps(response.data);
@@ -265,7 +268,7 @@ function DoctorAppList(){
           type: "error",
         });
       }
-      //setLoading(false);
+      setLoading(false);
     }
 
     fetchData();
@@ -273,7 +276,7 @@ function DoctorAppList(){
 
     return(
         <div style={{ height: 600, width: '100%' }} className={classes.root}>
-            <DataGrid rows={apps} columns={columns} pagination showToolbar  pageSize={8} filterModel={riceFilterModel} components={{
+            <DataGrid rows={apps} columns={columns} pagination showToolbar  pageSize={10} filterModel={riceFilterModel} components={{
           noRowsOverlay: CustomNoRowsOverlay,
           pagination:CustomPagination
 

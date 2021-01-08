@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import UserContext from '../contexts/UserContext'
+import UserContext from '../contexts/UserContext';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, List, ListItem, Box, Paper } from '@material-ui/core';
 import { useHistory, Link } from 'react-router-dom';
