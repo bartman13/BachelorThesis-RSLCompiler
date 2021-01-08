@@ -4,7 +4,6 @@ GO
 use "Nop"
 GO
 
-drop table if exists Pliki
 drop table if exists Atrybuty_Zgloszenia
 drop table if exists Szczepionki_Odczyny
 drop table if exists Odczyny_Zgloszenia
@@ -14,9 +13,12 @@ drop table if exists Zgloszenie_Szczepionki
 drop table if exists Szczepionki
 drop table if exists Decyzje_Lekarza
 drop table if exists Zgloszenia
+drop table if exists Pliki
 drop table if exists Pacjenci
 drop table if exists RefreshToken
 drop table if exists Uzytkownicy
+
+GO
 
 CREATE TABLE Uzytkownicy (
 	id int IDENTITY (1, 1) NOT NULL ,
@@ -96,12 +98,28 @@ CREATE TABLE Pacjenci (
 
 GO
 
+CREATE TABLE Pliki (
+	id int IDENTITY (1, 1) NOT NULL PRIMARY KEY,
+	oryginalna_nazwa nvarchar(4000) NOT NULL,
+	nazwa_pliku nvarchar(4000) NOT NULL,
+	uzyt_id int NOT NULL,
+	CONSTRAINT FK_Pliki_Uzytkownicy FOREIGN KEY
+	(
+		uzyt_id
+	) REFERENCES Uzytkownicy
+	(
+		id
+	)
+)
+
+GO
+
 CREATE TABLE Zgloszenia (
 	id int IDENTITY (1, 1) NOT NULL,
 	uzyt_id int NOT NULL,
 	data_utworzenia datetime NOT NULL,
 	data_szczepienia datetime NOT NULL,
-	zdjecie_ks_zd nvarchar(50) NOT NULL,
+	zdjecie_ks_zd_id int NOT NULL,
 	prosba_o_kontakt bit NOT NULL,
 	pacjent_id int NOT NULL
 	CONSTRAINT PK_Zgloszenia PRIMARY KEY CLUSTERED
@@ -119,6 +137,13 @@ CREATE TABLE Zgloszenia (
 	(
 		pacjent_id
 	) REFERENCES Pacjenci
+	(
+		id
+	),
+	CONSTRAINT FK_Zgloszenia_Pliki FOREIGN KEY
+	(
+		zdjecie_ks_zd_id
+	) REFERENCES Pliki
 	(
 		id
 	)
@@ -274,16 +299,4 @@ CREATE TABLE Atrybuty_Zgloszenia (
 	)
 )
 
-CREATE TABLE Pliki (
-	id int IDENTITY (1, 1) NOT NULL PRIMARY KEY,
-	oryginalna_nazwa nvarchar(4000) NOT NULL,
-	nazwa_pliku nvarchar(4000) NOT NULL,
-	uzyt_id int NOT NULL,
-	CONSTRAINT FK_Pliki_Uzytkownicy FOREIGN KEY
-	(
-		uzyt_id
-	) REFERENCES Uzytkownicy
-	(
-		id
-	)
-)
+GO

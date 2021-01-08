@@ -14,7 +14,7 @@ import AddNOP from './AddNOPComponent';
 
 const AppHistoryWithId = ({match}) => {
     return(
-        <AppHistory appid={match.params.id}/>
+        <AppHistory appid={match.params.id} showAddButton/>
     );
 }
 

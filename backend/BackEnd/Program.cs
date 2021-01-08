@@ -25,7 +25,6 @@ namespace BackEnd
                     .UseContentRoot(Directory.GetCurrentDirectory())
                     .UseIISIntegration()
                     .UseStartup<Startup>();
-                    
                 });
     }
 }

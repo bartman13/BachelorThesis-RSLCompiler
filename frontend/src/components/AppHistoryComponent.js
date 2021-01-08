@@ -129,7 +129,7 @@ function ItemDescription({ item }){
     );
 }
 
-function AppHistory({ appid }){
+function AppHistory({ appid, showAddButton }){
     const [timelineEvents, setTimelineEvents] = useState([]);
     const [selectedEvent, setSelectedEvent] = useState(undefined);
 
@@ -145,7 +145,6 @@ function AppHistory({ appid }){
             try {
                 const eventsData = await axios.get(apiURL + "AppHistory/" + appid, authHeader(user));
                 setTimelineEvents(eventsData.data);
-                console.log(eventsData.data);
             } catch (error) {
                 console.error(error);
                 setSnackbar({
@@ -171,6 +170,7 @@ function AppHistory({ appid }){
                         <Grid item xs={12}>
                             <AppTimeline timelineEvents={timelineEvents} onItemClick={(item) => setSelectedEvent(item)}/>
                         </Grid>
+                        {showAddButton ? 
                         <Grid item xs={12} align='center'>
                             <Button
                                 variant="outlined"
@@ -179,7 +179,7 @@ function AppHistory({ appid }){
                                 to={'/addnop/' + appid}>
                                     Dodaj nowy odczyn
                             </Button>
-                        </Grid>
+                        </Grid> : null}
                     </Grid>
                 </Paper>
             </Grid>

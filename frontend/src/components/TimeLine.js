@@ -34,7 +34,7 @@ function AppTimelineItem({ item, onItemClick }) {
         <TimelineItem>
             <TimelineOppositeContent>
                 <Typography color="textSecondary">
-                    {FormatDate(false, item.data)}
+                    {FormatDate(true, item.data)}
                 </Typography>
             </TimelineOppositeContent>
             <TimelineSeparator>

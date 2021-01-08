@@ -16,15 +16,15 @@ namespace BackEnd.Controllers
     [Authorize]
     public class SharedController : BaseController
     {
-
         private readonly NopContext _context;
-
+        private readonly IConfiguration _configuration;
         /// <summary>
         /// Konstruktor przyjmujacy kontekst bazy danych
         /// </summary>
-        public SharedController(NopContext context)
+        public SharedController(NopContext context, IConfiguration configuration)
         {
             _context = context;
+             _configuration = configuration;
         }
         /// <summary>
         /// Zwraca historię zgłoszenia, czyli listę wszystkich wydarzeń dotyczących danego zgłoszenia.
@@ -143,7 +143,7 @@ namespace BackEnd.Controllers
             var file = _context.Pliki.FirstOrDefault(f => f.NazwaPliku == filename);
             if (file == null) return NotFound();
             if (Account.Rola == (int)Role.Rodzic && file.UzytId != Account.Id) return Unauthorized();
-            string directorypath = @"C:\NopImages";
+            string directorypath = _configuration["FileStorage"];;
             Stream stream = new FileStream(Path.Combine(directorypath, filename), FileMode.Open);
             if (stream == null) return NotFound();
             return File(stream, "application/octet-stream", file.OryginalnaNazwa);
