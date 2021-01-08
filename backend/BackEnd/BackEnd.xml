@@ -125,7 +125,7 @@
             <param name="filename"> Nazwa pliku </param>
             <returns></returns>
         </member>
-        <member name="M:BackEnd.Controllers.SharedController.#ctor(BackEnd.Models.NopContext)">
+        <member name="M:BackEnd.Controllers.SharedController.#ctor(BackEnd.Models.NopContext,Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
             Konstruktor przyjmujacy kontekst bazy danych
             </summary>

@@ -4,6 +4,7 @@ using BackEnd.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,7 +25,7 @@ namespace BackEnd.Controllers
         public SharedController(NopContext context, IConfiguration configuration)
         {
             _context = context;
-             _configuration = configuration;
+            _configuration = configuration;
         }
         /// <summary>
         /// Zwraca historię zgłoszenia, czyli listę wszystkich wydarzeń dotyczących danego zgłoszenia.
