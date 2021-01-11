@@ -51,8 +51,10 @@ namespace BackEnd.Controllers
                 foreach(var d in app.DecyzjeLekarza)
                 {
                     d.Wyswietlone = true;
+                    _context.Update(d);
                 }
             }
+            _context.SaveChanges();
             List<AppEvent> events = new List<AppEvent>
             {
                 new AppEvent
@@ -93,7 +95,7 @@ namespace BackEnd.Controllers
                     1 => "Nie potwierdzono występowania niepożądanych odczynów poszczepiennych",
                     2 => "Potwierdzono występowenie lekkiego niepożadanego odczynu poszczepiennego",
                     3 => "Potwierdzono występowenie poważnego niepożadanego odczynu poszczepiennego",
-                    4 => "Potwierdzono występowenie ciężkiego niepożadanego odczynu poszczepiennego",
+                    4 => "Potwierdzono występowenie ciężkiego niepożadanego odczynu poszczepiennego"
                     _ => null
                 };
                 events.Add(new AppEvent

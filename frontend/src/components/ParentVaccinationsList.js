@@ -108,7 +108,7 @@ function ParentVaccinationsList(){
                         />
                     </Grid>
                     <Grid item xs={12}>
-                        {a.noweDane ? <Alert severity="info"> Nowe informacje </Alert> : null}
+                        {a.noweDane ? <Alert severity="info"> Nowe dane dotyczące zgłoszenia </Alert> : null}
                     </Grid>
                 </Grid>
             </Paper>

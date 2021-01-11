@@ -52,18 +52,17 @@ export default function DoctorDecisions(props) {
     setOpen(false);
   };
   const RadioValue = () => {
+    alert(value);
     if (value === 'lekki') {
-      return 1;
-    } else if (value === 'powazny') {
       return 2;
-    }else if (value === 'ciezki') {
+    } else if (value === 'powazny') {
       return 3;
-    }else if (value === 'brakNop') {
+    }else if (value === 'ciezki') {
       return 4;
-    }else if (value === 'nieMoznaPodjac') {
-      return 5;
+    }else if (value === 'brakNop') {
+      return 1;
     }else if (value === 'nieZgodnosc') {
-      return 6;
+      return 0;
     }else
      return -1;
   };
@@ -74,7 +73,7 @@ export default function DoctorDecisions(props) {
     try{
         await axios.post(apiURL + 'Lekarz/Decyzja', 
           {
-            Decyzja: RadioValue,
+            Decyzja: RadioValue(),
             Komentarz: ComentState,
             ZgloszenieId: props.AppId
           },
@@ -117,7 +116,6 @@ export default function DoctorDecisions(props) {
           <FormControlLabel value={"powazny"} control={<Radio />} label="Poważny" />
           <FormControlLabel value={"ciezki"} control={<Radio />} label="Ciężki" />
           <FormControlLabel value={"brakNop"} control={<Radio />} label="Nie stwierdzam wystąpienia Nop" />
-          <FormControlLabel value={"nieMoznaPodjac"} control={<Radio />} label="Nie mogę podjąć decyzji" />
           <FormControlLabel value={"nieZgodnosc"} control={<Radio />} label="Brak zgodności danych." />
         </RadioGroup>
         <FormHelperText>{helperText}</FormHelperText>
