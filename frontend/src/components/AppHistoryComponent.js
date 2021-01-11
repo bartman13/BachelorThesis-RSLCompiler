@@ -10,15 +10,77 @@ import authHeader from '../shared/authheader';
 import apiURL from '../shared/apiURL';
 import fileDownload from 'js-file-download';
 import LinkMUI from '@material-ui/core/Link';
+import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
     paper : {
         padding: 20,
-        margin: 20
+        margin: 20,
+        height: '100%'
     }
 }));
 
-function FileListAttribute( { attr }){
+const legendStyles = makeStyles((theme) => ({
+    dot : {
+        height: '10px',
+        width: '10px',
+        borderRadius: '50%',
+        display: 'inline-block'
+    },
+    blueOutlined : {
+        border: '2px solid blue'
+    },
+    cyanOutlined : {
+        border: '2px solid cyan'
+    },
+    greenOutlined : {
+        border: '2px solid green'
+    },
+    orangeOutlined : {
+        border: '2px solid orange'
+    },
+    redOutlined : {
+        border: '2px solid red'
+    },
+    default : {
+        border: '2px solid #bbb'
+    },
+    blueFilled : {
+        border: '1px solid blue',
+        backgroundColor: 'blue'
+    },
+    greenFilled : {
+        border: '1px solid green',
+        backgroundColor: 'green'
+    },
+    orangeFilled : {
+        border: '1px solid orange',
+        backgroundColor: 'orange'
+    },
+    redFilled : {
+        border: '1px solid red',
+        backgroundColor: 'red'
+    }
+}));
+
+function LegendDot({ type }){
+    const classes = legendStyles();
+
+    switch (type) {
+        case 0: return <span className={clsx(classes.dot, classes.blueOutlined)}> </span>;
+        case 1: return <span className={clsx(classes.dot, classes.cyanOutlined)}> </span>;
+        case 2: return <span className={clsx(classes.dot, classes.greenOutlined)}> </span>;
+        case 3: return <span className={clsx(classes.dot, classes.orangeOutlined)}> </span>;
+        case 4: return <span className={clsx(classes.dot, classes.redOutlined)}> </span>;
+        case 5: return <span className={clsx(classes.dot, classes.default)}> </span>;
+        case 6: return <span className={clsx(classes.dot, classes.blueFilled)}> </span>;
+        case 7: return <span className={clsx(classes.dot, classes.greenFilled)}> </span>;
+        case 8: return <span className={clsx(classes.dot, classes.orangeFilled)}> </span>;
+        default: return <span className={clsx(classes.dot, classes.redFilled)}> </span>;
+    }
+}
+
+function FileListAttribute({ attr }){
     const [files, setFiles] = useState([]);
 
     const { user } = useContext(UserContext);
@@ -64,7 +126,7 @@ function FileListAttribute( { attr }){
                 variant="body2"
                 onClick={() => { handleFileDownload(file); }}
             >
-                {file.name}
+                {file.name.length > 15 ? file.name.substring(0,14) + "..." : file.name}
             </LinkMUI>
         );
     };
@@ -110,7 +172,7 @@ function EventDescription({ event }){
 function ItemDescription({ item }){
     if(!item){
         return (
-            <Typography variant='h6' align='center'> Nie wybrano żadnego zdarzenia </Typography>
+            <Typography variant='h6' align='center'> Kliknij na tytuł zdarzenia żeby wyświetlić więcej informacji </Typography>
         );
     }
     return (
@@ -160,35 +222,66 @@ function AppHistory({ appid, showAddButton }){
     }, [appid, user, setLoading, setSnackbar]);
 
     return(
-        <Grid container>
-            <Grid item md>
-                <Paper className={classes.paper}>
+        <Paper className={classes.paper} elevation={9}>
+            <Grid container spacing={3}>
+                <Grid item xs={12} align='center'>
+                    <Typography variant='h4'> Historia zgłoszenia </Typography>
+                </Grid>
+                <Grid item xs={12} lg={7} align="center">
+                    <AppTimeline timelineEvents={timelineEvents} onItemClick={(item) => setSelectedEvent(item)}/>
+                    {showAddButton ? 
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            component={Link}
+                            to={'/addnop/' + appid}>
+                                Dodaj nowy odczyn
+                        </Button>: null}
+                </Grid>
+                <Grid item xs={12} lg={5}>
+                    <Paper className={classes.paper} elevation={9}>
+                        <ItemDescription item={selectedEvent}/>
+                    </Paper>
+                </Grid>
+                <Grid item xs={12}>
                     <Grid container>
-                        <Grid item xs={12} align='center'>
-                            <Typography variant='h4'> Historia zgłoszenia </Typography>
+                        <Grid item xs={12} align="center">
+                            <Typography variant="h5"> Legenda </Typography>
                         </Grid>
-                        <Grid item xs={12}>
-                            <AppTimeline timelineEvents={timelineEvents} onItemClick={(item) => setSelectedEvent(item)}/>
+                        <Grid item xs={12} md={6} lg={4}>
+                            <LegendDot type={0}/> - wykonanie szczepienia.
                         </Grid>
-                        {showAddButton ? 
-                        <Grid item xs={12} align='center'>
-                            <Button
-                                variant="outlined"
-                                color="primary"
-                                component={Link}
-                                to={'/addnop/' + appid}>
-                                    Dodaj nowy odczyn
-                            </Button>
-                        </Grid> : null}
+                        <Grid item xs={12} md={6} lg={4}>
+                            <LegendDot type={1}/> - utworzenie zgłoszenia.
+                        </Grid>
+                        <Grid item xs={12} md={6} lg={4}>
+                            <LegendDot type={2}/> - dodanie lekkiego nipożądanego odczynu.
+                        </Grid>
+                        <Grid item xs={12} md={6} lg={4}>
+                            <LegendDot type={3}/> - dodanie poważnego nipożądanego odczynu.
+                        </Grid>
+                        <Grid item xs={12} md={6} lg={4}>
+                            <LegendDot type={4}/> - dodanie ciężkiego nipożądanego odczynu.
+                        </Grid>
+                        <Grid item xs={12} md={6} lg={4}>
+                            <LegendDot type={5}/> - decyzja lekazra "Brak zgodzności z dokumentem".
+                        </Grid>
+                        <Grid item xs={12} md={6} lg={4}>
+                            <LegendDot type={6}/> - nie stwierdzono występowania niepożdanego odczynu poszczepiennego.
+                        </Grid>
+                        <Grid item xs={12} md={6} lg={4}>
+                            <LegendDot type={7}/> - potwierdzenie lekkiego nipożądanego odczynu.
+                        </Grid>
+                        <Grid item xs={12} md={6} lg={4}>
+                            <LegendDot type={8}/> - potwierdzenie poważnego nipożądanego odczynu.
+                        </Grid>
+                        <Grid item xs={12} md={6} lg={4}>
+                            <LegendDot type={9}/> - potwierdzenie ciężkiego nipożądanego odczynu.
+                        </Grid>
                     </Grid>
-                </Paper>
+                </Grid>
             </Grid>
-            <Grid item md>
-                <Paper className={classes.paper}>
-                    <ItemDescription item={selectedEvent}/>
-                </Paper>
-            </Grid>
-        </Grid>
+        </Paper>
     );
 }
 

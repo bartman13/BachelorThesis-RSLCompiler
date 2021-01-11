@@ -10,6 +10,7 @@ namespace BackEnd.Models
         public DateTime Data { get; set; }
         public string Komentarz { get; set; }
         public int ZgloszenieId { get; set; }
+        public bool Wyswietlone { get; set; }
 
         public virtual Zgloszenia Zgloszenie { get; set; }
     }
