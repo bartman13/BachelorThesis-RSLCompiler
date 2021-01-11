@@ -98,6 +98,8 @@ namespace BackEnd.Models
                     .HasColumnName("komentarz")
                     .HasMaxLength(3000);
 
+                entity.Property(e => e.Wyswietlone).HasColumnName("wyswietlone");
+
                 entity.Property(e => e.ZgloszenieId).HasColumnName("zgloszenie_id");
 
                 entity.HasOne(d => d.Zgloszenie)

@@ -12,7 +12,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { useHistory } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import MuiPhoneNumber from 'material-ui-phone-number';
 import axios from 'axios';
 import apiURL from '../shared/apiURL';
@@ -58,8 +58,6 @@ export default function SignUp(props) {
     const [userInput, setUserInput] = useState({});
 
     const classes = useStyles();
-
-    const history = useHistory();
 
     const { setLoading } = useContext(LoadingContext);
     const { setSnackbar } = useContext(SnackbarContext);
@@ -245,7 +243,7 @@ export default function SignUp(props) {
                     </Button>
                     <Grid container justify="flex-end">
                         <Grid item>
-                            <Link href="" variant="body2" onClick={() => history.push('/signin')}>
+                            <Link component={RouterLink} to="/signin" variant="body2">
                                 Już masz konto? Zaloguj się
                             </Link>
                         </Grid>

@@ -15,7 +15,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import apiURL from '../shared/apiURL';
 import LoadingContext from '../contexts/LoadingContext';
-import { useHistory } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 const authorize = async (values) => {
         try{
@@ -72,8 +72,6 @@ export default function SignIn(props) {
     const { startRefreshToken } = props;
 
     const classes = useStyles();
-
-    const history = useHistory();
 
     const handleSubmit = async (values) => {
         setLoading(true);
@@ -158,7 +156,7 @@ export default function SignIn(props) {
                             </Link>
                         </Grid>
                         <Grid item>
-                            <Link href="" variant="body2" onClick={() => history.push('/signup')}>
+                            <Link component={RouterLink} to="/signup" variant="body2">
                                 {"Nie masz konta? Utwórz je"}
                             </Link>
                         </Grid>

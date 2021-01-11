@@ -9,6 +9,7 @@ import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
 import FormatDate from '../shared/formatDate';
+import Button from '@material-ui/core/Button';
 
 function AppTimelineDot({ type }) {
     switch (type) {
@@ -43,9 +44,9 @@ function AppTimelineItem({ item, onItemClick }) {
             </TimelineSeparator>
             <TimelineContent>
                 <Tooltip title="Kliknij żeby wybrać" placement="bottom-end" style={mystyle}>
-                    <Typography onClick={() => onItemClick(item)}>
+                    <Button onClick={() => onItemClick(item)} style={{top: '-5px'}}>
                         {item.tytul}
-                    </Typography>
+                    </Button>
                 </Tooltip>
             </TimelineContent>
         </TimelineItem>
@@ -53,7 +54,6 @@ function AppTimelineItem({ item, onItemClick }) {
 }
 
 export default function AppTimeline({ timelineEvents, onItemClick }) {
-
     return (
         <Timeline align="right">
             {timelineEvents.map((item, index) => {

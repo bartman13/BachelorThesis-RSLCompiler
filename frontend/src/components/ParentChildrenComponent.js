@@ -69,7 +69,7 @@ function ParentChildrenList(){
                         className={classes.buttonSuccess}
                         component={Link}
                         to={'/addchild'}>
-                            Zdefiniuj nowe dziecko
+                            Dodaj nowe dziecko
                     </Button>
                 </Grid>
             </Grid>

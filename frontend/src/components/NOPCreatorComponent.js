@@ -305,6 +305,7 @@ function NOPEntry(props) {
     const { deleteClick, nop } = props;
 
     const [date, setDate] = useState(datenow());
+    const [open, setOpen] = useState(true);
 
     const handleDateChange = (event) => {
         setDate(event.target.value);
@@ -318,11 +319,12 @@ function NOPEntry(props) {
     return (
         <Grid container>
             <Grid item xs={12} align="center">
-                <Accordion>
+                <Accordion expanded={open}>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls={"panel" + nop.id + "-content"}
-                        id={"panel" + nop.id + "-header"}>
+                        id={"panel" + nop.id + "-header"}
+                        onClick={() => setOpen(open => !open)}>
                         <Typography variant="subtitle1"> {nop.nazwa} </Typography>
                     </AccordionSummary>
                     <AccordionDetails>

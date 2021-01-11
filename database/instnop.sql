@@ -157,6 +157,7 @@ CREATE TABLE Decyzje_Lekarza (
 	"data" datetime NOT NULL,
 	komentarz nvarchar(3000) NULL,
 	zgloszenie_id int NOT NULL,
+	wyswietlone bit NOT NULL DEFAULT 0,
 	CONSTRAINT PK_Decyzje_Lekarza PRIMARY KEY CLUSTERED
 	(
 		id

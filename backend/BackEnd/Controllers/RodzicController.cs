@@ -39,13 +39,24 @@ namespace BackEnd.Controllers
         /// </summary>
         /// <returns> Listę zgłoszeń </returns>
         [HttpGet("[controller]")]
-        public IActionResult GetApps()
+        public async Task<IActionResult> GetApps()
         {
-            var zgl = (from Zgloszenia in _context.Zgloszenia.Include("Pacjent") // w przyszlosci zamienic na data transfer objet
-                       where Zgloszenia.UzytId == Account.Id
-                       select Zgloszenia).ToList();
-            if (zgl == null) return BadRequest(new { message = "Lista uzytkownikow jest nullem" });
-            return Ok(zgl);
+            var apps = await _context.Zgloszenia
+                        .Include(i => i.Pacjent)
+                        .Include(i => i.DecyzjeLekarza)
+                        .Where(z => z.UzytId == Account.Id)
+                        .OrderByDescending(z => z.DataUtworzenia)
+                        .Select(z => new AppResponse
+                        { 
+                            Id = z.Id,
+                            DataUtworzenia = z.DataUtworzenia,
+                            DataSzczepienia = z.DataSzczepienia,
+                            Pacjent = new PacientResponse { Imie = z.Pacjent.Imie, Nazwisko = z.Pacjent.Nazwisko },
+                            NoweDane = !z.DecyzjeLekarza.All(d => d.Wyswietlone)
+                        })
+                        .ToListAsync();
+            if (apps == null) return BadRequest(new { message = "Lista uzytkownikow jest nullem" });
+            return Ok(apps);
         }
         /// <summary>
         /// Zwraca wszystkie szczepionki predefiniowane w systemie

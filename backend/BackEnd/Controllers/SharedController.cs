@@ -46,6 +46,13 @@ namespace BackEnd.Controllers
                 .FirstOrDefault();
             if (app == null) return NotFound("Zgloszenie o podanym id nie istnieje");
             if (Account.Rola == (int)Role.Rodzic && app.UzytId != Account.Id) return Unauthorized();
+            if (Account.Rola == (int)Role.Rodzic)
+            {
+                foreach(var d in app.DecyzjeLekarza)
+                {
+                    d.Wyswietlone = true;
+                }
+            }
             List<AppEvent> events = new List<AppEvent>
             {
                 new AppEvent
