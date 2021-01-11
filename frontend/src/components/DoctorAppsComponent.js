@@ -4,8 +4,8 @@ import Drawer from '@material-ui/core/Drawer';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
-import TextField from '@material-ui/core/TextField';
-import ErrorRadios from './RadiButtons';
+import { TextField } from '@material-ui/core';
+import DoctorDecisions from './DoctorDecisions';
 import MuiAlert from '@material-ui/lab/Alert';
 import AppHistory from './AppHistoryComponent';
 import authHeader from '../shared/authheader';
@@ -14,6 +14,13 @@ import LoadingContext from "../contexts/LoadingContext";
 import axios from 'axios';
 import UserContext from '../contexts/UserContext';
 import SnackbarContext from "../contexts/SnackbarContext";
+import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@material-ui/core/Button';
 
 
 
@@ -44,12 +51,10 @@ const useStyles = makeStyles((theme) => ({
   disabled: {
     position: 'fixed'
   },
-  personaldata: {
-    '& > *': {
-      margin: theme.spacing(1),
-      width: '50ch',
-      padding:5 
-    },
+  header:
+  {
+    padding: 6,
+    color: "#0000A0"
   },
   documentphoto:
   {
@@ -72,8 +77,9 @@ function Alert(props) {
 
 export default function DoctorApp(props) {
   const classes = useStyles();
-  const { childId } = props;
+  const { appId } = props;
   const [apps, setApps] = useState([]);
+  const [open, setOpen] = useState(false);
   const { user } = useContext(UserContext);
   const { setLoading } = useContext(LoadingContext);
   const { setSnackbar } = useContext(SnackbarContext);
@@ -81,13 +87,17 @@ export default function DoctorApp(props) {
     border: "solid",
     borderRadius: "10px",
     cursor: 'pointer',
-    mx: "auto"    
+    mx: "auto",
+    maxWidth: 300,  
+  }
+  const handleClose = () =>{
+    setOpen(false);
   }
   useEffect(() => {
     async function fetchData() {
         setLoading(true);
         try{
-            const response = await axios.get(apiURL + 'Lekarz/Zgloszenie/' + childId, authHeader(user));
+            const response = await axios.get(apiURL + 'Lekarz/Zgloszenie/' + appId, authHeader(user));
             setApps(response.data);
         } catch (error){
             console.error(error);
@@ -99,9 +109,8 @@ export default function DoctorApp(props) {
         }
         setLoading(false);
     }
-
     fetchData();
-}, [setApps, user, setLoading, setSnackbar]);
+}, [setApps, user, setLoading, setSnackbar,appId]);
   return (
     <div className={classes.root}>
       <Drawer
@@ -111,36 +120,51 @@ export default function DoctorApp(props) {
           paper: classes.drawerPaper,
         }}
       >
-        <Toolbar className={classes.pos}/>
-        <div className={classes.drawerContainer}>
-          <ErrorRadios></ErrorRadios>
+        <Toolbar />
+        <div>
+          <DoctorDecisions AppId={appId}/>
           <Divider />
         </div>
       </Drawer>
-      <main className={classes.content}>
+      <main >
         <Toolbar />
-        <Typography variant="h3" gutterBottom>
-        {apps.pacjent_Imie} {apps.pacjent_Nazwisko}
+        <Typography variant="h3" className={classes.header}  gutterBottom>
+        Zgłoszenie użytkownika : {apps.imie} {apps.nazwisko}
       </Typography>
       <Alert severity="error" prosbaOKontakt={apps.prosbaOKontakt}>Prośba o kontakt</Alert>
       
-      <Divider />
-      <form className={classes.personaldata} noValidate autoComplete="off">
-      <TextField id="0" label="Imie" defaultValue={props.Imie} variant="filled" disabled/>
-      <TextField id="00" label="Nazwisko" defaultValue={props.nazwisko} variant="filled" disabled/>
-      <TextField id="1" label="Imie Dziecka" defaultValue={props.pacjent_Imie}variant="filled" disabled/>
-      <TextField id="2" label="Nazwisko dziecka" defaultValue={props.pacjent_Nazwisko} variant="filled" disabled/>
-      <TextField id="4" label="Telefon" defaultValue={props.telefon} variant="filled" disabled/>
-      <TextField id="5" label="Email" defaultValue={props.email} variant="filled" disabled/>
-      
-      <img style={mystyle}  alt="kszdj"src="https://www.gamat.pl/media/products/a22ee97017613b218adc43e4457e398b/images/pra-ksi.gif?lm=1541706989" />
-      
-    </form>
-    <Divider />
-      
-      <AppHistory appid={1}/>       
+        <Divider />
+        <Box m={2}>
+        <Grid container spacing={3} >
+            <Grid item xs={12} md={6} lg={4}><TextField variant="filled" fullWidth id="imie" label="Imie" value={apps.pacjent_Imie} InputProps={{readOnly: true}} InputLabelProps={{shrink: true}}/></Grid>
+            <Grid item xs={12} md={6} lg={4}><TextField  id="nazwisko"  label="Nazwisko"  fullWidth value={apps.pacjent_Nazwisko} InputLabelProps={{shrink: true}} variant="filled" InputProps={{readOnly: true,}} /></Grid>
+            <Grid item xs={12} md={6} lg={4}> <TextField id="1" label="Telefon" value={apps.telefon} fullWidth variant="filled" InputProps={{readOnly: true}} InputLabelProps={{shrink: true}} /></Grid>
+            <Grid item xs={12} md={6} lg={4}> <TextField id="2" label="Email" value={apps.email} fullWidth variant="filled"  InputProps={{readOnly: true}} InputLabelProps={{shrink: true}}/></Grid>
+            <Grid item xs={12} md={6} lg={4}> <TextField id="3" label="Pesel" value="1234567891" fullWidth variant="filled"  InputProps={{readOnly: true}} InputLabelProps={{shrink: true}}/></Grid>
+            <Grid item xs={12} md={6} lg={4}> <TextField id="4" label="DataUrodzenia" value="10-10.2020" fullWidth variant="filled"  InputProps={{readOnly: true}} InputLabelProps={{shrink: true}}/></Grid>
+            <Grid item md={12} lg={12}  alignContent="flex-end"> 
+            <Box display="flex" flexDirection="row-reverse" width="100%">
+            <img style={mystyle} alt="kszdj" onClick={() => setOpen(true)}  src="https://www.gamat.pl/media/products/a22ee97017613b218adc43e4457e398b/images/pra-ksi.gif?lm=1541706989" />
+          </Box>
+          </Grid>
+          </Grid>
+        </Box >
+        <Divider />
+  
+      <AppHistory appid={appId}/>       
         <Divider />
       </main>
+      <Dialog open={open} onClose={handleClose} fullWidth  aria-labelledby="zdjęcie książeczki">
+     <DialogTitle id="form-dialog-title">Komentaż</DialogTitle>
+     <DialogContent>
+     <img alt="kszdj"  src="https://www.gamat.pl/media/products/a22ee97017613b218adc43e4457e398b/images/pra-ksi.gif?lm=1541706989" />
+     </DialogContent>
+      <DialogActions>
+       <Button onClick={handleClose} color="primary">
+         Zamknij
+       </Button>
+     </DialogActions>
+   </Dialog>
     </div>
   );
 }

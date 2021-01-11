@@ -74,6 +74,17 @@ namespace BackEnd.Controllers
             };
             return Ok(response);
         }
+        [HttpPost("[controller]/Decyzja/")]
+        public IActionResult AddDecision([FromBody] DoctorAddDecision value)
+        {
+
+            var decision = _mapper.Map<DecyzjeLekarza>(value);
+            decision.Data = DateTime.Now;
+            _context.DecyzjeLekarza.Add(decision);
+            _context.SaveChanges();
+            return Ok();
+        }
+
 
     }
 }
