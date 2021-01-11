@@ -51,8 +51,10 @@ namespace BackEnd.Controllers
                 foreach(var d in app.DecyzjeLekarza)
                 {
                     d.Wyswietlone = true;
+                    _context.Update(d);
                 }
             }
+            _context.SaveChanges();
             List<AppEvent> events = new List<AppEvent>
             {
                 new AppEvent
