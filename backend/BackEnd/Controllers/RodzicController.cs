@@ -169,7 +169,7 @@ namespace BackEnd.Controllers
                 DataUtworzenia = timestamp,
                 DataSzczepienia = value.Data,
                 PacjentId = value.pacjentId,
-                ProsbaOKontakt = value.prosba_o_kontakt,
+                ProsbaOKontakt = value.prosbaOKontakt,
                 UzytId = Account.Id,
                 ZdjecieKsZd = zdjecieKsZd
             };

@@ -8,7 +8,7 @@ import DoctorAppList from './DoctorAppList';
 
 const doctorAppWithId = ({match}) => {
     return(
-        <DoctorApp childId={match.params.id}/>
+        <DoctorApp appId={match.params.id}/>
     );
 }
 function Doctor(props){

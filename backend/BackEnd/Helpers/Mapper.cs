@@ -20,7 +20,7 @@ namespace BackEnd.Helpers
 
             CreateMap<SignUpParentRequest, Uzytkownicy>();
 
-            ////CreateMap<Account, AuthenticateResponse>();
+            CreateMap<DoctorAddDecision,DecyzjeLekarza>();
 
             ////CreateMap<RegisterRequest, Account>();
 

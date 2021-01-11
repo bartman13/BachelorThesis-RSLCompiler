@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 namespace BackEnd.Controllers
 {
     [ApiController]
-    [Authorize]
     public class SharedController : BaseController
     {
         private readonly NopContext _context;
@@ -32,6 +31,7 @@ namespace BackEnd.Controllers
         /// </summary>
         /// <param name="id">Id zgłoszenia </param>
         /// <returns>Listę wydarzeń dotyczących danego zgłoszenia</returns>
+        [Authorize]
         [HttpGet("AppHistory/{id?}")]
         public IActionResult GetAppHistory(int? id)
         {
@@ -138,6 +138,7 @@ namespace BackEnd.Controllers
         /// </summary>
         /// <param name="filename"> Nazwa pliku </param>
         /// <returns> Żądany plik </returns>
+        [Authorize]
         [HttpGet("File/{filename}")]
         public IActionResult DownloadFile(string filename)
         {
@@ -154,6 +155,7 @@ namespace BackEnd.Controllers
         /// </summary>
         /// <param name="filename"> Nazwa pliku na serwerze </param>
         /// <returns> Oryginalna nazwa pliku </returns>
+        [Authorize]
         [HttpGet("FileInfo/{filename}")]
         public IActionResult GetFileInfo(string filename)
         {
@@ -161,6 +163,11 @@ namespace BackEnd.Controllers
             if (file == null) return NotFound();
             if (Account.Rola == (int)Role.Rodzic && file.UzytId != Account.Id) return Unauthorized();
             return Ok(file.OryginalnaNazwa);
+        }
+        [HttpGet("ListaSzczepionek")]
+        public IActionResult GetAllVaccines()
+        {
+            return Ok(_context.Szczepionki.ToList());
         }
     }
 }

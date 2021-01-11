@@ -12,7 +12,7 @@ namespace BackEnd.DataTransferObjects
         public DateTime Data { get; set; }
         public int szczepionkaId { get; set; }
         public int pacjentId { get; set; }
-        public bool prosba_o_kontakt { get; set; }
+        public bool prosbaOKontakt { get; set; }
         public virtual ICollection<NopAtrybuty> nopy { get; set; }
         public virtual IFormFile zdjecieKsZd { get; set; }
     }
