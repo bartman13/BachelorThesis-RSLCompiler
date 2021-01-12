@@ -255,9 +255,7 @@ namespace BackEnd.Models
                     .HasColumnName("nazwa")
                     .HasMaxLength(100);
 
-                entity.Property(e => e.Opis)
-                    .HasColumnName("opis")
-                    .HasColumnType("ntext");
+                entity.Property(e => e.Opis).HasColumnName("opis");
             });
 
             modelBuilder.Entity<SzczepionkiOdczyny>(entity =>

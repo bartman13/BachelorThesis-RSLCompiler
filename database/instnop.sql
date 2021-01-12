@@ -176,7 +176,7 @@ GO
 CREATE TABLE Szczepionki (
 	id int IDENTITY (1, 1) NOT NULL,
 	nazwa nvarchar(100) NOT NULL,
-	opis ntext NULL,
+	opis nvarchar(max) NULL,
 	CONSTRAINT PK_Szczepionki PRIMARY KEY CLUSTERED
 	(
 		id
