@@ -158,7 +158,7 @@ function EventDescription({ event }){
         <div>
             Dodanie nowego odczynu - {event.tytul}:
             <ul>
-                {event.atrybuty.map((a, i) => {
+                {event.atrybuty?.map((a, i) => {
                     if(a.typ === 2){
                         return <li key={i}> <FileListAttribute attr={a}/> </li>
                     }
