@@ -228,8 +228,6 @@ const rows = [
     { id: 3,  nazwa_Szczepionki: 'Polfarma', lekkie: '5',powazne:'2', ciezkie: '5' },
     { id: 4,  nazwa_Szczepionki: 'Pfizer', lekkie: '6',powazne:'8', ciezkie: '22'},
   ];
-
-
 function PzhVaccinesList(){
   const classes = useStyles();
     return(

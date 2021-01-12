@@ -13,33 +13,11 @@ namespace BackEnd.Helpers
         public AutoMapperProfile()
         {
             CreateMap<Uzytkownicy, AuthenticateResponse>();
-            
             CreateMap<Zgloszenia, DoctorAppResponse>();
             CreateMap<SignUpParentRequest,Uzytkownicy>();
-
-
             CreateMap<SignUpParentRequest, Uzytkownicy>();
-
             CreateMap<DoctorAddDecision,DecyzjeLekarza>();
-
-            ////CreateMap<RegisterRequest, Account>();
-
-            ////CreateMap<CreateRequest, Account>();
-
-            ////CreateMap<UpdateRequest, Account>()
-            ////    .ForAllMembers(x => x.Condition(
-            ////        (src, dest, prop) =>
-            ////        {
-            ////            // ignore null & empty string properties
-            ////            if (prop == null) return false;
-            ////            if (prop.GetType() == typeof(string) && string.IsNullOrEmpty((string)prop)) return false;
-
-            ////            // ignore null role
-            ////            if (x.DestinationMember.Name == "Role" && src.Role == null) return false;
-
-            ////            return true;
-            ////        }
-            ////    ));
+            CreateMap<Szczepionki, VaccineTransfer>();
         }
     }
 }
