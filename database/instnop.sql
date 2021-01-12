@@ -176,7 +176,13 @@ GO
 CREATE TABLE Szczepionki (
 	id int IDENTITY (1, 1) NOT NULL,
 	nazwa nvarchar(100) NOT NULL,
-	opis ntext NULL,
+	opis nvarchar(max) NULL,
+	pictureLink nvarchar(max) NULL,
+	producentInfo nvarchar(max) NULL,
+	chorobyInfo nvarchar(MAX) NULL,
+	obecnaWiedzaInfo nvarchar(MAX) NULL,
+	przeiwWskazaniaInfo nvarchar(MAX) NULL
+
 	CONSTRAINT PK_Szczepionki PRIMARY KEY CLUSTERED
 	(
 		id

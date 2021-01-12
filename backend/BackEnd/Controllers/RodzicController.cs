@@ -142,11 +142,15 @@ namespace BackEnd.Controllers
         /// <param name="id"> Id szczepionki </param>
         /// <returns> Listę niepożądanych odczynów </returns>
         [HttpGet("Nop/{id?}")]
-        public IActionResult GetNop(int? id)
+        public async Task<IActionResult> GetNop(int? id)
         {
-            var nops = _context.Odczyny.Where(x => _context.SzczepionkiOdczyny
-                .Where(y => y.SzczepionkaId == id).Any(z => z.OdczynId == x.Id))
-                .Include("AtrybutyOdczynow").ToList();
+            var nops = await _context.SzczepionkiOdczyny
+                .Include(i => i.Odczyn)
+                .ThenInclude(i => i.AtrybutyOdczynow)
+                .Where(x => x.SzczepionkaId == id)
+                .OrderByDescending(x => x.Czestosc)
+                .Select(x => x.Odczyn)
+                .ToListAsync();
 
             if (nops == null) return BadRequest(new { message = "Lista odczynow jest nullem" });
             return Ok(nops);

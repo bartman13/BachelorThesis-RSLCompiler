@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import {
     makeStyles, Grid, Typography, Button, Dialog, FormControl,
     DialogTitle, InputLabel, Select, MenuItem, TextField, Link,
-    Avatar, IconButton, Box
+    Avatar, IconButton, Box, InputAdornment
 } from '@material-ui/core';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -49,7 +49,9 @@ function AddNOPDialog(props) {
         setSelectedNOP(event.target.value);
     };
     const selectClickHandle = () => {
-        onClose(nops.find(n => n.nazwa === selectedNOP));
+        const selected = nops.find(n => n.nazwa === selectedNOP);
+        setSelectedNOP('');
+        onClose(selected);
     };
     const backClickHandle = () => onClose();
 
@@ -206,7 +208,7 @@ function NOPFilesAttribute(props) {
     return (
         <div>
             <Button variant="outlined" component="label" color="primary">
-                Dodaj plik <AttachFileIcon />
+                Dodaj {attribute.nazwa.toLowerCase()} <AttachFileIcon />
                 <input type="file" hidden multiple
                     onChange={handleFilesChange} />
             </Button>
@@ -234,6 +236,7 @@ function NOPTextAttribute(props) {
             multiline
             rows={5}
             rowsMax={10}
+            variant="outlined"
             style={{width: '100%', margin: '10px'}}
         />
     );
@@ -268,7 +271,8 @@ function NOPSelectAttribute(props) {
 
 function NOPNumberAttribute(props) {
     const { attribute } = props;
-    const [value, setValue] = useState(attribute.info.split(';')[1]);
+    const parametrs = attribute.info.split(';');
+    const [value, setValue] = useState(parametrs[1]);
 
     const handleChange = (event) => {
         setValue(event.target.value);
@@ -285,7 +289,12 @@ function NOPNumberAttribute(props) {
             type="number"
             value={value}
             onChange={handleChange}
-            inputProps={{ step: attribute.info.split(';')[2] }}
+            inputProps={{ 
+                step: parametrs[2]
+            }}
+            InputProps={{
+                endAdornment: <InputAdornment position="end">{parametrs[0]}</InputAdornment>
+            }}
         />
     );
 }
@@ -349,6 +358,7 @@ function NOPEntry(props) {
                                     }}
                                 />
                             </Grid>
+                            {nop.atrybuty.length > 0 ?
                             <Grid item xs={12} align="left">
                                 <Box fontWeight='fontWeightMedium' 
                                     display='inline'
@@ -356,7 +366,7 @@ function NOPEntry(props) {
                                 > 
                                     Dodatkowe dane o odczynu:
                                 </Box>
-                            </Grid>
+                            </Grid> : null}
                             {nop.atrybuty.map(a => {
                                 return (
                                     <Grid item xs={12} key={a.id}>
@@ -385,9 +395,11 @@ function NOPCreator(props) {
     const [open, setOpen] = useState(false);
     const { show, nops, selectedNOPs, setSelectedNOPs } = props;
 
+    const [availableNOPs, setAvailableNOPS] = useState(nops);
+
     const onDialogClose = (selected) => {
         if (selected !== undefined) {
-            setSelectedNOPs([...selectedNOPs, {
+            setSelectedNOPs(selectedNOPs => [...selectedNOPs, {
                 id: selected.id,
                 nazwa: selected.nazwa,
                 atrybuty: selected.atrybutyOdczynow.map(a => { return { ...a, wartosc: '' } })
@@ -397,12 +409,17 @@ function NOPCreator(props) {
     }
 
     const deleteNOP = (nop) => () => {
-        setSelectedNOPs(selectedNOPs.filter(n => n.id !== nop.id));
+        setSelectedNOPs(selectedNOPs => selectedNOPs.filter(n => n.id !== nop.id));
     }
 
     const handleClickOpen = () => setOpen(true);
 
     const classes = useStyles();
+
+    useEffect(() => {
+        setAvailableNOPS(nops.filter(n => !selectedNOPs.map(x => x.id).includes(n.id)))
+    }, [selectedNOPs, nops]);
+
     if (!show) {
         return (
             <Button variant="contained" className={classes.buttonSuccess} disabled>
@@ -425,7 +442,7 @@ function NOPCreator(props) {
                 <Button variant="contained" className={classes.buttonSuccess} onClick={handleClickOpen}>
                     Dodaj odczyn
                 </Button>
-                <AddNOPDialog onClose={onDialogClose} open={open} nops={nops} />
+                <AddNOPDialog onClose={onDialogClose} open={open} nops={availableNOPs} />
             </Grid>
         </Grid>
     );
