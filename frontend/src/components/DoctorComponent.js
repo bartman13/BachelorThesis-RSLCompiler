@@ -6,11 +6,16 @@ import DoctorHelp from './DoctorHelpComponent';
 import DoctorApp from './DoctorAppsComponent';
 import DoctorAppList from './DoctorAppList';
 import Wiki from './WikiComponent';
-
+import WikiItem from './WikiItem';
 
 const doctorAppWithId = ({match}) => {
     return(
         <DoctorApp appId={match.params.id}/>
+    );
+}
+const WikiWithId = ({match}) => {
+    return(
+        <WikiItem wikiid={match.params.id}/>
     );
 }
 function Doctor(props){
@@ -22,6 +27,7 @@ function Doctor(props){
                 <Route path='/doctorhome' component={DoctorAppList}/>
                 <Route path='/doctorapp/:id' component={doctorAppWithId}/>
                 <Route path='/doctorhelp' component={DoctorHelp}/>
+                <Route path='/wiki/:id' component={WikiWithId}/>
                 <Route path='/wiki' component={Wiki}/>
                 <Redirect to='/doctorhome' />
             </Switch>

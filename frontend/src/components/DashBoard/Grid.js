@@ -9,9 +9,6 @@ import { Link } from 'react-router-dom';
 
 import Title from './Title';
 
-
-
-
 const useStyles = makeStyles((theme) => ({
   seeMore: {
     marginTop: theme.spacing(3),

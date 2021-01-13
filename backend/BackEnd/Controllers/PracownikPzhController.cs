@@ -33,9 +33,7 @@ namespace BackEnd.Controllers
 
         }
 
-          //          2 => "Potwierdzono występowenie lekkiego niepożadanego odczynu poszczepiennego",
-          //          3 => "Potwierdzono występowenie poważnego niepożadanego odczynu poszczepiennego",
-          //          4 => "Potwierdzono występowenie ciężkiego niepożadanego odczynu poszczepiennego",
+          
 
         [HttpGet("ZgloszeniaPzh/{id?}")]
         public IActionResult GetNop(int? id)
