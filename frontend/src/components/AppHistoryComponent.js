@@ -87,7 +87,7 @@ function FileListAttribute({ attr }){
     const { setSnackbar } = useContext(SnackbarContext);
 
     useEffect(() => {
-        attr.wartosc.split(';').forEach(async (filename) => {
+        attr.wartosc?.split(';').forEach(async (filename) => {
             try{
                 const fileInfo = await axios.get(apiURL + 'fileInfo/' + filename, authHeader(user));
                 setFiles(fs => [...fs, {name: fileInfo.data, link: filename}]);

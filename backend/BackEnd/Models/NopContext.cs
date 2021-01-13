@@ -29,6 +29,15 @@ namespace BackEnd.Models
         public virtual DbSet<Zgloszenia> Zgloszenia { get; set; }
         public virtual DbSet<ZgloszenieSzczepionki> ZgloszenieSzczepionki { get; set; }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=Nop;Trusted_Connection=True;");
+            }
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AtrybutyOdczynow>(entity =>
@@ -250,12 +259,22 @@ namespace BackEnd.Models
             {
                 entity.Property(e => e.Id).HasColumnName("id");
 
+                entity.Property(e => e.ChorobyInfo).HasColumnName("chorobyInfo");
+
                 entity.Property(e => e.Nazwa)
                     .IsRequired()
                     .HasColumnName("nazwa")
                     .HasMaxLength(100);
 
+                entity.Property(e => e.ObecnaWiedzaInfo).HasColumnName("obecnaWiedzaInfo");
+
                 entity.Property(e => e.Opis).HasColumnName("opis");
+
+                entity.Property(e => e.PictureLink).HasColumnName("pictureLink");
+
+                entity.Property(e => e.ProducentInfo).HasColumnName("producentInfo");
+
+                entity.Property(e => e.PrzeiwWskazaniaInfo).HasColumnName("przeiwWskazaniaInfo");
             });
 
             modelBuilder.Entity<SzczepionkiOdczyny>(entity =>

@@ -198,13 +198,16 @@ namespace BackEnd.Controllers
                     DataWystapenia = nop.data,
                     OdczynId = nop.id
                 };
-                foreach (var attr in nop.atrybuty)
+                if (nop.atrybuty != null)
                 {
-                    oz.AtrybutyZgloszenia.Add(new AtrybutyZgloszenia
+                    foreach (var attr in nop.atrybuty)
                     {
-                        Wartosc = attr.wartosc,
-                        AtodId = attr.id
-                    });
+                        oz.AtrybutyZgloszenia.Add(new AtrybutyZgloszenia
+                        {
+                            Wartosc = attr.wartosc,
+                            AtodId = attr.id
+                        });
+                    }
                 }
                 app.OdczynyZgloszenia.Add(oz);
             }
