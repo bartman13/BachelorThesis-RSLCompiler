@@ -1,8 +1,8 @@
 import React from "react";
-
+import Dashboard from "./DashBoard/Dashboard";
 function About(){
     return(
-        <div> O nas </div>
+        <Dashboard/>
     );
 }
 

@@ -17,18 +17,12 @@ import SnackbarContext from "../contexts/SnackbarContext";
 import axios from 'axios';
 import apiURL from '../shared/apiURL';
 import { Link } from 'react-router-dom';
-
-
-
-
-
-
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: '70%',
     padding: 15,
     margin: 'auto',
-    maxHeight: '100%'
+    height: '100%'
 
   },
   content: {
@@ -51,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     margin: 4,
   },
   search: {
-    maxWidth: 400,
+    maxWidth: '30%',
     margin:'auto',
     display: 'flex',
   },
@@ -71,9 +65,19 @@ const WhiteTextTypography = withStyles({
 export default function Wiki() {
   const classes = useStyles();
   const [apps, setApps] = useState([]);
+  const [displayData,setDisplay] = useState([]);
   const { setSnackbar } = useContext(SnackbarContext);
   const { setLoading } = useContext(LoadingContext);
+  const [searchString,setSearch] =  useState('');
 
+  const handleChange = (event) =>
+  {
+    setSearch(event.target.value);
+  }
+  const handleSearch = (event) =>
+  {
+    setDisplay(apps.filter(x => x.nazwa.includes(searchString)));
+  }
 
   useEffect(() => {
     async function fetchData() {
@@ -81,6 +85,8 @@ export default function Wiki() {
         try{
             const response = await axios.get(apiURL + 'ListaSzczepionek');
             setApps(response.data);
+            setDisplay(response.data);
+
         } catch (error){
             console.error(error);
             setSnackbar({
@@ -92,26 +98,27 @@ export default function Wiki() {
         setLoading(false);
     }
     fetchData();
-}, [setApps, setLoading, setSnackbar]);
+},[setApps, setLoading, setSnackbar, setDisplay]);
   
 return (
     <div className={classes.root} style={{ background: '#FFFAF0' }}>
         <Grid container spacing={2} >
-            <Grid item lg={12}  >
+           <Grid item lg={12}  >
                 <Box>
                     <Paper component="form" className={classes.search}>
                         <InputBase
                             className={classes.input}
                             placeholder="Baza Szczepionek"
                             inputProps={{ 'aria-label': 'search google maps' }}
+                            onKeyPress={handleChange}
                         />
-                        <IconButton type="submit" className={classes.iconButton} aria-label="search">
+                        <IconButton  className={classes.iconButton} aria-label="search" onClick={handleSearch}>
                             <SearchIcon />
                         </IconButton>
                     </Paper>
                 </Box>
             </Grid>
-            {apps.map((item) => <Grid item md={12} lg={6}>
+            {displayData.map((item) => <Grid item md={12} lg={6}>
                 <Card className={classes.root}>
                 <CardActionArea  >
                     <Link to={'/wiki/' + item.id}>
