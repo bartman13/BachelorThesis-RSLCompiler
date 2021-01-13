@@ -52,7 +52,6 @@ export default function DoctorDecisions(props) {
     setOpen(false);
   };
   const RadioValue = () => {
-    alert(value);
     if (value === 'lekki') {
       return 2;
     } else if (value === 'powazny') {
