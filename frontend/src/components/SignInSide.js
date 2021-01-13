@@ -191,6 +191,7 @@ const emailChanged = (event) => {
                         variant="contained"
                         color="primary"
                         className={classes.submit}
+                        component={RouterLink} to="/wiki"
                     >
                         Encyklopedia Szczepionek 
                     </ColorButton>

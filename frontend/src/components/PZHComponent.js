@@ -4,9 +4,9 @@ import { BrowserRouter} from 'react-router-dom';
 import PzhNavBar from './PzhNavBarComponent';
 import PzhVaccinesList from './PzhVaccinesList';
 import PzhHelp from './PzhHelpComponent';
-import PzhVaccine from './PzhVaccine';
 import Wiki from './WikiComponent';
-import DoctorApp from './DoctorAppsComponent'
+import DoctorApp from './DoctorAppsComponent';
+import WikiItem from './WikiItem';
 
 
 
@@ -16,6 +16,11 @@ const PzhVaccinesWithId = ({match}) => {
     );
 }
 
+const WikiWithId = ({match}) => {
+    return(
+        <WikiItem wikiid={match.params.id}/>
+    );
+}
 function Doctor(props){
     const { logout } = props;
     return(
@@ -24,6 +29,7 @@ function Doctor(props){
             <Switch>
                 <Route path='/pzhhome' component={PzhVaccinesList}/>
                 <Route path='/vaccines/:id' component={PzhVaccinesWithId}/>
+                <Route path='/wiki/:id' component={WikiWithId}/>
                 <Route path='/wiki' component={Wiki}/>
                 <Route path='/pzhhelp' component={PzhHelp}/>
                 <Redirect to='/pzhhome' />
