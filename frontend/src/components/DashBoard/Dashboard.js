@@ -1,43 +1,43 @@
-import React from 'react';
+import React,{ useState, useEffect, useContext } from "react";
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import Box from '@material-ui/core/Box';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 import Paper from '@material-ui/core/Paper';
 import Link from '@material-ui/core/Link';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import { mainListItems, secondaryListItems } from './listItems';
+import InputBase from '@material-ui/core/InputBase';
+import SearchIcon from '@material-ui/icons/Search';
 import Chart from './Chart';
-import Deposits from './Deposits';
-import Orders from './Orders';
+import CustomizedGrid from './Grid';
+import LoadingContext from "../../contexts/LoadingContext";
+import SnackbarContext from "../../contexts/SnackbarContext";
+import axios from 'axios';
+import apiURL from '../../shared/apiURL';
+import Stats from './Stats';
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
       <Link color="inherit" href="https://material-ui.com/">
-        Your Website
+        Bartosz Lusztak &amp; Vladyslav Yatsenko Inc.
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
     </Typography>
   );
 }
-
 const drawerWidth = 240;
-
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -115,43 +115,71 @@ const useStyles = makeStyles((theme) => ({
   fixedHeight: {
     height: 240,
   },
+  search: {
+    margin:'auto',
+    display: 'flex',
+  },
 }));
 
 export default function Dashboard() {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+  const [open, setOpen] = useState(true);
+  const [apps, setApps] = useState([]);
+  const [gridData, setgridData] = useState(undefined);
+  const [displayData,setDisplay] = useState([]);
+  const { setSnackbar } = useContext(SnackbarContext);
+  const { setLoading } = useContext(LoadingContext);
+  const [searchString,setSearch] =  useState('');
+
+ 
+  const handleSearch = (event) =>
+  {
+    setSearch(event.target.value);
+    setDisplay(apps.filter(x => x.nazwa.includes(searchString)));
+  }
+  
+  const loadData =  (param) => async (e) =>
+  {
+    setLoading(true);
+    try{
+        const response = await axios.get(apiURL + 'ZgloszeniaPzh/' + param);
+        setgridData(response.data);
+    } catch (error){
+        console.error(error);
+        setSnackbar({
+            open: true,
+            message: "Błąd ładowania danych ",
+            type: "error",
+        });
+    }
+    setLoading(false);
+  } 
+
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
+  useEffect(() => {
+    async function fetchData() {
+        setLoading(true);
+        try{
+            const response = await axios.get(apiURL + 'ListaSzczepionek');
+            setApps(response.data);
+            setDisplay(response.data);
+
+        } catch (error){
+            console.error(error);
+            setSnackbar({
+                open: true,
+                message: "Błąd ładowania danych",
+                type: "error",
+            });
+        }
+        setLoading(false);
+    }
+    fetchData();
+},[setApps, setLoading, setSnackbar, setDisplay]);
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
-        <Toolbar className={classes.toolbar}>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            Dashboard
-          </Typography>
-          <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-        </Toolbar>
-      </AppBar>
       <Drawer
         variant="permanent"
         classes={{
@@ -160,14 +188,29 @@ export default function Dashboard() {
         open={open}
       >
         <div className={classes.toolbarIcon}>
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon />
-          </IconButton>
+        <Box>
+                    <Paper component="form" className={classes.search}>
+                        <InputBase
+                            className={classes.input}
+                            placeholder="Znajdź szczepionkę"
+                            inputProps={{ 'aria-label': 'search google maps' }}
+                        />
+                        <IconButton  className={classes.iconButton} aria-label="search" onClick={handleSearch}>
+                            <SearchIcon />
+                        </IconButton>
+                    </Paper>
+                </Box>
         </div>
         <Divider />
-        <List>{mainListItems}</List>
-        <Divider />
-        <List>{secondaryListItems}</List>
+        <List>
+          {displayData.map(item =>
+            <div><ListItem button onClick={loadData(item.id)}>
+              <ListItemIcon>
+              </ListItemIcon>
+              <ListItemText primary={item.nazwa} />
+            </ListItem><Divider /></div>
+                    )}
+        </List>
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
@@ -176,19 +219,19 @@ export default function Dashboard() {
             {/* Chart */}
             <Grid item xs={12} md={8} lg={9}>
               <Paper className={fixedHeightPaper}>
-                <Chart />
+                <Chart appsPerDay={gridData?.appsPerDay}/>
               </Paper>
             </Grid>
             {/* Recent Deposits */}
             <Grid item xs={12} md={4} lg={3}>
               <Paper className={fixedHeightPaper}>
-                <Deposits />
+                <Stats lastMonth={gridData?.lastMonth} lekkie={gridData?.lekkie} poważne={gridData?.poważne} ciężkie={gridData?.ciężkie}/>
               </Paper>
             </Grid>
             {/* Recent Orders */}
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                <Orders />
+                <CustomizedGrid rows={gridData?.rows} />
               </Paper>
             </Grid>
           </Grid>

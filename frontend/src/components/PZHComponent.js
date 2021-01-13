@@ -6,12 +6,16 @@ import PzhVaccinesList from './PzhVaccinesList';
 import PzhHelp from './PzhHelpComponent';
 import PzhVaccine from './PzhVaccine';
 import Wiki from './WikiComponent';
+import DoctorApp from './DoctorAppsComponent'
+
+
 
 const PzhVaccinesWithId = ({match}) => {
     return(
-        <PzhVaccine vaccineId={match.params.id}/>
+        <DoctorApp appId={match.params.id}/>
     );
 }
+
 function Doctor(props){
     const { logout } = props;
     return(

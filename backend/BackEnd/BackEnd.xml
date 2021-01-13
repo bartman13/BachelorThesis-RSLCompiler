@@ -26,6 +26,11 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:BackEnd.Controllers.PracownikPzhController.#ctor(BackEnd.Models.NopContext,AutoMapper.IMapper)">
+            <summary>
+            Konstruktor przyjmujacy kontekst bazy danych
+            </summary>
+        </member>
         <member name="T:BackEnd.Controllers.RodzicController">
             <summary>
             Kontroler służący  do obsługi ządaużytkowników zalogowanych jako Rodzic
