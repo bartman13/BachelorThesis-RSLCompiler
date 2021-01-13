@@ -198,7 +198,7 @@ namespace BackEnd.Controllers
                     DataWystapenia = nop.data,
                     OdczynId = nop.id
                 };
-                if(nop.atrybuty != null)
+                if (nop.atrybuty != null)
                 {
                     foreach (var attr in nop.atrybuty)
                     {

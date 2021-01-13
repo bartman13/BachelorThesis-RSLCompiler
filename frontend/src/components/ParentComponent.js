@@ -8,9 +8,10 @@ import ParentProfile from './ParentProfileComponent';
 import ParentNewApp from './ParentNewAppComponent';
 import ParentChild from './ParentChildComponent';
 import AppHistory from './AppHistoryComponent';
-import ParentWiki from './ParentWikiComponent';
+import Wiki from './WikiComponent';
 import About from './AboutComponent';
 import AddNOP from './AddNOPComponent';
+import WikiItem from './WikiItem'
 
 const AppHistoryWithId = ({match}) => {
     return(
@@ -21,6 +22,12 @@ const AppHistoryWithId = ({match}) => {
 const ChildWithId = ({match}) => {
     return(
         <ParentChild childId={match.params.id}/>
+    );
+}
+
+const WikiWithId = ({match}) => {
+    return(
+        <WikiItem wikiid={match.params.id}/>
     );
 }
 
@@ -44,7 +51,8 @@ function Parent(props){
                 <Route path='/parentprofile' component={ParentProfile}/>
                 <Route path='/parentnewapp' component={ParentNewApp}/>
                 <Route path='/apphistory/:id' component={AppHistoryWithId}/>
-                <Route path='/parentwiki' component={ParentWiki}/>
+                <Route path='/wiki/:id' component={WikiWithId}/>
+                <Route path='/wiki' component={Wiki}/>
                 <Route path='/parentabout' component={About}/>
                 <Route path='/addnop/:id' component={UpdateAppWithId}/>
                 <Redirect to='/parenthome' />

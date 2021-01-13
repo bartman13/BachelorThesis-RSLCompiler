@@ -1,4 +1,5 @@
-﻿using BackEnd.DataTransferObjects;
+﻿using AutoMapper;
+using BackEnd.DataTransferObjects;
 using BackEnd.Models;
 using BackEnd.Services;
 using Microsoft.AspNetCore.Http;
@@ -18,13 +19,17 @@ namespace BackEnd.Controllers
     {
         private readonly NopContext _context;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
+
         /// <summary>
         /// Konstruktor przyjmujacy kontekst bazy danych
         /// </summary>
-        public SharedController(NopContext context, IConfiguration configuration)
+        public SharedController(NopContext context, IConfiguration configuration, IMapper mapper)
         {
             _context = context;
             _configuration = configuration;
+            _mapper = mapper;
+
         }
         /// <summary>
         /// Zwraca historię zgłoszenia, czyli listę wszystkich wydarzeń dotyczących danego zgłoszenia.
@@ -176,7 +181,20 @@ namespace BackEnd.Controllers
         [HttpGet("ListaSzczepionek")]
         public IActionResult GetAllVaccines()
         {
-            return Ok(_context.Szczepionki.ToList());
+
+            List<VaccineTransfer> vaccines = new List<VaccineTransfer>();
+            foreach(var el in _context.Szczepionki)
+            {
+                vaccines.Add(_mapper.Map<VaccineTransfer>(el));
+            }
+            return Ok(vaccines);
         }
+        [HttpGet("Szczepionka/{id?}")]
+        public IActionResult GetAllVaccines(int id)
+        {
+            var ret = _context.Szczepionki.SingleOrDefault(X => X.Id == id);
+            return Ok(ret);
+        }
+
     }
 }

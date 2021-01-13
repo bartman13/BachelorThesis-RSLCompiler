@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import { withStyles } from "@material-ui/core/styles";
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
@@ -15,17 +16,13 @@ import LoadingContext from "../contexts/LoadingContext";
 import SnackbarContext from "../contexts/SnackbarContext";
 import axios from 'axios';
 import apiURL from '../shared/apiURL';
-
-
-
-
-
+import { Link } from 'react-router-dom';
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: '80%',
+    maxWidth: '70%',
     padding: 15,
     margin: 'auto',
-    maxHeight: '100%'
+    height: '100%'
 
   },
   content: {
@@ -48,23 +45,39 @@ const useStyles = makeStyles((theme) => ({
     margin: 4,
   },
   search: {
-    padding: 15,
-    maxWidth: 400,
+    maxWidth: '30%',
     margin:'auto',
     display: 'flex',
   },
-  
-  
 }));
 
+const WhiteTextTypography = withStyles({
+  root: {
+    color: "#000000",
+    fontSize: 17
+  }
+})(Typography);
 
 
-export default function ParentWiki() {
+
+
+
+export default function Wiki() {
   const classes = useStyles();
   const [apps, setApps] = useState([]);
+  const [displayData,setDisplay] = useState([]);
   const { setSnackbar } = useContext(SnackbarContext);
   const { setLoading } = useContext(LoadingContext);
+  const [searchString,setSearch] =  useState('');
 
+  const handleChange = (event) =>
+  {
+    setSearch(event.target.value);
+  }
+  const handleSearch = (event) =>
+  {
+    setDisplay(apps.filter(x => x.nazwa.includes(searchString)));
+  }
 
   useEffect(() => {
     async function fetchData() {
@@ -72,6 +85,8 @@ export default function ParentWiki() {
         try{
             const response = await axios.get(apiURL + 'ListaSzczepionek');
             setApps(response.data);
+            setDisplay(response.data);
+
         } catch (error){
             console.error(error);
             setSnackbar({
@@ -83,45 +98,46 @@ export default function ParentWiki() {
         setLoading(false);
     }
     fetchData();
-}, [setApps, setLoading, setSnackbar]);
+},[setApps, setLoading, setSnackbar, setDisplay]);
   
 return (
     <div className={classes.root} style={{ background: '#FFFAF0' }}>
         <Grid container spacing={2} >
-            <Grid item lg={12}  >
+           <Grid item lg={12}  >
                 <Box>
                     <Paper component="form" className={classes.search}>
                         <InputBase
                             className={classes.input}
                             placeholder="Baza Szczepionek"
                             inputProps={{ 'aria-label': 'search google maps' }}
+                            onKeyPress={handleChange}
                         />
-                        <IconButton type="submit" className={classes.iconButton} aria-label="search">
+                        <IconButton  className={classes.iconButton} aria-label="search" onClick={handleSearch}>
                             <SearchIcon />
                         </IconButton>
                     </Paper>
                 </Box>
             </Grid>
-            {apps.map((item) => <Grid item md={12} lg={6}>
+            {displayData.map((item) => <Grid item md={12} lg={6}>
                 <Card className={classes.root}>
+                <CardActionArea  >
+                    <Link to={'/wiki/' + item.id}>
                     <CardMedia
                         component="img"
                         alt="Contemplative Reptile"
                         height="140"
                         image="https://upload.wikimedia.org/wikipedia/commons/0/0b/Pfizer_logo.svg"
                         title="Contemplative Reptile"
-                        width="70%"
-                        border="solid"
                     />
-                    <CardActionArea >
                         <CardContent>
                             <Typography gutterBottom variant="h5" component="h2">
                                 {item.nazwa}
                             </Typography>
-                            <Typography variant="body2" color="textSecondary" component="p">
+                            <WhiteTextTypography variant="body2"  component="p">
                                 {item.opis}
-                            </Typography>
+                            </WhiteTextTypography>
                         </CardContent>
+                        </Link>
                     </CardActionArea>
                 </Card>
             </Grid>

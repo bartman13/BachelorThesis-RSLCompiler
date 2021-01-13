@@ -28,7 +28,7 @@ function ParentNavBar(props){
                                 <NavLink className="nav-link" to="/parentchildren"><b> Dzieci </b></NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink className="nav-link" to="/parentwiki"><b> O szczepieniach</b> </NavLink>
+                                <NavLink className="nav-link" to="/wiki"><b> O szczepieniach</b> </NavLink>
                             </NavItem>
                             <NavItem>
                                 <NavLink className="nav-link" to="/parentabout"><b> Jak korzystać?</b> </NavLink>

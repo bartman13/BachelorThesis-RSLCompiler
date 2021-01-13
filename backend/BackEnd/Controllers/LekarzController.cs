@@ -55,6 +55,7 @@ namespace BackEnd.Controllers
                 .Include("Pacjent")
                 .Include("Uzyt")
                 .Include("DecyzjeLekarza")
+                .Include("ZdjecieKsZd")
                 .FirstOrDefault();
             DotorZgłoszenieInfo response = new DotorZgłoszenieInfo
             {
@@ -65,8 +66,8 @@ namespace BackEnd.Controllers
                 Pacjent_Imie = zgloszenie.Pacjent.Imie,
                 Pacjent_Nazwisko = zgloszenie.Pacjent.Nazwisko,
                 ProsbaOKontakt = zgloszenie.ProsbaOKontakt,
-                decyzja = zgloszenie.DecyzjeLekarza.Count == 0 ? -1 : zgloszenie.DecyzjeLekarza.Last().Decyzja
-
+                decyzja = zgloszenie.DecyzjeLekarza.Count == 0 ? -1 : zgloszenie.DecyzjeLekarza.Last().Decyzja,
+                ZdjecieKsZd = zgloszenie.ZdjecieKsZd
             };
             return Ok(response);
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BackEnd.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,5 +16,6 @@ namespace BackEnd.DataTransferObjects
         public string Pacjent_Imie { get; set; }
         public string Pacjent_Nazwisko { get; set; }
         public int decyzja { get; set; }
+        public Pliki ZdjecieKsZd { get; set; }
     }
 }

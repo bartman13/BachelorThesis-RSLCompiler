@@ -62,9 +62,6 @@ const useStyles = makeStyles((theme) => ({
     borderradius: "16px"
   }, 
 
-
-  
-  
 }));
 
 function Alert(props) {
@@ -79,6 +76,7 @@ export default function DoctorApp(props) {
   const classes = useStyles();
   const { appId } = props;
   const [apps, setApps] = useState([]);
+  const [photo, setPhoto] = useState(undefined);
   const [open, setOpen] = useState(false);
   const { user } = useContext(UserContext);
   const { setLoading } = useContext(LoadingContext);
@@ -99,6 +97,11 @@ export default function DoctorApp(props) {
         try{
             const response = await axios.get(apiURL + 'Lekarz/Zgloszenie/' + appId, authHeader(user));
             setApps(response.data);
+            const blob = await axios.get(apiURL + 'file/' + response.data.zdjecieKsZd.nazwaPliku, {
+              responseType: 'blob',
+              ...authHeader(user)
+          });
+            setPhoto(URL.createObjectURL(blob.data));
         } catch (error){
             console.error(error);
             setSnackbar({
@@ -144,7 +147,7 @@ export default function DoctorApp(props) {
             <Grid item xs={12} md={6} lg={4}> <TextField id="4" label="DataUrodzenia" value="10-10.2020" fullWidth variant="filled"  InputProps={{readOnly: true}} InputLabelProps={{shrink: true}}/></Grid>
             <Grid item md={12} lg={12}  alignContent="flex-end"> 
             <Box display="flex" flexDirection="row-reverse" width="100%">
-            <img style={mystyle} alt="kszdj" onClick={() => setOpen(true)}  src="https://www.gamat.pl/media/products/a22ee97017613b218adc43e4457e398b/images/pra-ksi.gif?lm=1541706989" />
+            <img style={mystyle} alt="kszdj" onClick={() => setOpen(true)}  src={photo} />
           </Box>
           </Grid>
           </Grid>
@@ -157,7 +160,7 @@ export default function DoctorApp(props) {
       <Dialog open={open} onClose={handleClose} fullWidth  aria-labelledby="zdjęcie książeczki">
      <DialogTitle id="form-dialog-title">Komentaż</DialogTitle>
      <DialogContent>
-     <img alt="kszdj"  src="https://www.gamat.pl/media/products/a22ee97017613b218adc43e4457e398b/images/pra-ksi.gif?lm=1541706989" />
+     <img alt="kszdj" src={photo} />
      </DialogContent>
       <DialogActions>
        <Button onClick={handleClose} color="primary">
