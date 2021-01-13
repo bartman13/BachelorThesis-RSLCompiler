@@ -88,16 +88,18 @@ function FileListAttribute({ attr }){
 
     useEffect(() => {
         attr.wartosc?.split(';').forEach(async (filename) => {
-            try{
-                const fileInfo = await axios.get(apiURL + 'fileInfo/' + filename, authHeader(user));
-                setFiles(fs => [...fs, {name: fileInfo.data, link: filename}]);
-            } catch(error) {
-                console.error(error);
-                setSnackbar({
-                    open: true,
-                    type: 'error',
-                    message: 'Błąd ładowania danych'
-                });
+            if(filename){
+                try{
+                    const fileInfo = await axios.get(apiURL + 'fileInfo/' + filename, authHeader(user));
+                    setFiles(fs => [...fs, {name: fileInfo.data, link: filename}]);
+                } catch(error) {
+                    console.error(error);
+                    setSnackbar({
+                        open: true,
+                        type: 'error',
+                        message: 'Błąd ładowania danych'
+                    });
+                }
             }
         });
     }, [setFiles, user, attr, setSnackbar]);
@@ -132,7 +134,7 @@ function FileListAttribute({ attr }){
     };
 
     return (
-        <div> Dodane pliki: <ol>{files.map((f, i) => <li key={i} > <FileLink file={f}/> </li>)} </ol> </div>
+        <div> Dodane pliki: {files.length > 0 ? <ol>{files.map((f, i) => <li key={i} > <FileLink file={f}/> </li>)} </ol> : "Brak plików" }</div>
     )
 }
 
