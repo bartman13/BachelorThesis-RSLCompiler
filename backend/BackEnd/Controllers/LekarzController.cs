@@ -27,30 +27,26 @@ namespace BackEnd.Controllers
             _mapper = mapper;
         }
         [HttpGet("[controller]/Zgloszenia")]
-        public IActionResult GetApps()
+        public async Task<IActionResult> GetApps()
         {
-            var zgloszenia = (from Zgloszenia in _context.Zgloszenia
-                              .Include("Uzyt") 
-                              .Include("DecyzjeLekarza")
-                              .Include("Pacjent")// w przyszlosci zamienic na data transfer objet
-                       where Zgloszenia.Pacjent.LekarzId == Account.Id
-                       select Zgloszenia).ToList();
-
-            var ret = new List<DoctorAppResponse>();
-            foreach(var el in zgloszenia)
-            {
-                ret.Add(new DoctorAppResponse
-                {
-                    Id = el.Id,
-                    Data = el.DataUtworzenia,
-                    Nazwa_Szczepionki = "Polfarma",
-                    Imie = el.Uzyt.Imie,
-                    Nazwisko = el.Uzyt.Nazwisko,
-                    Status = el.DecyzjeLekarza.Count == 0 ? false : true
-
-                });
-            }
-            return Ok(ret);
+            var apps = await _context.Zgloszenia
+                    .Include(i => i.Uzyt)
+                    .Include(i => i.DecyzjeLekarza)
+                    .Include(i => i.Pacjent)
+                    .Include(i => i.OdczynyZgloszenia)
+                    .Include(i => i.ZgloszenieSzczepionki)
+                    .ThenInclude(i => i.Szczepionka)
+                    .Where(z => z.Pacjent.LekarzId == Account.Id)
+                    .Select(z => new DoctorAppResponse {
+                        Id = z.Id,
+                        Data = z.DataUtworzenia,
+                        Nazwa_Szczepionki = z.ZgloszenieSzczepionki.First().Szczepionka.Nazwa,
+                        Imie = z.Uzyt.Imie,
+                        Nazwisko = z.Uzyt.Nazwisko,
+                        Status = z.DecyzjeLekarza.Max(d => d.Data) > z.OdczynyZgloszenia.Max(oz => oz.Data)
+                    })
+                    .ToListAsync();
+            return Ok(apps);
         }
         [HttpGet("[controller]/Zgloszenie/{id?}")]
         public IActionResult GetNop(int id)
