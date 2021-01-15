@@ -38,6 +38,7 @@ namespace BackEnd.Controllers
         /// <returns>Listę wydarzeń dotyczących danego zgłoszenia</returns>
         [Authorize]
         [HttpGet("AppHistory/{id?}")]
+        [ProducesResponseType(typeof(List<DateAppInfoResponse>), 200)]
         public IActionResult GetAppHistory(int? id)
         {
             var app = _context.Zgloszenia
@@ -154,6 +155,7 @@ namespace BackEnd.Controllers
         /// <returns> Żądany plik </returns>
         [Authorize]
         [HttpGet("File/{filename}")]
+        [ProducesResponseType(typeof(FileStreamResult), 200)]
         public IActionResult DownloadFile(string filename)
         {
             var file = _context.Pliki.FirstOrDefault(f => f.NazwaPliku == filename);
@@ -171,6 +173,7 @@ namespace BackEnd.Controllers
         /// <returns> Oryginalna nazwa pliku </returns>
         [Authorize]
         [HttpGet("FileInfo/{filename}")]
+        [ProducesResponseType(typeof(string), 200)]
         public IActionResult GetFileInfo(string filename)
         {
             var file = _context.Pliki.FirstOrDefault(f => f.NazwaPliku == filename);
