@@ -178,6 +178,11 @@ namespace BackEnd.Controllers
             if (Account.Rola == (int)Role.Rodzic && file.UzytId != Account.Id) return Unauthorized();
             return Ok(file.OryginalnaNazwa);
         }
+        /// <summary>
+        /// Lista szczepionek  w bazie danych 
+        /// </summary>
+        /// <returns> Lista predefiniowanych szczepionek w systemie </returns>
+        [ProducesResponseType(typeof(List<VaccineTransfer>), 200)]
         [HttpGet("ListaSzczepionek")]
         public IActionResult GetAllVaccines()
         {
@@ -189,6 +194,12 @@ namespace BackEnd.Controllers
             }
             return Ok(vaccines);
         }
+        /// <summary>
+        /// Zwraca szczepionke o danym id 
+        /// </summary>
+        /// <param name="id">  Zwraca szczepionkę o konkretnym id </param>
+        /// <returns> Oryginalna nazwa pliku </returns>
+        [ProducesResponseType(typeof(Szczepionki), 200)]
         [HttpGet("Szczepionka/{id?}")]
         public IActionResult GetAllVaccines(int id)
         {
