@@ -138,7 +138,7 @@ namespace BackEnd.Controllers
         [ProducesResponseType(typeof(List<DoctorResponse>), 200)]
         public IActionResult GetDoctors()
         {
-            var doctors = _context.Uzytkownicy.Where(u => u.Rola == 1).Select(u => new DoctorResponse { Id = u.Id, Imie = u.Imie, Nazwisko = u.Nazwisko });
+            var doctors = _context.Uzytkownicy.Where(u => u.Rola == 1).Select(u => new DoctorResponse { Id = u.Id, Imie = u.Imie, Nazwisko = u.Nazwisko }).ToList();
             return Ok(doctors);
         }
         /// <summary>
