@@ -26,6 +26,12 @@ namespace BackEnd.Controllers
             _context = context;
             _mapper = mapper;
         }
+
+        /// <summary>
+        /// Zwraca dane o zgłoszeniach udostępnione lekarzowi  
+        /// </summary>
+        /// <returns> Predefinioway obiekt z danymi </returns>
+        [ProducesResponseType(typeof(List<DoctorAppResponse>), 200)]
         [HttpGet("[controller]/Zgloszenia")]
         public async Task<IActionResult> GetApps()
         {
@@ -48,6 +54,12 @@ namespace BackEnd.Controllers
                     .ToListAsync();
             return Ok(apps);
         }
+        /// <summary>
+        /// Zwraca dane dotyczące wybranego zgłoszenia dla którego lekarz chce podjąć decyzję  
+        /// </summary>
+        /// <param name="id">Id zgłoszenia </param>
+        /// <returns> Predefinioway obiekt z danymi o zgłoszeniu dla lekarza </returns>
+        [ProducesResponseType(typeof(DotorZgłoszenieInfo), 200)]
         [HttpGet("[controller]/Zgloszenie/{id?}")]
         public IActionResult GetNop(int id)
         {
@@ -71,6 +83,11 @@ namespace BackEnd.Controllers
             };
             return Ok(response);
         }
+        /// <summary>
+        /// Podjecie decyzi przez serwer oraz zapisanie wyniku w bazie danch 
+        /// </summary>
+        /// <param name="value"> Dane dotyczące decyzji lekarza </param>
+        /// <returns> Status przetworzenia metody przez serwer </returns>
         [HttpPost("[controller]/Decyzja/")]
         public IActionResult AddDecision([FromBody] DoctorAddDecision value)
         {

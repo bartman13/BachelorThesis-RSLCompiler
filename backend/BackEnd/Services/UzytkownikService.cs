@@ -43,6 +43,7 @@ namespace BackEnd.Services
             _appSettings = appSettings.Value;
 
         }
+      
         public AuthenticateResponse Authenticate(AuthenticateRequest model, string ipAddress)
         {
             var account = _context.Uzytkownicy.SingleOrDefault(x => x.Email == model.Email );

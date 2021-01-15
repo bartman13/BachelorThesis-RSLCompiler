@@ -34,7 +34,12 @@ namespace BackEnd.Controllers
         }
 
           
-
+         /// <summary>
+        /// Zwraca dane zasilające pracownika pzh  
+        /// </summary>
+        /// <param name="id"> Id szczepionki </param>
+        /// <returns> Predefinioway obiekt z danymi </returns>
+        [ProducesResponseType(typeof(PzhDashboardData),200)]
         [HttpGet("ZgloszeniaPzh/{id?}")]
         public IActionResult GetNop(int? id)
         {

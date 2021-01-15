@@ -4,6 +4,26 @@
         <name>BackEnd</name>
     </assembly>
     <members>
+        <member name="M:BackEnd.Controllers.LekarzController.GetApps">
+            <summary>
+            Zwraca dane o zgłoszeniach udostępnione lekarzowi  
+            </summary>
+            <returns> Predefinioway obiekt z danymi </returns>
+        </member>
+        <member name="M:BackEnd.Controllers.LekarzController.GetNop(System.Int32)">
+            <summary>
+            Zwraca dane dotyczące wybranego zgłoszenia dla którego lekarz chce podjąć decyzję  
+            </summary>
+            <param name="id">Id zgłoszenia </param>
+            <returns> Predefinioway obiekt z danymi o zgłoszeniu dla lekarza </returns>
+        </member>
+        <member name="M:BackEnd.Controllers.LekarzController.AddDecision(BackEnd.DataTransferObjects.DoctorAddDecision)">
+            <summary>
+            Podjecie decyzi przez serwer oraz zapisanie wyniku w bazie danch 
+            </summary>
+            <param name="value"> Dane dotyczące decyzji lekarza </param>
+            <returns> Status przetworzenia metody przez serwer </returns>
+        </member>
         <member name="M:BackEnd.Controllers.LoginController.SignIn(BackEnd.DataTransferObjects.AuthenticateRequest)">
             <summary>
             Zwraca dane o użytkowniku wraz z krótkoterminowym tokenem dostępu i 
@@ -30,6 +50,13 @@
             <summary>
             Konstruktor przyjmujacy kontekst bazy danych
             </summary>
+        </member>
+        <member name="M:BackEnd.Controllers.PracownikPzhController.GetNop(System.Nullable{System.Int32})">
+            <summary>
+            Zwraca dane zasilające pracownika pzh  
+            </summary>
+            <param name="id"> Id szczepionki </param>
+            <returns> Predefinioway obiekt z danymi </returns>
         </member>
         <member name="T:BackEnd.Controllers.RodzicController">
             <summary>
@@ -154,6 +181,19 @@
             Zwraca nazwę pliku 
             </summary>
             <param name="filename"> Nazwa pliku na serwerze </param>
+            <returns> Oryginalna nazwa pliku </returns>
+        </member>
+        <member name="M:BackEnd.Controllers.SharedController.GetAllVaccines">
+            <summary>
+            Lista szczepionek  w bazie danych 
+            </summary>
+            <returns> Lista predefiniowanych szczepionek w systemie </returns>
+        </member>
+        <member name="M:BackEnd.Controllers.SharedController.GetAllVaccines(System.Int32)">
+            <summary>
+            Zwraca szczepionke o danym id 
+            </summary>
+            <param name="id">  Zwraca szczepionkę o konkretnym id </param>
             <returns> Oryginalna nazwa pliku </returns>
         </member>
     </members>
