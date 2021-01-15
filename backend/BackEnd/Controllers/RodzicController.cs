@@ -37,8 +37,9 @@ namespace BackEnd.Controllers
         /// <summary>
         /// Zwraca wszystkie zgłoszenia utworzone przez zalogowanego użytkownika
         /// </summary>
-        /// <returns> Listę zgłoszeń </returns>
+        /// <returns> Lista zgłoszeń </returns>
         [HttpGet("[controller]")]
+        [ProducesResponseType(typeof(List<AppResponse>), 200)]
         public async Task<IActionResult> GetApps()
         {
             var apps = await _context.Zgloszenia
@@ -63,6 +64,7 @@ namespace BackEnd.Controllers
         /// </summary>
         /// <returns> Listę szczepionek </returns>
         [HttpGet("Szczepionki")]
+        [ProducesResponseType(typeof(List<Szczepionki>), 200)]
         public IActionResult GetVaccines()
         {
             var vaccines = _context.Szczepionki.ToList();
@@ -74,6 +76,7 @@ namespace BackEnd.Controllers
         /// </summary>
         /// <returns> Listę dzieci </returns>
         [HttpGet("Dzieci")]
+        [ProducesResponseType(typeof(List<Pacjenci>), 200)]
         public IActionResult GetChildren()
         {
             var children = _context.Pacjenci.Where(x => x.UzytId == Account.Id).ToList();
@@ -86,6 +89,7 @@ namespace BackEnd.Controllers
         /// <param name="id"> Id dziecka </param>
         /// <returns> Pacjent o podanym id </returns>
         [HttpGet("Dziecko/{id}")]
+        [ProducesResponseType(typeof(Pacjenci), 200)]
         public IActionResult GetChild(int id)
         {
             var child = _context.Pacjenci.Where(x => x.Id == id).FirstOrDefault();
@@ -131,6 +135,7 @@ namespace BackEnd.Controllers
         /// </summary>
         /// <returns> Lekarze </returns>
         [HttpGet("Lekarze")]
+        [ProducesResponseType(typeof(List<DoctorResponse>), 200)]
         public IActionResult GetDoctors()
         {
             var doctors = _context.Uzytkownicy.Where(u => u.Rola == 1).Select(u => new DoctorResponse { Id = u.Id, Imie = u.Imie, Nazwisko = u.Nazwisko });
@@ -142,6 +147,7 @@ namespace BackEnd.Controllers
         /// <param name="id"> Id szczepionki </param>
         /// <returns> Listę niepożądanych odczynów </returns>
         [HttpGet("Nop/{id?}")]
+        [ProducesResponseType(typeof(List<Odczyny>), 200)]
         public async Task<IActionResult> GetNop(int? id)
         {
             var nops = await _context.SzczepionkiOdczyny
@@ -220,6 +226,7 @@ namespace BackEnd.Controllers
         /// <param name="id"> Id zgłoszenia </param>
         /// <returns> Lista id szczepionek </returns>
         [HttpGet("AppVaccines/{id}")]
+        [ProducesResponseType(typeof(List<int>), 200)]
         public IActionResult GetAppVaccines(int id)
         {
             var app = _context.Zgloszenia

@@ -45,7 +45,7 @@
             <summary>
             Zwraca wszystkie zgłoszenia utworzone przez zalogowanego użytkownika
             </summary>
-            <returns> Listę zgłoszeń </returns>
+            <returns> Lista zgłoszeń </returns>
         </member>
         <member name="M:BackEnd.Controllers.RodzicController.GetVaccines">
             <summary>
