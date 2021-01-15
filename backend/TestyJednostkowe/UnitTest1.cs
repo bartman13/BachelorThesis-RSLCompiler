@@ -31,15 +31,15 @@ namespace TestyJednostkowe
             context.Uzytkownicy.Add(new Uzytkownicy { Id = 2, Imie = "Adam", Nazwisko = "Lekarski", Rola = 1, HashHasla = "$2a$11$7V1ZrWGAALER2OCHl0N7cevVQNiJtS7Tw80E2Mv5WCA8sbvZtgAJC", Email = "lekarz@wp.pl", Telefon = "888-88-88" });
             context.Uzytkownicy.Add(new Uzytkownicy { Id = 3, Imie = "Krzysztof", Nazwisko = "PracowniczyPZH", Rola = 2, HashHasla = "$2a$11$7VsuNXvpR7zREk2qbkWX4OSRzZLTbB9uXdzNz55Zw3W87sZacuHiC", Email = "pzh@wp.pl", Telefon = "888-88-88" });
             context.Pacjenci.Add(new Pacjenci { Id = 1, Imie = "Janek", Nazwisko = "Kowalski", DataUrodzenia = DateTime.Now, UzytId = 1, LekarzId = 2 });
-            context.Pacjenci.Add(new Pacjenci { Id = 2, Imie = "Ma³gosia", Nazwisko = "Kowalska", DataUrodzenia = DateTime.Now, UzytId = 1, LekarzId = 2 });
+            context.Pacjenci.Add(new Pacjenci { Id = 2, Imie = "Maï¿½gosia", Nazwisko = "Kowalska", DataUrodzenia = DateTime.Now, UzytId = 1, LekarzId = 2 });
             context.Szczepionki.Add(new Szczepionki { Id = 0, Nazwa = "Menveo", Opis = "" });
-            context.Odczyny.Add(new Odczyny { Id = 1, Nazwa = "Zdefiniuj w³asny" });
+            context.Odczyny.Add(new Odczyny { Id = 1, Nazwa = "Zdefiniuj wï¿½asny" });
             context.Odczyny.Add(new Odczyny { Id = 2, Nazwa = "Kaszel" });
-            context.Odczyny.Add(new Odczyny { Id = 3, Nazwa = "Gor¹czka" });
-            context.Odczyny.Add(new Odczyny { Id = 4, Nazwa = "Zaburzenia ³aknienia" });
-            context.Odczyny.Add(new Odczyny { Id = 5, Nazwa = "Sennoœæ" });
+            context.Odczyny.Add(new Odczyny { Id = 3, Nazwa = "Gorï¿½czka" });
+            context.Odczyny.Add(new Odczyny { Id = 4, Nazwa = "Zaburzenia ï¿½aknienia" });
+            context.Odczyny.Add(new Odczyny { Id = 5, Nazwa = "Sennoï¿½ï¿½" });
             context.AtrybutyOdczynow.Add(new AtrybutyOdczynow { Id = 1, OdczynId = 3, Typ = 0, Nazwa = "Temperatura", Info = "Stopnie Celsjusza;37.5;0.1" });
-            context.AtrybutyOdczynow.Add(new AtrybutyOdczynow { Id = 2, OdczynId = 2, Typ = 1, Nazwa = "Stopieñ", Info = "Lekki;Œredni;Silny" });
+            context.AtrybutyOdczynow.Add(new AtrybutyOdczynow { Id = 2, OdczynId = 2, Typ = 1, Nazwa = "Stopieï¿½", Info = "Lekki;ï¿½redni;Silny" });
             context.AtrybutyOdczynow.Add(new AtrybutyOdczynow { Id = 3, OdczynId = 2, Typ = 1, Nazwa = "Typ", Info = "Mokry;Suchy" });
             context.AtrybutyOdczynow.Add(new AtrybutyOdczynow { Id = 4, OdczynId = 1, Typ = 2, Nazwa = "Pliki", Info = null });
             context.AtrybutyOdczynow.Add(new AtrybutyOdczynow { Id = 5, OdczynId = 1, Typ = 3, Nazwa = "Opis tekstowy", Info = null });
@@ -165,7 +165,7 @@ namespace TestyJednostkowe
             var child = parentController.GetChild(2) as ObjectResult;
             Assert.AreEqual(200, child.StatusCode);
             var patient = child.Value as Pacjenci;
-            Assert.AreEqual("Ma³gosia", patient.Imie);
+            Assert.AreEqual("Maï¿½gosia", patient.Imie);
         }
         [TestMethod]
         public void UpdateChildTest()
