@@ -7,6 +7,7 @@ import DoctorApp from './DoctorAppsComponent';
 import DoctorAppList from './DoctorAppList';
 import Wiki from './WikiComponent';
 import WikiItem from './WikiItem';
+import Blog from './About/Blog';
 
 const doctorAppWithId = ({match}) => {
     return(
@@ -26,9 +27,10 @@ function Doctor(props){
             <Switch>
                 <Route path='/doctorhome' component={DoctorAppList}/>
                 <Route path='/doctorapp/:id' component={doctorAppWithId}/>
-                <Route path='/doctorhelp' component={DoctorHelp}/>
+                <Route path='/about' component={Blog}/>
                 <Route path='/wiki/:id' component={WikiWithId}/>
                 <Route path='/wiki' component={Wiki}/>
+
                 <Redirect to='/doctorhome' />
             </Switch>
         </BrowserRouter>

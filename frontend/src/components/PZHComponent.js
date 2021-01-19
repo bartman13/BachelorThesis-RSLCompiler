@@ -3,10 +3,10 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import { BrowserRouter} from 'react-router-dom';
 import PzhNavBar from './PzhNavBarComponent';
 import PzhVaccinesList from './PzhVaccinesList';
-import PzhHelp from './PzhHelpComponent';
 import Wiki from './WikiComponent';
 import DoctorApp from './DoctorAppsComponent';
 import WikiItem from './WikiItem';
+import Blog from './About/Blog'
 
 
 
@@ -31,7 +31,7 @@ function Doctor(props){
                 <Route path='/vaccines/:id' component={PzhVaccinesWithId}/>
                 <Route path='/wiki/:id' component={WikiWithId}/>
                 <Route path='/wiki' component={Wiki}/>
-                <Route path='/pzhhelp' component={PzhHelp}/>
+                <Route path='/about' component={Blog}/>
                 <Redirect to='/pzhhome' />
             </Switch>
         </BrowserRouter>

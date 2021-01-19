@@ -25,7 +25,7 @@ function PzhNavBar(props){
                                 <NavLink className="nav-link" to="/pzhhome"><b> Szczepionki </b></NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink className="nav-link" to="/pzhhelp"><b> Pomoc</b> </NavLink>
+                                <NavLink className="nav-link" to="/about"><b> Pomoc</b> </NavLink>
                             </NavItem>
                             <NavItem>
                                 <NavLink className="nav-link" to="/wiki"><b> Szczepionki </b> </NavLink>

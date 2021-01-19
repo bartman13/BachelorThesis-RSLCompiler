@@ -31,7 +31,7 @@ function ParentNavBar(props){
                                 <NavLink className="nav-link" to="/wiki"><b> O szczepieniach</b> </NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink className="nav-link" to="/parentabout"><b> Jak korzystać?</b> </NavLink>
+                                <NavLink className="nav-link" to="/about"><b> Jak korzystać?</b> </NavLink>
                             </NavItem>
                         </Nav>
                         <Nav className="ml-auto" navbar>

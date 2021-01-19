@@ -203,6 +203,7 @@ const emailChanged = (event) => {
                         variant="contained"
                         color="primary"
                         className={classes.submit}
+                        component={RouterLink} to="/about"
                     >
                         O Aplikacji  
                     </ColorButton>
