@@ -58,6 +58,13 @@
             <param name="id"> Id szczepionki </param>
             <returns> Predefinioway obiekt z danymi </returns>
         </member>
+        <member name="M:BackEnd.Controllers.PracownikPzhController.VaccineXlsxReport(System.Nullable{System.Int32})">
+            <summary>
+            Zwraca plik xlsx ze statystykami dotyczącymi szczepionki o podanym id.
+            </summary>
+            <param name="id"> Id szczepionki </param>
+            <returns> Raport w postaci pliku xlsx </returns>
+        </member>
         <member name="T:BackEnd.Controllers.RodzicController">
             <summary>
             Kontroler służący  do obsługi ządaużytkowników zalogowanych jako Rodzic

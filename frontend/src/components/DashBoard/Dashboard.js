@@ -23,7 +23,11 @@ import LoadingContext from "../../contexts/LoadingContext";
 import SnackbarContext from "../../contexts/SnackbarContext";
 import axios from 'axios';
 import apiURL from '../../shared/apiURL';
+import authHeader from '../../shared/authheader';
+import UserContext from '../../contexts/UserContext';
 import Stats from './Stats';
+import { Button } from "@material-ui/core";
+import fileDownload from 'js-file-download';
 
 function Copyright() {
   return (
@@ -130,12 +134,31 @@ export default function Dashboard() {
   const { setSnackbar } = useContext(SnackbarContext);
   const { setLoading } = useContext(LoadingContext);
   const [searchString,setSearch] =  useState('');
+  const [vaccinedId, setVaccineId] = useState(undefined);
 
+  const { user } = useContext(UserContext);
  
   const handleSearch = (event) =>
   {
     setSearch(event.target.value);
     setDisplay(apps.filter(x => x.nazwa.includes(searchString)));
+  }
+
+  const downloadReport = async () => {
+    try{
+      const blob = await axios.get(apiURL + 'PZHRaport/' + vaccinedId, {
+          responseType: 'blob',
+          ...authHeader(user)
+      });
+      fileDownload(blob.data, "statystyki.xlsx");
+  } catch(error) {
+      console.error(error);
+      setSnackbar({
+          open: true,
+          type: 'error',
+          message: 'Nie udało się wygenerować pliku'
+      });
+  }
   }
   
   const loadData =  (param) => async (e) =>
@@ -164,7 +187,6 @@ export default function Dashboard() {
             const response = await axios.get(apiURL + 'ListaSzczepionek');
             setApps(response.data);
             setDisplay(response.data);
-
         } catch (error){
             console.error(error);
             setSnackbar({
@@ -204,7 +226,7 @@ export default function Dashboard() {
         <Divider />
         <List>
           {displayData.map(item =>
-            <div><ListItem button onClick={loadData(item.id)}>
+            <div><ListItem button onClick={(e) => {setVaccineId(item.id); loadData(item.id)(e)}}>
               <ListItemIcon>
               </ListItemIcon>
               <ListItemText primary={item.nazwa} />
@@ -232,6 +254,13 @@ export default function Dashboard() {
             <Grid item xs={12}>
               <Paper className={classes.paper}>
                 <CustomizedGrid rows={gridData?.rows} />
+                <Button 
+                  variant="outlined" 
+                  color="primary"
+                  onClick={downloadReport}
+                >
+                  Eksportuj
+                </Button>
               </Paper>
             </Grid>
           </Grid>
