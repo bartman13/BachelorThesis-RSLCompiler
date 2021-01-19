@@ -9,7 +9,7 @@ import ParentNewApp from './ParentNewAppComponent';
 import ParentChild from './ParentChildComponent';
 import AppHistory from './AppHistoryComponent';
 import Wiki from './WikiComponent';
-import About from './AboutComponent';
+import Blog from './About/Blog';
 import AddNOP from './AddNOPComponent';
 import WikiItem from './WikiItem'
 
@@ -53,7 +53,7 @@ function Parent(props){
                 <Route path='/apphistory/:id' component={AppHistoryWithId}/>
                 <Route path='/wiki/:id' component={WikiWithId}/>
                 <Route path='/wiki' component={Wiki}/>
-                <Route path='/parentabout' component={About}/>
+                <Route path='/about' component={Blog}/>
                 <Route path='/addnop/:id' component={UpdateAppWithId}/>
                 <Redirect to='/parenthome' />
             </Switch>

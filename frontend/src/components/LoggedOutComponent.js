@@ -5,6 +5,7 @@ import SignInSide from './SignInSide'
 import SignUp from './SignUpComponent';
 import WikiItem from './WikiItem';
 import Wiki from './WikiComponent';
+import Blog from './About/Blog';
 
 const WikiWithId = ({match}) => {
     return(
@@ -22,6 +23,7 @@ function LoggedOut(props){
                 <Route path='/signup' render={(props) => <SignUp startRefreshToken={startRefreshToken}/>}/>
                 <Route path='/wiki/:id' component={WikiWithId}/>
                 <Route path='/wiki' component={Wiki}/>
+                <Route path='/about' component={Blog}/>
                 <Redirect to='/signin' />
             </Switch>
         </BrowserRouter>

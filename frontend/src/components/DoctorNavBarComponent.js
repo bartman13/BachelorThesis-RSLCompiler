@@ -25,7 +25,7 @@ function DoctorNavBar(props){
                                 <NavLink className="nav-link" to="/doctorthome"><b> Moje Zgłoszenia </b></NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink className="nav-link" to="/doctorhelp"><b> Pomoc</b> </NavLink>
+                                <NavLink className="nav-link" to="/about"><b> Pomoc</b> </NavLink>
                             </NavItem>
                             <NavItem>
                                 <NavLink className="nav-link" to="/wiki"><b>Szczepionki</b> </NavLink>
