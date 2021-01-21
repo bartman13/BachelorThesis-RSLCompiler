@@ -114,11 +114,11 @@
             </summary>
             <returns> Lekarze </returns>
         </member>
-        <member name="M:BackEnd.Controllers.RodzicController.GetNop(System.Nullable{System.Int32})">
+        <member name="M:BackEnd.Controllers.RodzicController.GetNops(System.String)">
             <summary>
-            Zwraca predefiniowaną liste nieporządanych odczynów poszczepiennych dla danej szcczepionki
+            Zwraca predefiniowaną liste nieporządanych odczynów poszczepiennych dla danych szcczepionki
             </summary>
-            <param name="id"> Id szczepionki </param>
+            <param name="ids"> Id szczepionek </param>
             <returns> Listę niepożądanych odczynów </returns>
         </member>
         <member name="M:BackEnd.Controllers.RodzicController.CreateApp(BackEnd.DataTransferObjects.CreateAppRequest)">

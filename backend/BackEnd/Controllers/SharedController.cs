@@ -161,8 +161,9 @@ namespace BackEnd.Controllers
             var file = _context.Pliki.FirstOrDefault(f => f.NazwaPliku == filename);
             if (file == null) return NotFound();
             if (Account.Rola == (int)Role.Rodzic && file.UzytId != Account.Id) return Unauthorized();
-            string directorypath = _configuration["FileStorage"];;
-            Stream stream = new FileStream(Path.Combine(directorypath, filename), FileMode.Open);
+            string directorypath = _configuration["FileStorage"];
+            string nameOnDisk = Path.Combine(directorypath, file.NazwaPliku + Path.GetExtension(file.OryginalnaNazwa));
+            Stream stream = new FileStream(nameOnDisk, FileMode.Open);
             if (stream == null) return NotFound();
             return File(stream, "application/octet-stream", file.OryginalnaNazwa);
         }
