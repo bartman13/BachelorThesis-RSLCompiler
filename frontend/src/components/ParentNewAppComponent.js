@@ -4,8 +4,12 @@ import SnackbarContext from '../contexts/SnackbarContext';
 import LoadingContext from '../contexts/LoadingContext';
 import { Box, Button, Container, makeStyles } from '@material-ui/core';
 import { Grid, TextField, Select, InputLabel, MenuItem, FormControl, Typography,
-    FormControlLabel, Checkbox, Collapse } from '@material-ui/core';
+    FormControlLabel, Checkbox, Collapse, Dialog, DialogTitle,
+    IconButton, Tooltip } from '@material-ui/core';
+import { buttonSuccess, buttonDanger } from '../styles/buttons';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
+import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 import NOPCreator from './NOPCreatorComponent';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
@@ -22,7 +26,9 @@ const useStyles = makeStyles((theme) => ({
     },
     selectEmpty: {
         marginTop: theme.spacing(2),
-    }
+    },
+    buttonSuccess: buttonSuccess,
+    buttonDanger: buttonDanger
 }));
 
 function ParentNewApp(){
@@ -32,10 +38,12 @@ function ParentNewApp(){
     const [selectedChild, setSelectedChild] = useState('');
     const [selectedDate, setSelectedDate] = useState(datenow());
     const [selectedVaccine, setSelectedVaccine] = useState('');
+    const [selectedVaccines, setSelectedVaccines] = useState([]);
     const [imageKsZd, setImageKsZd] = useState('');
     const [selectedNOPs, setSelectedNOPs] = useState([]);
     const [contact, setContact] = useState(false);
     const [requiredNotSet, setRequiredNotSet] = useState([false, false, false, false]);
+    const [open, setOpen] = useState(false);
     
     const { user } = useContext(UserContext);
     const { setLoading } = useContext(LoadingContext);
@@ -45,22 +53,6 @@ function ParentNewApp(){
 
     const handleVaccineChange = async (event) => {
         setSelectedVaccine(event.target.value);
-        setLoading(true);
-        try{
-            const nopsData = await axios.get(apiURL + 'Nop/' + event.target.value, authHeader(user));
-            setNops(nopsData.data);
-            setSelectedNOPs([]);
-        }catch(error){
-            console.error(error);
-            setSnackbar({
-                open: true,
-                type: 'error',
-                message: 'Błąd ładowania danych'
-            });
-        }
-        requiredNotSet[1] = false;
-        setRequiredNotSet([...requiredNotSet]);
-        setLoading(false);
     };
     const handleChildChange = (event) => {
         setSelectedChild(event.target.value);
@@ -87,11 +79,18 @@ function ParentNewApp(){
     const handleContactChange = (event) => {
         setContact(event.target.checked);
     };
+    const selectClickHandle = () => {
+        setSelectedVaccines(v => [...v, ...(vaccines.filter(v => v.id === selectedVaccine))]);
+        setOpen(false);
+        requiredNotSet[1] = false;
+        setRequiredNotSet([...requiredNotSet]);
+        setSelectedVaccine('');
+    }
     const submit = async () => {
         if(selectedChild === ''){
             requiredNotSet[0] = true;
         }
-        if(selectedVaccine === ''){
+        if(selectedVaccines.length === 0){
             requiredNotSet[1] = true;
         }
         if(!imageKsZd){
@@ -109,7 +108,7 @@ function ParentNewApp(){
         setLoading(true);
         const app = {
             data: selectedDate,
-            szczepionkaId: selectedVaccine,
+            szczepionkiId: selectedVaccines.map(v => v.id),
             pacjentId: selectedChild,
             prosbaOKontakt: contact,
             zdjecieKsZd: imageKsZd.file,
@@ -176,6 +175,28 @@ function ParentNewApp(){
         fetchData();
     }, [setChildren, setVaccines, setLoading, setSnackbar, user]);
 
+    useEffect(() => {
+        async function fetchNops(){
+            setLoading(true);
+            try{
+                const nopsData = await axios.get(apiURL + 'Nop/' + 
+                    selectedVaccines.map(v => v.id).join(","), 
+                    authHeader(user));
+                setNops(nopsData.data);
+                setSelectedNOPs([]);
+            }catch(error){
+                console.error(error);
+                setSnackbar({
+                    open: true,
+                    type: 'error',
+                    message: 'Błąd ładowania danych'
+                });
+            }
+            setLoading(false);
+        }
+        if(selectedVaccines.length > 0) fetchNops();
+    }, [setLoading, setSnackbar, user, selectedVaccines]);
+
     return (
         <Container maxWidth='md'> 
             <Grid container spacing={3}
@@ -225,24 +246,40 @@ function ParentNewApp(){
                   <Box padding={2}> 3. </Box>
                 </Grid>
                 <Grid item xs={11}>
-                    <FormControl className={classes.formControl}>
-                        <InputLabel id="vaccId"> Nazwa szczepionki </InputLabel>
-                        <Select
-                            labelId="vaccId"
-                            value={selectedVaccine}
-                            onChange={handleVaccineChange}>
-                            {vaccines.map(v =>{
-                                return(
-                                    <MenuItem key={v.id} value={v.id}> {v.nazwa} </MenuItem>
-                                );
-                            })}
-                        </Select>
-                    </FormControl>
-                    <Box>
-                        {vaccines.find(v => v.id === selectedVaccine)?.opis}
-                    </Box>
+                    <Grid container>
+                        <Grid item xs={12}>
+                            <Box m={2}>
+                                Lista użytych szczepionek:
+                            </Box>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <ol>
+                                {selectedVaccines.length > 0 ? selectedVaccines.map(v =>
+                                    <li key={v.id}>
+                                        {v.nazwa}
+                                        <Tooltip title="Usuń">
+                                            <IconButton edge="end" aria-label="delete" onClick={() => { 
+                                                setSelectedVaccines(vs => vs.filter(x => x.id !== v.id));
+                                            }}>
+                                                <RemoveCircleIcon style={{fill: "red"}}/>
+                                            </IconButton>
+                                        </Tooltip>
+                                    </li>
+                                ) : <div> Brak wybranych szczepionek </div>}
+                            </ol>
+                        </Grid>
+                        <Grid item xs={2} align="center">
+                            <Tooltip title="Dodaj">
+                                <IconButton edge="end" aria-label="delete" onClick={() => setOpen(true)}>
+                                    <AddCircleIcon style={{fill: "green"}}/>
+                                </IconButton>
+                            </Tooltip>
+                        </Grid>
+                    </Grid>
                     <Collapse in={requiredNotSet[1]}>
-                        <Alert severity="error"> To pole jest wymagane </Alert>
+                        <Alert severity="error"> 
+                            Wymagane jest dodanie przynajmniej jednej szczepionki 
+                        </Alert>
                     </Collapse>
                 </Grid>
                 <Grid item xs={1} align="center">
@@ -268,7 +305,7 @@ function ParentNewApp(){
                         Występujące niepożądane odczyny
                     </Typography>
                     <NOPCreator 
-                        show={selectedVaccine !== '' && nops.length > 0}
+                        show={selectedVaccines !== [] && nops.length > 0}
                         nops={nops}
                         selectedNOPs={selectedNOPs}
                         setSelectedNOPs={setSelectedNOPs}
@@ -295,6 +332,40 @@ function ParentNewApp(){
                         onClick={submit}> Utwórz </Button>
                 </Grid>
             </Grid>
+            <Dialog aria-labelledby="addvacdialog-title" open={open}>
+                <Box m={2}>
+                    <DialogTitle id="addvacdialog-title">Wybierz szczepionkę z listy</DialogTitle>
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} align="center">
+                            <FormControl className={classes.formControl}>
+                                <InputLabel id="vaccId"> Nazwa szczepionki </InputLabel>
+                                <Select
+                                    labelId="vaccId"
+                                    value={selectedVaccine}
+                                    onChange={handleVaccineChange}>
+                                    {vaccines
+                                        .filter(v => !selectedVaccines.includes(v))
+                                        .map(v =>{
+                                            return(
+                                                <MenuItem key={v.id} value={v.id}> {v.nazwa} </MenuItem>
+                                            ); 
+                                        })
+                                    }
+                                </Select>
+                            </FormControl>
+                            <Box>
+                                {vaccines.find(v => v.id === selectedVaccine)?.opis}
+                            </Box>
+                        </Grid>
+                        <Grid item xs={6} align="center" onClick={selectClickHandle}>
+                            <Button className={classes.buttonSuccess}> Wybierz </Button>
+                        </Grid>
+                        <Grid item xs={6} align="center" onClick={() => setOpen(false)}>
+                            <Button className={classes.buttonDanger}> Cofnij </Button>
+                        </Grid>
+                    </Grid>
+                </Box>
+            </Dialog>
         </Container>
     );
 }

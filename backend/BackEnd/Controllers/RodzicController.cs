@@ -142,20 +142,22 @@ namespace BackEnd.Controllers
             return Ok(doctors);
         }
         /// <summary>
-        /// Zwraca predefiniowaną liste nieporządanych odczynów poszczepiennych dla danej szcczepionki
+        /// Zwraca predefiniowaną liste nieporządanych odczynów poszczepiennych dla danych szcczepionki
         /// </summary>
-        /// <param name="id"> Id szczepionki </param>
+        /// <param name="ids"> Id szczepionek </param>
         /// <returns> Listę niepożądanych odczynów </returns>
-        [HttpGet("Nop/{id?}")]
+        [HttpGet("Nop/{ids?}")]
         [ProducesResponseType(typeof(List<Odczyny>), 200)]
-        public async Task<IActionResult> GetNop(int? id)
+        public async Task<IActionResult> GetNops(string ids)
         {
+            var idlist = ids.Split(",").Select(x => int.Parse(x)).ToList();
             var nops = await _context.SzczepionkiOdczyny
                 .Include(i => i.Odczyn)
                 .ThenInclude(i => i.AtrybutyOdczynow)
-                .Where(x => x.SzczepionkaId == id)
+                .Where(x => idlist.Contains(x.SzczepionkaId))
                 .OrderByDescending(x => x.Czestosc)
                 .Select(x => x.Odczyn)
+                .Distinct()
                 .ToListAsync();
 
             if (nops == null) return BadRequest(new { message = "Lista odczynow jest nullem" });
@@ -176,11 +178,12 @@ namespace BackEnd.Controllers
             var zdjecieKsZd = new Pliki()
             {
                 OryginalnaNazwa = value.zdjecieKsZd.FileName,
-                NazwaPliku = Guid.NewGuid().ToString() + Path.GetExtension(value.zdjecieKsZd.FileName),
+                NazwaPliku = Guid.NewGuid().ToString(),
                 UzytId = Account.Id
             };
             Directory.CreateDirectory(directorypath);
-            using (FileStream stream = new FileStream(Path.Combine(directorypath, zdjecieKsZd.NazwaPliku), FileMode.Create))
+            string nameOnDisk = Path.Combine(directorypath, zdjecieKsZd.NazwaPliku + Path.GetExtension(value.zdjecieKsZd.FileName));
+            using (FileStream stream = new FileStream(nameOnDisk, FileMode.Create))
             {
                 value.zdjecieKsZd.CopyTo(stream);
             }
@@ -301,10 +304,11 @@ namespace BackEnd.Controllers
         [HttpPost("Upload")]
         public IActionResult UploadFile([FromForm] IFormFile file)
         {
-            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            string fileName = Guid.NewGuid().ToString();
             string directorypath = _configuration["FileStorage"];
             Directory.CreateDirectory(directorypath);
-            using (FileStream stream = new FileStream(Path.Combine(directorypath, fileName), FileMode.Create))
+            string nameOnDisk = Path.Combine(directorypath, fileName + Path.GetExtension(file.FileName));
+            using (FileStream stream = new FileStream(nameOnDisk, FileMode.Create))
             {
                 file.CopyTo(stream);
             }
@@ -329,6 +333,7 @@ namespace BackEnd.Controllers
             if (file == null) return NotFound();
             if (file.UzytId != Account.Id) return Unauthorized();
             string directorypath = _configuration["FileStorage"];
+            string nameOnDisk = Path.Combine(directorypath, file.NazwaPliku + Path.GetExtension(file.OryginalnaNazwa));
             FileInfo localFile = new FileInfo(Path.Combine(directorypath, filename));
             localFile.Delete();
             _context.Pliki.Remove(file);
