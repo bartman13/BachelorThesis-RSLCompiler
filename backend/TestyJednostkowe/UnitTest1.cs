@@ -114,9 +114,11 @@ namespace TestyJednostkowe
             parentController.ControllerContext.HttpContext = new DefaultHttpContext();
             parentController.ControllerContext.HttpContext.Items["Account"] = context.Uzytkownicy.FirstOrDefault(el => el.Id == 1);
             parentController.ControllerContext.HttpContext.Request.Headers["X-Forwarded-For"] = "127.0.0.1";
-            var children = parentController.GetChildren() as ObjectResult;
+            var response = parentController.GetChildren();
+            response.Wait();
+            var children = response.Result as ObjectResult;
             Assert.AreEqual(200, children.StatusCode);
-            var patientList = children.Value as List<Pacjenci>;
+            var patientList = children.Value as List<ChildResponse>;
             Assert.AreEqual(2, patientList.Count);
         }
         [TestMethod]
@@ -137,9 +139,11 @@ namespace TestyJednostkowe
             parentController.ControllerContext.HttpContext = new DefaultHttpContext();
             parentController.ControllerContext.HttpContext.Items["Account"] = context.Uzytkownicy.FirstOrDefault(el => el.Id == 1);
             parentController.ControllerContext.HttpContext.Request.Headers["X-Forwarded-For"] = "127.0.0.1";
-            var children = parentController.GetVaccines() as ObjectResult;
-            Assert.AreEqual(200, children.StatusCode);
-            var vaccinesList = children.Value as List<Szczepionki>;
+            var response = parentController.GetVaccines();
+            response.Wait();
+            var vaccines = response.Result as ObjectResult;
+            Assert.AreEqual(200, vaccines.StatusCode);
+            var vaccinesList = vaccines.Value as List<VaccineTransfer>;
             Assert.AreEqual(1, vaccinesList.Count);
             Assert.AreEqual(1, vaccinesList[0].Id);
             Assert.AreEqual("Menveo", vaccinesList[0].Nazwa);
@@ -162,9 +166,11 @@ namespace TestyJednostkowe
             parentController.ControllerContext.HttpContext = new DefaultHttpContext();
             parentController.ControllerContext.HttpContext.Items["Account"] = context.Uzytkownicy.FirstOrDefault(el => el.Id == 1);
             parentController.ControllerContext.HttpContext.Request.Headers["X-Forwarded-For"] = "127.0.0.1";
-            var child = parentController.GetChild(2) as ObjectResult;
+            var response = parentController.GetChild(2);
+            response.Wait();
+            var child = response.Result as ObjectResult;
             Assert.AreEqual(200, child.StatusCode);
-            var patient = child.Value as Pacjenci;
+            var patient = child.Value as ChildResponse;
             Assert.AreEqual("Ma�gosia", patient.Imie);
         }
         [TestMethod]
@@ -185,10 +191,12 @@ namespace TestyJednostkowe
             parentController.ControllerContext.HttpContext = new DefaultHttpContext();
             parentController.ControllerContext.HttpContext.Items["Account"] = context.Uzytkownicy.FirstOrDefault(el => el.Id == 1);
             parentController.ControllerContext.HttpContext.Request.Headers["X-Forwarded-For"] = "127.0.0.1";
-            var response = parentController.UpdateChild(1, new Pacjenci { Imie = "Piotrek" });
-            var child = parentController.GetChild(1) as ObjectResult;
+            var response = parentController.UpdateChild(1, new PatientUpdate { Imie = "Piotrek" });
+            var responseget = parentController.GetChild(1);
+            responseget.Wait();
+            var child = responseget.Result as ObjectResult;
             Assert.AreEqual(200, child.StatusCode);
-            var patient = child.Value as Pacjenci;
+            var patient = child.Value as ChildResponse;
             Assert.AreEqual("Piotrek", patient.Imie);
         }
         [TestMethod]
