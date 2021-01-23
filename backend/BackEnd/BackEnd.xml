@@ -100,7 +100,7 @@
             <param name="id"> Id dziecka </param>
             <returns> Pacjent o podanym id </returns>
         </member>
-        <member name="M:BackEnd.Controllers.RodzicController.UpdateChild(System.Nullable{System.Int32},BackEnd.Models.Pacjenci)">
+        <member name="M:BackEnd.Controllers.RodzicController.UpdateChild(System.Nullable{System.Int32},BackEnd.DataTransferObjects.PatientUpdate)">
             <summary>
             Aktualizuje dane pacjenta o podanym id lub tworzy nowego.
             </summary>

@@ -64,10 +64,17 @@ namespace BackEnd.Controllers
         /// </summary>
         /// <returns> Listę szczepionek </returns>
         [HttpGet("Szczepionki")]
-        [ProducesResponseType(typeof(List<Szczepionki>), 200)]
-        public IActionResult GetVaccines()
+        [ProducesResponseType(typeof(List<VaccineTransfer>), 200)]
+        public async Task<IActionResult> GetVaccines()
         {
-            var vaccines = _context.Szczepionki.ToList();
+            var vaccines = await _context.Szczepionki
+                .Select(s => new VaccineTransfer
+                {
+                    Id = s.Id,
+                    Nazwa = s.Nazwa,
+                    Opis = s.Opis
+                })
+                .ToListAsync();
             if (vaccines == null) return BadRequest(new { message = "Lista szczepionek jest nullem" });
             return Ok(vaccines);
         }
@@ -76,10 +83,19 @@ namespace BackEnd.Controllers
         /// </summary>
         /// <returns> Listę dzieci </returns>
         [HttpGet("Dzieci")]
-        [ProducesResponseType(typeof(List<Pacjenci>), 200)]
-        public IActionResult GetChildren()
+        [ProducesResponseType(typeof(List<ChildResponse>), 200)]
+        public async Task<IActionResult> GetChildren()
         {
-            var children = _context.Pacjenci.Where(x => x.UzytId == Account.Id).ToList();
+            var children = await _context.Pacjenci
+                .Where(x => x.UzytId == Account.Id)
+                .Select(x => new ChildResponse
+                {
+                    Id = x.Id,
+                    Imie = x.Imie,
+                    Nazwisko = x.Nazwisko,
+                    LekarzId = x.LekarzId
+                })
+                .ToListAsync();
             if (children == null) return BadRequest(new { message = "Lista dzieci jest nullem" });
             return Ok(children);
         }
@@ -89,13 +105,21 @@ namespace BackEnd.Controllers
         /// <param name="id"> Id dziecka </param>
         /// <returns> Pacjent o podanym id </returns>
         [HttpGet("Dziecko/{id}")]
-        [ProducesResponseType(typeof(Pacjenci), 200)]
-        public IActionResult GetChild(int id)
+        [ProducesResponseType(typeof(ChildResponse), 200)]
+        public async Task<IActionResult> GetChild(int id)
         {
-            var child = _context.Pacjenci.Where(x => x.Id == id).FirstOrDefault();
+            var child = await _context.Pacjenci
+                .Where(x => x.Id == id)
+                .FirstOrDefaultAsync();
             if (child == null) return NotFound(new { message = "Pacjent o podanym id nie istnieje" });
             if (child.UzytId != Account.Id) return Unauthorized();
-            return Ok(child);
+            return Ok(new ChildResponse 
+            {
+                Id = child.Id,
+                Imie = child.Imie,
+                Nazwisko = child.Nazwisko,
+                LekarzId = child.LekarzId
+            });
         }
         /// <summary>
         /// Aktualizuje dane pacjenta o podanym id lub tworzy nowego.
@@ -104,7 +128,7 @@ namespace BackEnd.Controllers
         /// <param name="pacjent"> Zaktualizowane dane pacjenta. </param>
         /// <returns></returns>
         [HttpPost("Dziecko/{id?}")]
-        public IActionResult UpdateChild(int? id, [FromBody] Pacjenci pacjent)
+        public IActionResult UpdateChild(int? id, [FromBody] PatientUpdate pacjent)
         {
             if(id == null)
             {
@@ -147,7 +171,7 @@ namespace BackEnd.Controllers
         /// <param name="ids"> Id szczepionek </param>
         /// <returns> Listę niepożądanych odczynów </returns>
         [HttpGet("Nop/{ids?}")]
-        [ProducesResponseType(typeof(List<Odczyny>), 200)]
+        [ProducesResponseType(typeof(List<NOPResponse>), 200)]
         public async Task<IActionResult> GetNops(string ids)
         {
             var idlist = ids.Split(",").Select(x => int.Parse(x)).ToList();
@@ -161,7 +185,14 @@ namespace BackEnd.Controllers
                 .ToListAsync();
 
             if (nops == null) return BadRequest(new { message = "Lista odczynow jest nullem" });
-            return Ok(nops);
+            return Ok(nops
+                .Select(n => new NOPResponse 
+                { 
+                    Id = n.Id,
+                    Nazwa = n.Nazwa,
+                    AtrybutyOdczynow = n.AtrybutyOdczynow.Select(a => new NOPAttributesResponse { Id = a.Id, Nazwa = a.Nazwa, Info = a.Info, Typ = a.Typ}).ToList()
+                })
+            );
         }
         /// <summary>
         /// Tworzy nowe zgloszenie
