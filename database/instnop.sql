@@ -216,6 +216,7 @@ GO
 CREATE TABLE Odczyny(
 	id int IDENTITY (1, 1) NOT NULL PRIMARY KEY,
 	nazwa nvarchar(100) NOT NULL,
+	opis nvarchar(max) NULL
 )
 
 GO
@@ -226,6 +227,7 @@ CREATE TABLE Atrybuty_Odczynow(
 	nazwa nvarchar(100) NOT NULL,
 	typ int NOT NULL,
 	info nvarchar(1000) NULL,
+	opis nvarchar(max) NULL,
 	CONSTRAINT FK_ATOD_Odczyny FOREIGN KEY
 	(
 		odczyn_id

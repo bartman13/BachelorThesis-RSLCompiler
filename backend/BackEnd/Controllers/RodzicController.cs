@@ -190,7 +190,8 @@ namespace BackEnd.Controllers
                 { 
                     Id = n.Id,
                     Nazwa = n.Nazwa,
-                    AtrybutyOdczynow = n.AtrybutyOdczynow.Select(a => new NOPAttributesResponse { Id = a.Id, Nazwa = a.Nazwa, Info = a.Info, Typ = a.Typ}).ToList()
+                    Opis = n.Opis,
+                    AtrybutyOdczynow = n.AtrybutyOdczynow.Select(a => new NOPAttributesResponse { Id = a.Id, Nazwa = a.Nazwa, Info = a.Info, Typ = a.Typ, Opis = a.Opis}).ToList()
                 })
             );
         }

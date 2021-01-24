@@ -9,6 +9,7 @@ namespace BackEnd.DataTransferObjects
     {
         public int Id { get; set; }
         public string Nazwa { get; set; }
+        public string Opis { get; set; }
         public List<NOPAttributesResponse> AtrybutyOdczynow { get; set; }
     }
     public class NOPAttributesResponse
@@ -17,5 +18,6 @@ namespace BackEnd.DataTransferObjects
         public string Nazwa { get; set; }
         public int Typ { get; set; }
         public string Info { get; set; }
+        public string Opis { get; set; }
     }
 }
