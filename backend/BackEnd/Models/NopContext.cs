@@ -29,15 +29,6 @@ namespace BackEnd.Models
         public virtual DbSet<Zgloszenia> Zgloszenia { get; set; }
         public virtual DbSet<ZgloszenieSzczepionki> ZgloszenieSzczepionki { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=Nop;Trusted_Connection=True;");
-            }
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AtrybutyOdczynow>(entity =>
@@ -56,6 +47,8 @@ namespace BackEnd.Models
                     .HasMaxLength(100);
 
                 entity.Property(e => e.OdczynId).HasColumnName("odczyn_id");
+
+                entity.Property(e => e.Opis).HasColumnName("opis");
 
                 entity.Property(e => e.Typ).HasColumnName("typ");
 
@@ -125,6 +118,8 @@ namespace BackEnd.Models
                     .IsRequired()
                     .HasColumnName("nazwa")
                     .HasMaxLength(100);
+
+                entity.Property(e => e.Opis).HasColumnName("opis");
             });
 
             modelBuilder.Entity<OdczynyZgloszenia>(entity =>

@@ -14,6 +14,7 @@ namespace BackEnd.Models
 
         public int Id { get; set; }
         public string Nazwa { get; set; }
+        public string Opis { get; set; }
 
         public virtual ICollection<AtrybutyOdczynow> AtrybutyOdczynow { get; set; }
         public virtual ICollection<OdczynyZgloszenia> OdczynyZgloszenia { get; set; }

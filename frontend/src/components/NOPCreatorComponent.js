@@ -339,6 +339,11 @@ function NOPEntry(props) {
                     <AccordionDetails>
                         <Grid container>
                             <Grid item xs={12} align="left">
+                                <Box p={3}>
+                                    {nop.opis}
+                                </Box>
+                            </Grid>
+                            <Grid item xs={12} align="left">
                                 <Box fontWeight='fontWeightMedium' 
                                     display='inline'
                                     margin='10%'
@@ -370,7 +375,18 @@ function NOPEntry(props) {
                             {nop.atrybuty.map(a => {
                                 return (
                                     <Grid item xs={12} key={a.id}>
-                                        <NOPAttribute attribute={a} />
+                                        {a.opis ?
+                                            <Grid container>
+                                                <Grid item xs={12} md={6} align='center'>
+                                                    <Box p={3}>
+                                                        {a.opis}:
+                                                    </Box>
+                                                </Grid>
+                                                <Grid item xs={12} md={6} align='center'>
+                                                    <NOPAttribute attribute={a} />
+                                                </Grid>
+                                            </Grid>
+                                        : <NOPAttribute attribute={a} />}
                                     </Grid>
                                 )
                             })}
@@ -402,7 +418,8 @@ function NOPCreator(props) {
             setSelectedNOPs(selectedNOPs => [...selectedNOPs, {
                 id: selected.id,
                 nazwa: selected.nazwa,
-                atrybuty: selected.atrybutyOdczynow.map(a => { return { ...a, wartosc: '' } })
+                atrybuty: selected.atrybutyOdczynow.map(a => { return { ...a, wartosc: '' } }),
+                opis: selected.opis
             }]);
         }
         setOpen(false);
