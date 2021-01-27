@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Link as RouterLink } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 import MuiPhoneNumber from 'material-ui-phone-number';
 import axios from 'axios';
 import apiURL from '../shared/apiURL';
@@ -53,8 +54,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignUp(props) {
-    const { startRefreshToken } = props;
-
+    let history = useHistory();
     const [userInput, setUserInput] = useState({});
 
     const classes = useStyles();
@@ -106,26 +106,12 @@ export default function SignUp(props) {
             });
         }
         if(signupsuccess){
-            let userData = {};
-
-            try {
-                const response = await axios.post(
-                    apiURL + 'signin', 
-                    { email : userInput.email, haslo: userInput.password },
-                    { withCredentials: true }
-                );
-                userData = response.data;
-            } catch (error) {
-                setSnackbar({
-                    open: true,
-                    type: 'error',
-                    message: 'Nie udało się zalogować'
-                });
-            }
-
-            if(userData && (userData.rola !== undefined)){
-                await startRefreshToken();
-            }
+            setSnackbar({
+                open: true,
+                type: 'success',
+                message: 'Udało się utworzyć. Sprawdź skrzynke mailową.'
+            });
+            history.push('/parenthome')
         }
 
         setLoading(false);

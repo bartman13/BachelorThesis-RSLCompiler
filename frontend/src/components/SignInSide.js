@@ -122,7 +122,7 @@ const emailChanged = (event) => {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Zaloguj
+            Wprowadź email
           </Typography>
           <form className={classes.form} noValidate onSubmit={
                     (event) => {
@@ -174,9 +174,9 @@ const emailChanged = (event) => {
                     </Button>
                     <Grid container>
                         <Grid item xs>
-                            <Link href="" variant="body2">
+                            <RouterLink to="/forgot-password" variant="body2">
                                 Zapomniałeś hasła?
-                            </Link>
+                            </RouterLink>
                         </Grid>
                         <Grid item>
                             <Link component={RouterLink} to="/signup" variant="body2">

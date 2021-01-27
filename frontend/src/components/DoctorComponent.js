@@ -2,7 +2,6 @@ import React from "react";
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { BrowserRouter} from 'react-router-dom';
 import DoctorNavBar from './DoctorNavBarComponent';
-import DoctorHelp from './DoctorHelpComponent';
 import DoctorApp from './DoctorAppsComponent';
 import DoctorAppList from './DoctorAppList';
 import Wiki from './WikiComponent';
