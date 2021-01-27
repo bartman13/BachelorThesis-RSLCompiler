@@ -10,7 +10,7 @@ namespace BackEnd.DataTransferObjects
     public class CreateAppRequest
     {
         public DateTime Data { get; set; }
-        public int szczepionkaId { get; set; }
+        public ICollection<int> szczepionkiId { get; set; }
         public int pacjentId { get; set; }
         public bool prosbaOKontakt { get; set; }
         public virtual ICollection<NopAtrybuty> nopy { get; set; }

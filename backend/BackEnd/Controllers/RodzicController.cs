@@ -230,7 +230,10 @@ namespace BackEnd.Controllers
                 ZdjecieKsZd = zdjecieKsZd
             };
             _context.Zgloszenia.Attach(app);
-            app.ZgloszenieSzczepionki.Add(new ZgloszenieSzczepionki { SzczepionkaId = value.szczepionkaId });
+            foreach(int szczepionkaId in value.szczepionkiId)
+            {
+                app.ZgloszenieSzczepionki.Add(new ZgloszenieSzczepionki { SzczepionkaId = szczepionkaId });
+            }
             foreach (var nop in value.nopy)
             {
                 var oz = new OdczynyZgloszenia
