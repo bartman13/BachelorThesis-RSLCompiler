@@ -52,7 +52,6 @@ namespace BackEnd
             });
             services.AddSingleton(Configuration);
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings")); // seccret key key of token
-            services.AddScoped<IAccountService, AccountService>(); // inject UserService
             services.AddControllersWithViews().AddNewtonsoftJson(options =>
             options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore); // Jwt serialization
             services.AddRouting();

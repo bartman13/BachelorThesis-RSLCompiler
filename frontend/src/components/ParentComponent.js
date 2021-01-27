@@ -11,7 +11,7 @@ import AppHistory from './AppHistoryComponent';
 import Wiki from './WikiComponent';
 import Blog from './About/Blog';
 import AddNOP from './AddNOPComponent';
-import WikiItem from './WikiItem'
+import WikiItem from './WikiItem';
 
 const AppHistoryWithId = ({match}) => {
     return(
@@ -36,6 +36,7 @@ const UpdateAppWithId = ({match}) => {
         <AddNOP appid={match.params.id}/>
     );
 }
+
 
 function Parent(props){
     const { logout } = props;
