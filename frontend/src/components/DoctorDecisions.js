@@ -124,7 +124,7 @@ export default function DoctorDecisions(props) {
       </FormControl>
     </form>
      <Dialog open={open} onClose={handleClose} fullWidth  aria-labelledby="form-dialog-title">
-     <DialogTitle id="form-dialog-title">Komentaż</DialogTitle>
+     <DialogTitle id="form-dialog-title">Komentarz</DialogTitle>
      <DialogContent>
        <DialogContentText>
         Komentarz min 10 słów widoczny widoczny dla pacjenta

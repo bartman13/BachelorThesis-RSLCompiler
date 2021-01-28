@@ -158,7 +158,7 @@ export default function DoctorApp(props) {
         <Divider />
       </main>
       <Dialog open={open} onClose={handleClose} fullWidth  aria-labelledby="zdjęcie książeczki">
-     <DialogTitle id="form-dialog-title">Komentaż</DialogTitle>
+     <DialogTitle id="form-dialog-title">Komentarz</DialogTitle>
      <DialogContent>
      <img alt="kszdj" src={photo} />
      </DialogContent>
