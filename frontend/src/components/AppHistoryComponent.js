@@ -257,19 +257,19 @@ function AppHistory({ appid, showAddButton }){
                             <LegendDot type={1}/> - utworzenie zgłoszenia.
                         </Grid>
                         <Grid item xs={12} md={6} lg={4}>
-                            <LegendDot type={2}/> - dodanie lekkiego nipożądanego odczynu.
+                            <LegendDot type={2}/> - dodanie lekkiego niepożądanego odczynu.
                         </Grid>
                         <Grid item xs={12} md={6} lg={4}>
-                            <LegendDot type={3}/> - dodanie poważnego nipożądanego odczynu.
+                            <LegendDot type={3}/> - dodanie poważnego niepożądanego odczynu.
                         </Grid>
                         <Grid item xs={12} md={6} lg={4}>
-                            <LegendDot type={4}/> - dodanie ciężkiego nipożądanego odczynu.
+                            <LegendDot type={4}/> - dodanie ciężkiego niepożądanego odczynu.
                         </Grid>
                         <Grid item xs={12} md={6} lg={4}>
-                            <LegendDot type={5}/> - decyzja lekazra "Brak zgodzności z dokumentem".
+                            <LegendDot type={5}/> - decyzja lekazra "Brak zgodności z dokumentem".
                         </Grid>
                         <Grid item xs={12} md={6} lg={4}>
-                            <LegendDot type={6}/> - nie stwierdzono występowania niepożdanego odczynu poszczepiennego.
+                            <LegendDot type={6}/> - nie stwierdzono występowania niepożądanego odczynu poszczepiennego.
                         </Grid>
                         <Grid item xs={12} md={6} lg={4}>
                             <LegendDot type={7}/> - potwierdzenie lekkiego nipożądanego odczynu.

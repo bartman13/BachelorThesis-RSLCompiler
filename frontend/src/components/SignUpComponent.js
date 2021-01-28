@@ -1,4 +1,4 @@
-import React, { useState, useContext  } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -19,6 +19,8 @@ import axios from 'axios';
 import apiURL from '../shared/apiURL';
 import SnackbarContext from '../contexts/SnackbarContext';
 import LoadingContext from '../contexts/LoadingContext';
+import Alert from '@material-ui/lab/Alert';
+import Collapse from '@material-ui/core/Collapse';
 
 function Copyright() {
     return (
@@ -53,9 +55,18 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function SignUp(props) {
+export default function SignUp() {
     let history = useHistory();
-    const [userInput, setUserInput] = useState({});
+    const [userInput, setUserInput] = useState({
+        firstName: '',
+        lastName: '',
+        tel: '',
+        email: '',
+        password: '',
+        repeatPassword: ''
+    });
+    const [errors, setErrors] = useState({});
+    const [acceptterms, setAcceptterms] = useState(true);
 
     const classes = useStyles();
 
@@ -64,6 +75,9 @@ export default function SignUp(props) {
 
     const handleChange = (event) => {
         if(event.target.name === 'acceptterms'){
+            if(event.target.checked){
+                setAcceptterms(true);
+            }
             setUserInput(userInput => {
                 return {
                     ...userInput,
@@ -80,7 +94,34 @@ export default function SignUp(props) {
         });
     }
 
+    const handleBlur = (event) => {
+        if(errors[event.target.name] === undefined){
+            setErrors(errors => {
+                return {
+                    ...errors,
+                    [event.target.name] : ''
+                }
+            });
+        }
+        setUserInput(userInput => { return {...userInput}});
+    }
+
     const handleSubmit = async () => {
+        let validate = true;
+        for(const field in userInput){
+            if(errors[field] !== ''){
+                errors[field] = '';
+                validate = false;
+            }
+        }
+        if(userInput.acceptterms !== true){
+            setAcceptterms(false);
+            validate = false;
+        }
+        if(!validate){
+            setUserInput({...userInput});
+            return;
+        }
         setLoading(true);
 
         let signupsuccess = false;
@@ -117,6 +158,55 @@ export default function SignUp(props) {
         setLoading(false);
     }
 
+    useEffect(() => {
+        for(const field in errors){
+            if(field === 'firstName'){
+                if(userInput[field].length === 0){
+                    errors[field] = 'Pole jest wymagane';
+                    continue;
+                }
+            }
+            if(field === 'lastName'){
+                if(userInput[field].length === 0){
+                    errors[field] = 'Pole jest wymagane';
+                    continue;
+                }
+            }
+            if(field === 'tel'){
+                if(userInput[field].length === 0){
+                    errors[field] = 'Pole jest wymagane';
+                    continue;
+                }
+            }
+            if(field === 'email'){
+                if(userInput[field].length === 0){
+                    errors[field] = 'Pole jest wymagane';
+                    continue;
+                }
+                else{
+                    if(!(/.+@.+\.[A-Za-z]+$/.test(userInput[field]))){
+                        errors[field] = 'Niepoprawny adres email';
+                        continue;
+                    }
+                }
+            }
+            if(field === 'password'){
+                if(userInput[field].length < 6){
+                    errors[field] = 'Hasło musi być dłuższe niż 5 znaków';
+                    continue;
+                }
+            }
+            if(field === 'repeatPassword'){
+                if(userInput[field] === '' || userInput[field] !== userInput['password']){
+                    errors[field] = 'Hasła powinny się zgadzać';
+                    continue;
+                }
+            }
+            errors[field] = '';
+        }
+        setErrors({...errors});
+    }, [userInput]); // eslint-disable-line react-hooks/exhaustive-deps
+
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
@@ -144,6 +234,9 @@ export default function SignUp(props) {
                                 label="Imię"
                                 autoFocus
                                 onChange={handleChange}
+                                onBlur={handleBlur}
+                                error={errors["firstName"] === undefined ? false : errors["firstName"].length > 0}
+                                helperText={errors["firstName"] || ''}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -156,6 +249,9 @@ export default function SignUp(props) {
                                 name="lastName"
                                 autoComplete="lname"
                                 onChange={handleChange}
+                                onBlur={handleBlur}
+                                error={errors["lastName"] === undefined ? false : errors["lastName"].length > 0}
+                                helperText={errors["lastName"] || ''}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -168,6 +264,9 @@ export default function SignUp(props) {
                                 name="email"
                                 autoComplete="email"
                                 onChange={handleChange}
+                                onBlur={handleBlur}
+                                error={errors["email"] === undefined ? false : errors["email"].length > 0}
+                                helperText={errors["email"] || ''}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -185,6 +284,9 @@ export default function SignUp(props) {
                                         tel : value
                                     }
                                 })}
+                                onBlur={handleBlur}
+                                error={errors["tel"] === undefined ? false : errors["tel"].length > 0}
+                                helperText={errors["tel"] || ''}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -197,6 +299,9 @@ export default function SignUp(props) {
                                 type="password"
                                 id="password"
                                 onChange={handleChange}
+                                onBlur={handleBlur}
+                                error={errors["password"] === undefined ? false : errors["password"].length > 0}
+                                helperText={errors["password"] || ''}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -209,6 +314,9 @@ export default function SignUp(props) {
                                 type="password"
                                 id="repeat-password"
                                 onChange={handleChange}
+                                onBlur={handleBlur}
+                                error={errors["repeatPassword"] === undefined ? false : errors["repeatPassword"].length > 0}
+                                helperText={errors["repeatPassword"] || ''}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -216,6 +324,9 @@ export default function SignUp(props) {
                                 control={<Checkbox checked={userInput.acceptterms || false} color="primary" name="acceptterms" onChange={handleChange}/>}
                                 label="Akceptuję warunki regulaminu"
                             />
+                            <Collapse in={!acceptterms}>
+                                <Alert severity="error"> Akceptacja warunków jest wymagana </Alert>
+                            </Collapse>
                         </Grid>
                     </Grid>
                     <Button
