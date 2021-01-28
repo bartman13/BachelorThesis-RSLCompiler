@@ -5,7 +5,7 @@ export default function toFormData(obj, form, namespace) {
     let formKey;
 
     for (let property in obj) {
-        if (obj.hasOwnProperty(property) && obj[property]) {
+        if (obj.hasOwnProperty(property) && (obj[property] || obj[property] === 0 || obj[property] === false)) {
             if (namespace) {
                 formKey = namespace + '[' + property + ']';
             } else {

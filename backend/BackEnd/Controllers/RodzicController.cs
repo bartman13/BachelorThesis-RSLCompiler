@@ -337,7 +337,7 @@ namespace BackEnd.Controllers
         /// <param name="file"> Dany plik </param>
         /// <returns></returns>
         [HttpPost("Upload")]
-        public IActionResult UploadFile([FromForm] IFormFile file)
+        public async Task<IActionResult> UploadFile([FromForm] IFormFile file)
         {
             string fileName = Guid.NewGuid().ToString();
             string directorypath = _configuration["FileStorage"];
@@ -345,7 +345,7 @@ namespace BackEnd.Controllers
             string nameOnDisk = Path.Combine(directorypath, fileName + Path.GetExtension(file.FileName));
             using (FileStream stream = new FileStream(nameOnDisk, FileMode.Create))
             {
-                file.CopyTo(stream);
+                await file.CopyToAsync(stream);
             }
             _context.Pliki.Add(new Pliki
             {
@@ -353,7 +353,7 @@ namespace BackEnd.Controllers
                 OryginalnaNazwa = file.FileName,
                 NazwaPliku = fileName
             });
-            _context.SaveChanges();
+           await _context.SaveChangesAsync();
             return Ok(fileName);
         }
         /// <summary>
