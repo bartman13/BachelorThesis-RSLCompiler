@@ -40,11 +40,6 @@ export default function Stats(props) {
         Ciężkie: {props.ciężkie || 0}
       </Typography>
       </Box>
-      <Box m={1}>
-        <Link color="primary" href="#" onClick={preventDefault}>
-          Generuj XML
-        </Link>
-      </Box>
     </React.Fragment>
   );
 }

@@ -39,9 +39,9 @@ namespace BackEnd.Controllers
         [Authorize]
         [HttpGet("AppHistory/{id?}")]
         [ProducesResponseType(typeof(List<DateAppInfoResponse>), 200)]
-        public IActionResult GetAppHistory(int? id)
+        public async Task<IActionResult> GetAppHistory(int? id)
         {
-            var app = _context.Zgloszenia
+            var app = await _context.Zgloszenia
                 .Where(z => z.Id == id)
                 .Include(i => i.DecyzjeLekarza)
                 .Include(i => i.OdczynyZgloszenia)
@@ -49,7 +49,7 @@ namespace BackEnd.Controllers
                 .ThenInclude(it => it.Atod)
                 .Include(i => i.ZgloszenieSzczepionki)
                 .ThenInclude(it => it.Szczepionka)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
             if (app == null) return NotFound("Zgloszenie o podanym id nie istnieje");
             if (Account.Rola == (int)Role.Rodzic && app.UzytId != Account.Id) return Unauthorized();
             if (Account.Rola == (int)Role.Rodzic)
@@ -60,7 +60,7 @@ namespace BackEnd.Controllers
                     _context.Update(d);
                 }
             }
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             List<AppEvent> events = new List<AppEvent>
             {
                 new AppEvent
@@ -74,10 +74,10 @@ namespace BackEnd.Controllers
             };
             foreach (var n in app.OdczynyZgloszenia)
             {
-                var odczyn = _context.Odczyny
+                var odczyn = await _context.Odczyny
                     .Where(x => x.Id == n.OdczynId)
                     .Include(i => i.SzczepionkiOdczyny)
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync();
                 int? sc = odczyn.SzczepionkiOdczyny.Max(so => so.StopienCiezkosci);
                 events.Add(new AppEvent
                 {

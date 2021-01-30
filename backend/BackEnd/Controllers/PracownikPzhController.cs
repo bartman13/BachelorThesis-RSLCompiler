@@ -30,10 +30,7 @@ namespace BackEnd.Controllers
         {
             _context = context;
             _mapper = mapper;
-
         }
-
-          
          /// <summary>
         /// Zwraca dane zasilające pracownika pzh  
         /// </summary>
@@ -183,6 +180,35 @@ namespace BackEnd.Controllers
             workbook.SaveAs(stream);
             stream.Seek(0, SeekOrigin.Begin);
             return File(stream.ToArray(), contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "statystyki.xlsx");
+        }
+        /// <summary>
+        /// Zwraca dane dotyczące wybranego zgłoszenia dla którego lekarz chce podjąć decyzję  
+        /// </summary>
+        /// <param name="id">Id zgłoszenia </param>
+        /// <returns> Predefinioway obiekt z danymi o zgłoszeniu dla lekarza </returns>
+        [ProducesResponseType(typeof(DotorZgłoszenieInfo), 200)]
+        [HttpGet("ZgloszeniePZH/{id?}")]
+        public async Task<IActionResult> GetApp(int id)
+        {
+            var zgloszenie = await _context.Zgloszenia.Where(p => p.Id == id)
+                .Include("Pacjent")
+                .Include("Uzyt")
+                .Include("DecyzjeLekarza")
+                .Include("ZdjecieKsZd")
+                .FirstOrDefaultAsync();
+            DotorZgłoszenieInfo response = new DotorZgłoszenieInfo
+            {
+                Imie = zgloszenie.Uzyt.Imie,
+                Nazwisko = zgloszenie.Uzyt.Nazwisko,
+                Email = zgloszenie.Uzyt.Email,
+                Telefon = zgloszenie.Uzyt.Telefon,
+                Pacjent_Imie = zgloszenie.Pacjent.Imie,
+                Pacjent_Nazwisko = zgloszenie.Pacjent.Nazwisko,
+                ProsbaOKontakt = zgloszenie.ProsbaOKontakt,
+                decyzja = zgloszenie.DecyzjeLekarza.Count == 0 ? -1 : zgloszenie.DecyzjeLekarza.Last().Decyzja,
+                ZdjecieKsZd = zgloszenie.ZdjecieKsZd
+            };
+            return Ok(response);
         }
     }
 }
