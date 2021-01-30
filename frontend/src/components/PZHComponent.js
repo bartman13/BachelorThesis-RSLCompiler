@@ -12,7 +12,7 @@ import Blog from './About/Blog'
 
 const PzhVaccinesWithId = ({match}) => {
     return(
-        <DoctorApp appId={match.params.id}/>
+        <DoctorApp appId={match.params.id} pzh/>
     );
 }
 

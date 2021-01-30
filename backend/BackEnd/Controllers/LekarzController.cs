@@ -61,14 +61,14 @@ namespace BackEnd.Controllers
         /// <returns> Predefinioway obiekt z danymi o zgłoszeniu dla lekarza </returns>
         [ProducesResponseType(typeof(DotorZgłoszenieInfo), 200)]
         [HttpGet("[controller]/Zgloszenie/{id?}")]
-        public IActionResult GetNop(int id)
+        public async Task<IActionResult> GetNop(int id)
         {
-            var zgloszenie = _context.Zgloszenia.Where(p => p.Id == id)
+            var zgloszenie = await _context.Zgloszenia.Where(p => p.Id == id)
                 .Include("Pacjent")
                 .Include("Uzyt")
                 .Include("DecyzjeLekarza")
                 .Include("ZdjecieKsZd")
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
             DotorZgłoszenieInfo response = new DotorZgłoszenieInfo
             {
                 Imie = zgloszenie.Uzyt.Imie,
@@ -98,7 +98,5 @@ namespace BackEnd.Controllers
             _context.SaveChanges();
             return Ok();
         }
-
-
     }
 }

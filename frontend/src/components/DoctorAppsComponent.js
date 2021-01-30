@@ -21,9 +21,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
-
-
-
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -74,13 +71,15 @@ function Alert(props) {
 
 export default function DoctorApp(props) {
   const classes = useStyles();
-  const { appId } = props;
+  const { appId, pzh } = props;
   const [apps, setApps] = useState([]);
   const [photo, setPhoto] = useState(undefined);
   const [open, setOpen] = useState(false);
+  const [ loaded, setLoaded ] = useState(false);
   const { user } = useContext(UserContext);
   const { setLoading } = useContext(LoadingContext);
   const { setSnackbar } = useContext(SnackbarContext);
+
   const mystyle = {
     border: "solid",
     borderRadius: "10px",
@@ -95,13 +94,18 @@ export default function DoctorApp(props) {
     async function fetchData() {
         setLoading(true);
         try{
-            const response = await axios.get(apiURL + 'Lekarz/Zgloszenie/' + appId, authHeader(user));
+            let url = apiURL + 'Lekarz/Zgloszenie/' + appId;
+            if(pzh){
+              url = apiURL + 'ZgloszeniePZH/' + appId;
+            }
+            const response = await axios.get(url, authHeader(user));
             setApps(response.data);
             const blob = await axios.get(apiURL + 'file/' + response.data.zdjecieKsZd.nazwaPliku, {
               responseType: 'blob',
               ...authHeader(user)
           });
-            setPhoto(URL.createObjectURL(blob.data));
+          setPhoto(URL.createObjectURL(blob.data));
+          setLoaded(true);
         } catch (error){
             console.error(error);
             setSnackbar({
@@ -154,7 +158,7 @@ export default function DoctorApp(props) {
         </Box >
         <Divider />
   
-      <AppHistory appid={appId}/>       
+      {loaded ? <AppHistory appid={appId}/> : null}       
         <Divider />
       </main>
       <Dialog open={open} onClose={handleClose} fullWidth  aria-labelledby="zdjęcie książeczki">

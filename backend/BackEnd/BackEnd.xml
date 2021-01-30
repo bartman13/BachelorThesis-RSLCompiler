@@ -65,6 +65,13 @@
             <param name="id"> Id szczepionki </param>
             <returns> Raport w postaci pliku xlsx </returns>
         </member>
+        <member name="M:BackEnd.Controllers.PracownikPzhController.GetApp(System.Int32)">
+            <summary>
+            Zwraca dane dotyczące wybranego zgłoszenia dla którego lekarz chce podjąć decyzję  
+            </summary>
+            <param name="id">Id zgłoszenia </param>
+            <returns> Predefinioway obiekt z danymi o zgłoszeniu dla lekarza </returns>
+        </member>
         <member name="T:BackEnd.Controllers.RodzicController">
             <summary>
             Kontroler służący  do obsługi ządaużytkowników zalogowanych jako Rodzic
