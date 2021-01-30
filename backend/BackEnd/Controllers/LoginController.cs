@@ -116,23 +116,39 @@ namespace BackEnd.Controllers
             // save account
             _context.Uzytkownicy.Add(account);
             _context.SaveChanges();
-            sendVerificationEmail(account, Request.Headers["origin"]);
+            sendVerificationEmail(account,_appSettings.ApiUrl);
             return Ok();
         }
-        [HttpPost("verify-email")]
-        public IActionResult VerifyEmail(VerifyEmailRequest model)
+        [HttpGet("verify-email/{token?}")]
+        public ContentResult VerifyEmail(string token)
         {
             
-            var account = _context.Uzytkownicy.SingleOrDefault(x => x.VerificationToken == model.Token);
+            var account = _context.Uzytkownicy.SingleOrDefault(x => x.VerificationToken == token);
+            string response;
+            if (account == null)
+            {
+                response = "Nie udało się";
+            }
+            else
+            {
+                response = @"<!doctype html><html lang = 'en'><head><meta charset = 'utf-8'><title> MiniNOP </title></head><body>Weryfikacja udana. Za chwilę zostaniesz przekierowany do głownej strony gdzie będziesz mógł zalogować się na swoje konto.
+                <script> setTimeout(() => window.location.replace('" + _appSettings.FrontendUrl + "'), 5000);</script></body></html>";
+            }
 
-            if (account == null) throw new AppException("Verification failed");
+
+
 
             account.Zweryfikowany = DateTime.UtcNow;
             account.VerificationToken = null;
 
             _context.Uzytkownicy.Update(account);
             _context.SaveChanges();
-            return Ok(new { message = "Verification successful, you can now login" });
+            return new ContentResult
+            {
+                ContentType = "text/html",
+                Content = response,
+                StatusCode = (int)HttpStatusCode.OK
+            };
         }
         
         /// <summary>
@@ -270,8 +286,10 @@ namespace BackEnd.Controllers
 
             // send email
             using var smtp = new SmtpClient();
-            smtp.Connect(_appSettings.SmtpHost, _appSettings.SmtpPort, SecureSocketOptions.StartTls);
+            smtp.Connect(_appSettings.SmtpHost, _appSettings.SmtpPort, SecureSocketOptions.Auto);
             smtp.Authenticate(_appSettings.SmtpUser, _appSettings.SmtpPass);
+            
+
             smtp.Send(email);
             smtp.Disconnect(true);
         }
@@ -351,7 +369,7 @@ namespace BackEnd.Controllers
             }
             else
             {
-                message = $@"<p>Please use the below token to reset your password with the <code>/accounts/reset-password</code> api route:</p>
+                message = $@"<p>Proszę skorzystać z tokenu oraz dostarczonego adresu api w celu weryfikacji. <code>/accounts/reset-password</code> :</p>
                              <p><code>{account.ResetToken}</code></p>";
             }
 
