@@ -14,5 +14,7 @@ namespace BackEnd.Helpers
         public int SmtpPort { get; set; }
         public string SmtpUser { get; set; }
         public string SmtpPass { get; set; }
+        public string ApiUrl { get; set; }
+        public string FrontendUrl { get; set; }
     }
 }
